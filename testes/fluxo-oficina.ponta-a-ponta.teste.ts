@@ -246,4 +246,40 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       )
       .expect(400);
   });
+
+  it('abre OS por CPF/CNPJ cadastrando ou reutilizando o veículo pela placa', async () => {
+    await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Juliana Costa', cpfCnpj: '390.533.447-05' })
+      .expect(201);
+
+    const primeiraOrdem = await requisicao(aplicacao.getHttpServer())
+      .post('/api/ordens-servico/abertura')
+      .send({
+        cpfCnpj: '390.533.447-05',
+        descricao: 'Revisão preventiva',
+        veiculo: {
+          placa: 'GHI5J67',
+          marca: 'Chevrolet',
+          modelo: 'Onix',
+          ano: 2021,
+        },
+      })
+      .expect(201);
+
+    const segundaOrdem = await requisicao(aplicacao.getHttpServer())
+      .post('/api/ordens-servico/abertura')
+      .send({
+        cpfCnpj: '39053344705',
+        descricao: 'Verificação dos freios',
+        veiculo: { placa: 'ghi5j67' },
+      })
+      .expect(201);
+
+    expect(primeiraOrdem.body).toMatchObject({ status: 'RECEBIDA' });
+    expect(segundaOrdem.body).toMatchObject({
+      veiculoId: primeiraOrdem.body.veiculoId,
+      status: 'RECEBIDA',
+    });
+  });
 });

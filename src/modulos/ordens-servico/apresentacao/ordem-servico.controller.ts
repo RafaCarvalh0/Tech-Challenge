@@ -17,11 +17,13 @@ import {
 } from '@nestjs/swagger';
 
 import { CasoUsoCriarOrdemServico } from '../aplicacao/criar-ordem-servico.caso-uso';
+import { CasoUsoAbrirOrdemServico } from '../aplicacao/abrir-ordem-servico.caso-uso';
 import { CasoUsoExecutarAcaoOrdemServico } from '../aplicacao/executar-acao-ordem-servico.caso-uso';
 import { CasoUsoListarOrdensServico } from '../aplicacao/listar-ordens-servico.caso-uso';
 import { CasoUsoObterOrdemServico } from '../aplicacao/obter-ordem-servico.caso-uso';
 import { AcaoOrdemServico } from '../dominio/acao-ordem-servico';
 import {
+  DadosAbrirOrdemServico,
   DadosCriarOrdemServico,
   DadosListarOrdensServico,
 } from './ordem-servico.dto';
@@ -31,6 +33,7 @@ import {
 export class ControladorOrdemServico {
   constructor(
     private readonly criarOrdemServico: CasoUsoCriarOrdemServico,
+    private readonly abrirOrdemServico: CasoUsoAbrirOrdemServico,
     private readonly obterOrdemServico: CasoUsoObterOrdemServico,
     private readonly listarOrdensServico: CasoUsoListarOrdensServico,
     private readonly executarAcaoOrdemServico: CasoUsoExecutarAcaoOrdemServico,
@@ -41,6 +44,13 @@ export class ControladorOrdemServico {
   @ApiNotFoundResponse({ description: 'Cliente ou veículo não encontrado' })
   criar(@Body() dadosEntrada: DadosCriarOrdemServico) {
     return this.criarOrdemServico.executar(dadosEntrada);
+  }
+
+  @Post('abertura')
+  @ApiCreatedResponse({ description: 'Ordem de serviço aberta por CPF/CNPJ' })
+  @ApiNotFoundResponse({ description: 'Cliente não encontrado' })
+  criarPeloFluxoDeAbertura(@Body() dadosEntrada: DadosAbrirOrdemServico) {
+    return this.abrirOrdemServico.executar(dadosEntrada);
   }
 
   @Get()

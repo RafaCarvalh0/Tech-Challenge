@@ -1,5 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsDefined,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
 
 import { StatusOrdemServico } from '../dominio/status-ordem-servico';
 
@@ -33,4 +44,46 @@ export class DadosListarOrdensServico {
   @IsOptional()
   @IsEnum(StatusOrdemServico)
   status?: StatusOrdemServico;
+}
+
+export class DadosVeiculoAberturaOrdemServico {
+  @ApiProperty({ example: 'ABC1D23' })
+  @IsString()
+  placa!: string;
+
+  @ApiProperty({ example: 'Honda', required: false })
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  marca?: string;
+
+  @ApiProperty({ example: 'Civic', required: false })
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  modelo?: string;
+
+  @ApiProperty({ example: 2022, required: false })
+  @IsOptional()
+  @IsInt()
+  @Min(1886)
+  @Max(new Date().getFullYear() + 1)
+  ano?: number;
+}
+
+export class DadosAbrirOrdemServico {
+  @ApiProperty({ example: '529.982.247-25' })
+  @IsString()
+  cpfCnpj!: string;
+
+  @ApiProperty({ example: 'Troca de óleo e diagnóstico dos freios' })
+  @IsString()
+  @MinLength(3)
+  descricao!: string;
+
+  @ApiProperty({ type: DadosVeiculoAberturaOrdemServico })
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => DadosVeiculoAberturaOrdemServico)
+  veiculo!: DadosVeiculoAberturaOrdemServico;
 }

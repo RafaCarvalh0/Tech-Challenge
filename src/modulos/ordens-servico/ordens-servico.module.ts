@@ -12,6 +12,7 @@ import {
 } from '../veiculos/aplicacao/veiculo.repositorio';
 import { ModuloVeiculos } from '../veiculos/veiculos.module';
 import { CasoUsoCriarOrdemServico } from './aplicacao/criar-ordem-servico.caso-uso';
+import { CasoUsoAbrirOrdemServico } from './aplicacao/abrir-ordem-servico.caso-uso';
 import { CasoUsoExecutarAcaoOrdemServico } from './aplicacao/executar-acao-ordem-servico.caso-uso';
 import { CasoUsoListarOrdensServico } from './aplicacao/listar-ordens-servico.caso-uso';
 import { CasoUsoObterOrdemServico } from './aplicacao/obter-ordem-servico.caso-uso';
@@ -39,6 +40,19 @@ import { ControladorOrdemServico } from './apresentacao/ordem-servico.controller
         clientes: RepositorioCliente,
         veiculos: RepositorioVeiculo,
       ) => new CasoUsoCriarOrdemServico(ordensServico, clientes, veiculos),
+      inject: [
+        REPOSITORIO_ORDEM_SERVICO,
+        REPOSITORIO_CLIENTE,
+        REPOSITORIO_VEICULO,
+      ],
+    },
+    {
+      provide: CasoUsoAbrirOrdemServico,
+      useFactory: (
+        ordensServico: RepositorioOrdemServico,
+        clientes: RepositorioCliente,
+        veiculos: RepositorioVeiculo,
+      ) => new CasoUsoAbrirOrdemServico(ordensServico, clientes, veiculos),
       inject: [
         REPOSITORIO_ORDEM_SERVICO,
         REPOSITORIO_CLIENTE,
