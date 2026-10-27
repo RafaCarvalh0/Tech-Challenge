@@ -14,7 +14,15 @@ class RepositorioClienteEmMemoria implements RepositorioCliente {
     return null;
   }
 
+  async listar(): Promise<Cliente[]> {
+    return this.cliente ? [this.cliente] : [];
+  }
+
   async salvar(): Promise<void> {}
+
+  async atualizar(): Promise<void> {}
+
+  async excluir(): Promise<void> {}
 }
 
 describe('CasoUsoObterCliente', () => {
@@ -42,6 +50,8 @@ describe('CasoUsoObterCliente', () => {
       new RepositorioClienteEmMemoria(null),
     );
 
-    await expect(casoUso.executar('ausente')).rejects.toThrow(ErroNaoEncontrado);
+    await expect(casoUso.executar('ausente')).rejects.toThrow(
+      ErroNaoEncontrado,
+    );
   });
 });

@@ -3,6 +3,7 @@
   "rootDir": "..",
   "cacheDirectory": "<rootDir>/.jest-cache/e2e",
   "testEnvironment": "node",
+  "testTimeout": 30000,
   "testRegex": ".ponta-a-ponta.teste.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"

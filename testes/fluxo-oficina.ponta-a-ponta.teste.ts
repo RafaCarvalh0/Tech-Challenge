@@ -82,4 +82,41 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         expect(resposta.body.status).toBe('RECEBIDA');
       });
   });
+
+  it('lista, edita e exclui cliente sem vínculos', async () => {
+    const respostaCriacao = await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Carlos Souza', cpfCnpj: '111.444.777-35' })
+      .expect(201);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get('/api/clientes')
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              identificador: respostaCriacao.body.identificador,
+              nome: 'Carlos Souza',
+            }),
+          ]),
+        );
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(`/api/clientes/${respostaCriacao.body.identificador}`)
+      .send({ nome: 'Carlos de Souza' })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.nome).toBe('Carlos de Souza');
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .delete(`/api/clientes/${respostaCriacao.body.identificador}`)
+      .expect(204);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/clientes/${respostaCriacao.body.identificador}`)
+      .expect(404);
+  });
 });

@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 
 import { ServicoPrisma } from '../../banco-dados/prisma.servico';
 import { CasoUsoCriarCliente } from './aplicacao/criar-cliente.caso-uso';
+import { CasoUsoAtualizarCliente } from './aplicacao/atualizar-cliente.caso-uso';
+import { CasoUsoExcluirCliente } from './aplicacao/excluir-cliente.caso-uso';
+import { CasoUsoListarClientes } from './aplicacao/listar-clientes.caso-uso';
 import {
   REPOSITORIO_CLIENTE,
   RepositorioCliente,
@@ -29,6 +32,24 @@ import { ControladorCliente } from './apresentacao/cliente.controller';
       provide: CasoUsoObterCliente,
       useFactory: (repositorio: RepositorioCliente) =>
         new CasoUsoObterCliente(repositorio),
+      inject: [REPOSITORIO_CLIENTE],
+    },
+    {
+      provide: CasoUsoListarClientes,
+      useFactory: (repositorio: RepositorioCliente) =>
+        new CasoUsoListarClientes(repositorio),
+      inject: [REPOSITORIO_CLIENTE],
+    },
+    {
+      provide: CasoUsoAtualizarCliente,
+      useFactory: (repositorio: RepositorioCliente) =>
+        new CasoUsoAtualizarCliente(repositorio),
+      inject: [REPOSITORIO_CLIENTE],
+    },
+    {
+      provide: CasoUsoExcluirCliente,
+      useFactory: (repositorio: RepositorioCliente) =>
+        new CasoUsoExcluirCliente(repositorio),
       inject: [REPOSITORIO_CLIENTE],
     },
   ],
