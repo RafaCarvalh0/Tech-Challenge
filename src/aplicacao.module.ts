@@ -5,6 +5,7 @@ import { ModuloBancoDados } from './banco-dados/banco-dados.module';
 import { ControladorSaude } from './saude/saude.controller';
 import { ModuloClientes } from './modulos/clientes/clientes.module';
 import { ModuloVeiculos } from './modulos/veiculos/veiculos.module';
+import { ModuloOrdensServico } from './modulos/ordens-servico/ordens-servico.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ModuloVeiculos } from './modulos/veiculos/veiculos.module';
     ModuloBancoDados,
     ModuloClientes,
     ModuloVeiculos,
+    ModuloOrdensServico,
   ],
   controllers: [ControladorSaude],
 })
