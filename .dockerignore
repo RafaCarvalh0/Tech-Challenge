@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+.jest-cache
+.git
+.superpowers
+.env
+*.log

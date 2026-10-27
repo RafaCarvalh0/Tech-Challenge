@@ -1,0 +1,10 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "..",
+  "cacheDirectory": "<rootDir>/.jest-cache/e2e",
+  "testEnvironment": "node",
+  "testRegex": ".ponta-a-ponta.teste.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  }
+}
