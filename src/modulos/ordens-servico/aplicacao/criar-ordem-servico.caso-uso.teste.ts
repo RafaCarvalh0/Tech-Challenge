@@ -80,9 +80,15 @@ class RepositorioOrdemServicoEmMemoria implements RepositorioOrdemServico {
     return this.ordensServico.find((ordemServico) => ordemServico.identificador === identificador) ?? null;
   }
 
+  async listar(): Promise<OrdemServico[]> {
+    return this.ordensServico;
+  }
+
   async salvar(ordemServico: OrdemServico): Promise<void> {
     this.ordensServico.push(ordemServico);
   }
+
+  async atualizarStatus(): Promise<void> {}
 }
 
 describe('CasoUsoCriarOrdemServico', () => {

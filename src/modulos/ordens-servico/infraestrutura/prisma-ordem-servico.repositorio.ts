@@ -1,5 +1,8 @@
 import { ServicoPrisma } from '../../../banco-dados/prisma.servico';
-import { RepositorioOrdemServico } from '../aplicacao/ordem-servico.repositorio';
+import {
+  FiltrosOrdemServico,
+  RepositorioOrdemServico,
+} from '../aplicacao/ordem-servico.repositorio';
 import { OrdemServico } from '../dominio/ordem-servico';
 
 export class RepositorioPrismaOrdemServico implements RepositorioOrdemServico {
@@ -20,6 +23,28 @@ export class RepositorioPrismaOrdemServico implements RepositorioOrdemServico {
       : null;
   }
 
+  async listar(filtros: FiltrosOrdemServico): Promise<OrdemServico[]> {
+    const registros = await this.servicoPrisma.ordemServico.findMany({
+      where: {
+        clienteId: filtros.clienteId,
+        veiculoId: filtros.veiculoId,
+        status: filtros.status,
+      },
+      orderBy: { criadoEm: 'desc' },
+    });
+    return registros.map((registro) =>
+      OrdemServico.restaurar({
+        identificador: registro.identificador,
+        clienteId: registro.clienteId,
+        veiculoId: registro.veiculoId,
+        descricao: registro.descricao,
+        status: registro.status,
+        criadoEm: registro.criadoEm,
+        atualizadoEm: registro.atualizadoEm,
+      }),
+    );
+  }
+
   async salvar(ordemServico: OrdemServico): Promise<void> {
     await this.servicoPrisma.ordemServico.create({
       data: {
@@ -31,6 +56,13 @@ export class RepositorioPrismaOrdemServico implements RepositorioOrdemServico {
         criadoEm: ordemServico.criadoEm,
         atualizadoEm: ordemServico.atualizadoEm,
       },
+    });
+  }
+
+  async atualizarStatus(ordemServico: OrdemServico): Promise<void> {
+    await this.servicoPrisma.ordemServico.update({
+      where: { identificador: ordemServico.identificador },
+      data: { status: ordemServico.status },
     });
   }
 }

@@ -164,4 +164,86 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       .delete(`/api/veiculos/${respostaVeiculo.body.identificador}`)
       .expect(204);
   });
+
+  it('lista, detalha e controla as transições da ordem de serviço', async () => {
+    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Roberto Alves', cpfCnpj: '935.411.347-80' })
+      .expect(201);
+
+    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+      .post('/api/veiculos')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        placa: 'DEF4G56',
+        marca: 'Ford',
+        modelo: 'Ka',
+        ano: 2020,
+      })
+      .expect(201);
+
+    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+      .post('/api/ordens-servico')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        veiculoId: respostaVeiculo.body.identificador,
+        descricao: 'Diagnóstico completo',
+      })
+      .expect(201);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(
+        `/api/ordens-servico?clienteId=${respostaCliente.body.identificador}&status=RECEBIDA`,
+      )
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toEqual([
+          expect.objectContaining({
+            identificador: respostaOrdem.body.identificador,
+            status: 'RECEBIDA',
+          }),
+        ]);
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/ordens-servico/${respostaOrdem.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          cliente: {
+            identificador: respostaCliente.body.identificador,
+            cpfCnpj: '93541134780',
+          },
+          veiculo: {
+            identificador: respostaVeiculo.body.identificador,
+            placa: 'DEF4G56',
+          },
+        });
+      });
+
+    const transicoes = [
+      ['INICIAR_DIAGNOSTICO', 'EM_DIAGNOSTICO'],
+      ['SOLICITAR_APROVACAO', 'AGUARDANDO_APROVACAO'],
+      ['APROVAR', 'EM_EXECUCAO'],
+      ['FINALIZAR', 'FINALIZADA'],
+      ['ENTREGAR', 'ENTREGUE'],
+    ];
+
+    for (const [acao, status] of transicoes) {
+      await requisicao(aplicacao.getHttpServer())
+        .patch(
+          `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/${acao}`,
+        )
+        .expect(200)
+        .expect((resposta) => {
+          expect(resposta.body.status).toBe(status);
+        });
+    }
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/APROVAR`,
+      )
+      .expect(400);
+  });
 });
