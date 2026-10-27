@@ -119,4 +119,49 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       .get(`/api/clientes/${respostaCriacao.body.identificador}`)
       .expect(404);
   });
+
+  it('lista, edita e exclui veículo sem ordem de serviço', async () => {
+    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Fernanda Lima', cpfCnpj: '123.456.789-09' })
+      .expect(201);
+
+    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+      .post('/api/veiculos')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        placa: 'BRA2E19',
+        marca: 'Toyota',
+        modelo: 'Corolla',
+        ano: 2023,
+      })
+      .expect(201);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/veiculos?clienteId=${respostaCliente.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toEqual([
+          expect.objectContaining({
+            identificador: respostaVeiculo.body.identificador,
+            placa: 'BRA2E19',
+          }),
+        ]);
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(`/api/veiculos/${respostaVeiculo.body.identificador}`)
+      .send({ modelo: 'Corolla Altis', ano: 2024 })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          modelo: 'Corolla Altis',
+          ano: 2024,
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .delete(`/api/veiculos/${respostaVeiculo.body.identificador}`)
+      .expect(204);
+  });
 });

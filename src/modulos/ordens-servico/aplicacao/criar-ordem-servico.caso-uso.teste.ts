@@ -61,7 +61,16 @@ class ConsultaVeiculo implements RepositorioVeiculo {
     return null;
   }
 
+  async listar(): Promise<Veiculo[]> {
+    const veiculo = await this.buscarPorId();
+    return veiculo ? [veiculo] : [];
+  }
+
   async salvar(): Promise<void> {}
+
+  async atualizar(): Promise<void> {}
+
+  async excluir(): Promise<void> {}
 }
 
 class RepositorioOrdemServicoEmMemoria implements RepositorioOrdemServico {
