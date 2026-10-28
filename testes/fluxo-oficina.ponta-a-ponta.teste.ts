@@ -171,6 +171,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       clienteId: respostaCliente.body.identificador,
       veiculoId: respostaVeiculo.body.identificador,
       status: 'RECEBIDA',
+      codigoAcompanhamento: expect.any(String),
     });
 
     await requisicaoAdministrativa()

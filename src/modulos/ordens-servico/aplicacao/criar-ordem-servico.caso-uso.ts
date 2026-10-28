@@ -11,6 +11,10 @@ export interface EntradaCriarOrdemServico {
   descricao: string;
 }
 
+export interface SaidaCriacaoOrdemServico extends SaidaOrdemServico {
+  codigoAcompanhamento: string;
+}
+
 export class CasoUsoCriarOrdemServico {
   constructor(
     private readonly ordensServico: RepositorioOrdemServico,
@@ -18,7 +22,9 @@ export class CasoUsoCriarOrdemServico {
     private readonly veiculos: RepositorioVeiculo,
   ) {}
 
-  async executar(dadosEntrada: EntradaCriarOrdemServico): Promise<SaidaOrdemServico> {
+  async executar(
+    dadosEntrada: EntradaCriarOrdemServico,
+  ): Promise<SaidaCriacaoOrdemServico> {
     const cliente = await this.clientes.buscarPorId(dadosEntrada.clienteId);
     if (!cliente) {
       throw new ErroNaoEncontrado('Cliente não encontrado');
@@ -35,6 +41,9 @@ export class CasoUsoCriarOrdemServico {
 
     const ordemServico = OrdemServico.criar(dadosEntrada);
     await this.ordensServico.salvar(ordemServico);
-    return paraSaidaOrdemServico(ordemServico);
+    return {
+      ...paraSaidaOrdemServico(ordemServico),
+      codigoAcompanhamento: ordemServico.codigoAcompanhamento,
+    };
   }
 }
