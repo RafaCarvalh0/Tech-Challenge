@@ -62,8 +62,20 @@ docker compose down
 
 ## Execução local
 
-1. Copie `.env.example` para `.env`.
-2. Inicie apenas o PostgreSQL:
+Antes da primeira execução, copie `.env.example` para `.env`.
+
+Para iniciar todo o ambiente local com um único comando:
+
+```bash
+npm run iniciar
+```
+
+O comando inicia o banco PostgreSQL no Docker, instala as dependências,
+gera o Prisma, aplica as migrations e mantém a API em execução.
+
+Ou execute as etapas manualmente:
+
+1. Inicie apenas o PostgreSQL:
 
 ```bash
 docker compose up -d banco-dados
