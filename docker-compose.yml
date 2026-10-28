@@ -39,9 +39,9 @@ services:
     environment:
       PORTA: 3000
       URL_BANCO_DADOS: postgresql://postgres:postgres@banco-dados:5432/oficina?schema=public
-      SEGREDO_JWT: ${SEGREDO_JWT:-}
-      USUARIO_ADMINISTRADOR: ${USUARIO_ADMINISTRADOR:-}
-      SENHA_ADMINISTRADOR: ${SENHA_ADMINISTRADOR:-}
+      SEGREDO_JWT: ${SEGREDO_JWT:?Defina SEGREDO_JWT no arquivo .env}
+      USUARIO_ADMINISTRADOR: ${USUARIO_ADMINISTRADOR:?Defina USUARIO_ADMINISTRADOR no arquivo .env}
+      SENHA_ADMINISTRADOR: ${SENHA_ADMINISTRADOR:?Defina SENHA_ADMINISTRADOR no arquivo .env}
     depends_on:
       migracao:
         condition: service_completed_successfully
