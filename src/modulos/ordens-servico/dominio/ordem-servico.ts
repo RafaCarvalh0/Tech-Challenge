@@ -42,6 +42,7 @@ interface PropriedadesOrdemServico {
 
 interface EntradaRestaurarOrdemServico extends PropriedadesOrdemServico {
   identificador: string;
+  codigoAcompanhamento: string;
   status: string;
   criadoEm: Date;
   atualizadoEm: Date;
@@ -53,6 +54,7 @@ export class OrdemServico {
     readonly clienteId: string,
     readonly veiculoId: string,
     readonly descricao: string,
+    readonly codigoAcompanhamento: string,
     readonly status: StatusOrdemServico,
     readonly criadoEm: Date,
     readonly atualizadoEm: Date,
@@ -70,6 +72,7 @@ export class OrdemServico {
       dadosEntrada.clienteId,
       dadosEntrada.veiculoId,
       descricao,
+      randomUUID(),
       StatusOrdemServico.RECEBIDA,
       agora,
       agora,
@@ -82,6 +85,7 @@ export class OrdemServico {
       dadosEntrada.clienteId,
       dadosEntrada.veiculoId,
       dadosEntrada.descricao,
+      dadosEntrada.codigoAcompanhamento,
       dadosEntrada.status as StatusOrdemServico,
       dadosEntrada.criadoEm,
       dadosEntrada.atualizadoEm,
@@ -101,6 +105,7 @@ export class OrdemServico {
       this.clienteId,
       this.veiculoId,
       this.descricao,
+      this.codigoAcompanhamento,
       transicao.destino,
       this.criadoEm,
       new Date(),

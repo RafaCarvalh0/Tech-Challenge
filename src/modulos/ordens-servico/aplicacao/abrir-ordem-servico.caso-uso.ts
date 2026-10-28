@@ -23,6 +23,10 @@ export interface EntradaAbrirOrdemServico {
   };
 }
 
+export interface SaidaAberturaOrdemServico extends SaidaOrdemServico {
+  codigoAcompanhamento: string;
+}
+
 export class CasoUsoAbrirOrdemServico {
   constructor(
     private readonly ordensServico: RepositorioOrdemServico,
@@ -32,7 +36,7 @@ export class CasoUsoAbrirOrdemServico {
 
   async executar(
     dadosEntrada: EntradaAbrirOrdemServico,
-  ): Promise<SaidaOrdemServico> {
+  ): Promise<SaidaAberturaOrdemServico> {
     const cpfCnpj = CpfCnpj.criar(dadosEntrada.cpfCnpj);
     const cliente = await this.clientes.buscarPorCpfCnpj(cpfCnpj.valor);
     if (!cliente) {
@@ -80,6 +84,9 @@ export class CasoUsoAbrirOrdemServico {
       throw error_;
     }
 
-    return paraSaidaOrdemServico(ordemServico);
+    return {
+      ...paraSaidaOrdemServico(ordemServico),
+      codigoAcompanhamento: ordemServico.codigoAcompanhamento,
+    };
   }
 }

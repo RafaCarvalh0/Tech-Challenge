@@ -364,11 +364,54 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    expect(primeiraOrdem.body).toMatchObject({ status: 'RECEBIDA' });
+    expect(primeiraOrdem.body).toMatchObject({
+      status: 'RECEBIDA',
+      codigoAcompanhamento: expect.any(String),
+    });
     expect(segundaOrdem.body).toMatchObject({
       veiculoId: primeiraOrdem.body.veiculoId,
       status: 'RECEBIDA',
+      codigoAcompanhamento: expect.any(String),
     });
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(
+        `/api/acompanhamento/ordens-servico/${primeiraOrdem.body.identificador}`,
+      )
+      .set('X-Codigo-Acompanhamento', primeiraOrdem.body.codigoAcompanhamento)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          identificador: primeiraOrdem.body.identificador,
+          descricao: 'Revisão preventiva',
+          status: 'RECEBIDA',
+          composicao: null,
+          orcamento: null,
+        });
+        expect(resposta.body).not.toHaveProperty('clienteId');
+        expect(resposta.body).not.toHaveProperty('veiculoId');
+        expect(resposta.body).not.toHaveProperty('codigoAcompanhamento');
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(
+        `/api/acompanhamento/ordens-servico/${primeiraOrdem.body.identificador}`,
+      )
+      .set('X-Codigo-Acompanhamento', 'codigo-invalido')
+      .expect(404);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(
+        `/api/acompanhamento/ordens-servico/${primeiraOrdem.body.identificador}`,
+      )
+      .expect(404);
+
+    await requisicaoAdministrativa()
+      .get(`/api/ordens-servico/${primeiraOrdem.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).not.toHaveProperty('codigoAcompanhamento');
+      });
   });
 
   it('cadastra, lista, atualiza, consulta e exclui um serviço', async () => {

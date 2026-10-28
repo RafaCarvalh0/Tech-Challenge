@@ -61,11 +61,11 @@
 - A resposta contém somente status, descrição resumida, composição e situação/total do orçamento necessários ao cliente.
 - Código inválido, ausente ou pertencente a outra OS retorna 401/404 sem dados sensíveis.
 
-- [ ] Escrever testes de contrato e segurança do endpoint.
-- [ ] Persistir o código de forma não previsível e retornar o código apenas no fluxo autorizado de abertura.
-- [ ] Implementar consulta pública limitada ao acompanhamento.
-- [ ] Documentar a rota no Swagger e atualizar o detalhamento administrativo sem expor o código.
-- [ ] Commitar: `feat: adiciona acompanhamento seguro da ordem`.
+- [x] Escrever testes de contrato e segurança do endpoint.
+- [x] Persistir o código de forma não previsível e retornar o código apenas no fluxo autorizado de abertura.
+- [x] Implementar consulta pública limitada ao acompanhamento.
+- [x] Documentar a rota no Swagger e atualizar o detalhamento administrativo sem expor o código.
+- [x] Commitar: `feat: adiciona acompanhamento seguro da ordem`.
 
 ### Tarefa 3: Transação atômica no fluxo de abertura
 
