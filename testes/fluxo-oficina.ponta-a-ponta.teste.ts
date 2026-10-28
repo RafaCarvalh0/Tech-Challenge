@@ -11,6 +11,76 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
   let aplicacao: INestApplication;
   let servicoPrisma: ServicoPrisma;
 
+  async function prepararOrcamentoParaDecisao(dados: {
+    sufixo: string;
+    cpfCnpj: string;
+    placa: string;
+    quantidadeEstoque: number;
+    quantidadeOrcamento: number;
+  }): Promise<{ ordemServicoId: string; pecaInsumoId: string }> {
+    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: `Cliente ${dados.sufixo}`, cpfCnpj: dados.cpfCnpj })
+      .expect(201);
+    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+      .post('/api/veiculos')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        placa: dados.placa,
+        marca: 'Renault',
+        modelo: 'Kwid',
+        ano: 2024,
+      })
+      .expect(201);
+    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+      .post('/api/ordens-servico')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        veiculoId: respostaVeiculo.body.identificador,
+        descricao: `Orçamento para ${dados.sufixo}`,
+      })
+      .expect(201);
+    const respostaPeca = await requisicao(aplicacao.getHttpServer())
+      .post('/api/pecas-insumos')
+      .send({
+        codigo: `PECA-${dados.sufixo}`,
+        nome: `Peça ${dados.sufixo}`,
+        precoUnitarioEmCentavos: 7000,
+        quantidadeEstoque: dados.quantidadeEstoque,
+      })
+      .expect(201);
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/INICIAR_DIAGNOSTICO`,
+      )
+      .expect(200);
+    await requisicao(aplicacao.getHttpServer())
+      .put(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`,
+      )
+      .send({
+        servicos: [],
+        pecasInsumos: [
+          {
+            pecaInsumoId: respostaPeca.body.identificador,
+            quantidade: dados.quantidadeOrcamento,
+          },
+        ],
+      })
+      .expect(200);
+    await requisicao(aplicacao.getHttpServer())
+      .post(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`,
+      )
+      .expect(201);
+
+    return {
+      ordemServicoId: respostaOrdem.body.identificador,
+      pecaInsumoId: respostaPeca.body.identificador,
+    };
+  }
+
   beforeAll(async () => {
     validarUrlBancoDadosTeste(process.env.URL_BANCO_DADOS);
 
@@ -231,28 +301,18 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    const transicoes = [
-      ['INICIAR_DIAGNOSTICO', 'EM_DIAGNOSTICO'],
-      ['SOLICITAR_APROVACAO', 'AGUARDANDO_APROVACAO'],
-      ['APROVAR', 'EM_EXECUCAO'],
-      ['FINALIZAR', 'FINALIZADA'],
-      ['ENTREGAR', 'ENTREGUE'],
-    ];
-
-    for (const [acao, status] of transicoes) {
-      await requisicao(aplicacao.getHttpServer())
-        .patch(
-          `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/${acao}`,
-        )
-        .expect(200)
-        .expect((resposta) => {
-          expect(resposta.body.status).toBe(status);
-        });
-    }
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/INICIAR_DIAGNOSTICO`,
+      )
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.status).toBe('EM_DIAGNOSTICO');
+      });
 
     await requisicao(aplicacao.getHttpServer())
       .patch(
-        `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/APROVAR`,
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/SOLICITAR_APROVACAO`,
       )
       .expect(400);
   });
@@ -651,5 +711,103 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
           },
         });
       });
+  });
+
+  it('aprova orçamento, inicia execução e baixa o estoque', async () => {
+    const dados = await prepararOrcamentoParaDecisao({
+      sufixo: 'APROVA',
+      cpfCnpj: '24681357928',
+      placa: 'QRS1T23',
+      quantidadeEstoque: 5,
+      quantidadeOrcamento: 2,
+    });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`,
+      )
+      .send({ decisao: 'APROVAR' })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          ordemServico: { status: 'EM_EXECUCAO' },
+          orcamento: { situacao: 'APROVADO' },
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/pecas-insumos/${dados.pecaInsumoId}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.quantidadeEstoque).toBe(3);
+      });
+  });
+
+  it('rejeita orçamento sem baixar estoque e retorna ao diagnóstico', async () => {
+    const dados = await prepararOrcamentoParaDecisao({
+      sufixo: 'REJEITA',
+      cpfCnpj: '13579246828',
+      placa: 'UVW4X56',
+      quantidadeEstoque: 4,
+      quantidadeOrcamento: 2,
+    });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`,
+      )
+      .send({ decisao: 'REJEITAR' })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          ordemServico: { status: 'EM_DIAGNOSTICO' },
+          orcamento: { situacao: 'REJEITADO' },
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/pecas-insumos/${dados.pecaInsumoId}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.quantidadeEstoque).toBe(4);
+      });
+  });
+
+  it('mantém orçamento e OS inalterados quando falta estoque', async () => {
+    const dados = await prepararOrcamentoParaDecisao({
+      sufixo: 'SEM-ESTOQUE',
+      cpfCnpj: '98765432100',
+      placa: 'YZA7B89',
+      quantidadeEstoque: 1,
+      quantidadeOrcamento: 1,
+    });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(`/api/pecas-insumos/${dados.pecaInsumoId}/estoque`)
+      .send({ tipo: 'SAIDA', quantidade: 1 })
+      .expect(200);
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`,
+      )
+      .send({ decisao: 'APROVAR' })
+      .expect(400);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/ordens-servico/${dados.ordemServicoId}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          status: 'AGUARDANDO_APROVACAO',
+          orcamento: { situacao: 'PENDENTE' },
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${dados.ordemServicoId}/acoes/APROVAR`,
+      )
+      .expect(400);
   });
 });

@@ -44,6 +44,7 @@ import {
 } from './aplicacao/orcamento.repositorio';
 import { RepositorioPrismaOrcamento } from './infraestrutura/prisma-orcamento.repositorio';
 import { CasoUsoGerarOrcamento } from './aplicacao/gerar-orcamento.caso-uso';
+import { CasoUsoDecidirOrcamento } from './aplicacao/decidir-orcamento.caso-uso';
 
 @Module({
   imports: [
@@ -163,6 +164,24 @@ import { CasoUsoGerarOrcamento } from './aplicacao/gerar-orcamento.caso-uso';
         orcamentos: RepositorioOrcamento,
       ) =>
         new CasoUsoGerarOrcamento(
+          ordensServico,
+          composicoes,
+          orcamentos,
+        ),
+      inject: [
+        REPOSITORIO_ORDEM_SERVICO,
+        REPOSITORIO_COMPOSICAO_ORDEM_SERVICO,
+        REPOSITORIO_ORCAMENTO,
+      ],
+    },
+    {
+      provide: CasoUsoDecidirOrcamento,
+      useFactory: (
+        ordensServico: RepositorioOrdemServico,
+        composicoes: RepositorioComposicaoOrdemServico,
+        orcamentos: RepositorioOrcamento,
+      ) =>
+        new CasoUsoDecidirOrcamento(
           ordensServico,
           composicoes,
           orcamentos,

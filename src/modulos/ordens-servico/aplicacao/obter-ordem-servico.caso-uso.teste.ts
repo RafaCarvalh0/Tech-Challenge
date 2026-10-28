@@ -94,6 +94,7 @@ class ConsultaOrcamento implements RepositorioOrcamento {
   }
 
   async enviar(): Promise<void> {}
+  async decidir(): Promise<void> {}
 }
 
 describe('CasoUsoObterOrdemServico', () => {

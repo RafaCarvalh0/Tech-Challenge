@@ -15,6 +15,7 @@ import {
 } from 'class-validator';
 
 import { StatusOrdemServico } from '../dominio/status-ordem-servico';
+import { DecisaoOrcamento } from '../dominio/decisao-orcamento';
 
 export class DadosCriarOrdemServico {
   @ApiProperty()
@@ -126,4 +127,10 @@ export class DadosDefinirComposicaoOrdemServico {
   @ValidateNested({ each: true })
   @Type(() => DadosItemPecaInsumoComposicao)
   pecasInsumos!: DadosItemPecaInsumoComposicao[];
+}
+
+export class DadosDecidirOrcamento {
+  @ApiProperty({ enum: DecisaoOrcamento, example: DecisaoOrcamento.APROVAR })
+  @IsEnum(DecisaoOrcamento)
+  decisao!: DecisaoOrcamento;
 }

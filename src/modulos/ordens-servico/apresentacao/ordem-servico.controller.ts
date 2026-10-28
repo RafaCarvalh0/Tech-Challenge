@@ -24,12 +24,14 @@ import { CasoUsoListarOrdensServico } from '../aplicacao/listar-ordens-servico.c
 import { CasoUsoObterOrdemServico } from '../aplicacao/obter-ordem-servico.caso-uso';
 import { CasoUsoDefinirComposicaoOrdemServico } from '../aplicacao/definir-composicao-ordem-servico.caso-uso';
 import { CasoUsoGerarOrcamento } from '../aplicacao/gerar-orcamento.caso-uso';
+import { CasoUsoDecidirOrcamento } from '../aplicacao/decidir-orcamento.caso-uso';
 import { AcaoOrdemServico } from '../dominio/acao-ordem-servico';
 import {
   DadosAbrirOrdemServico,
   DadosCriarOrdemServico,
   DadosListarOrdensServico,
   DadosDefinirComposicaoOrdemServico,
+  DadosDecidirOrcamento,
 } from './ordem-servico.dto';
 
 @ApiTags('ordens-servico')
@@ -43,6 +45,7 @@ export class ControladorOrdemServico {
     private readonly executarAcaoOrdemServico: CasoUsoExecutarAcaoOrdemServico,
     private readonly definirComposicaoOrdemServico: CasoUsoDefinirComposicaoOrdemServico,
     private readonly gerarOrcamento: CasoUsoGerarOrcamento,
+    private readonly decidirOrcamento: CasoUsoDecidirOrcamento,
   ) {}
 
   @Post()
@@ -92,6 +95,19 @@ export class ControladorOrdemServico {
   @ApiNotFoundResponse({ description: 'Ordem de serviço não encontrada' })
   gerar(@Param('identificador') identificador: string) {
     return this.gerarOrcamento.executar(identificador);
+  }
+
+  @Patch(':identificador/orcamento/decisao')
+  @ApiOkResponse({ description: 'Decisão do orçamento registrada' })
+  @ApiNotFoundResponse({ description: 'Orçamento não encontrado' })
+  decidir(
+    @Param('identificador') identificador: string,
+    @Body() dadosEntrada: DadosDecidirOrcamento,
+  ) {
+    return this.decidirOrcamento.executar(
+      identificador,
+      dadosEntrada.decisao,
+    );
   }
 
   @Patch(':identificador/acoes/:acao')

@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { ErroValidacao } from '../../../compartilhado/dominio/erros';
 import { ComposicaoOrdemServico } from './composicao-ordem-servico';
 import { SituacaoOrcamento } from './situacao-orcamento';
+import { DecisaoOrcamento } from './decisao-orcamento';
 
 interface EntradaRestaurarOrcamento {
   identificador: string;
@@ -64,6 +65,29 @@ export class Orcamento {
       dadosEntrada.geradoEm,
       dadosEntrada.atualizadoEm,
       dadosEntrada.decididoEm,
+    );
+  }
+
+  decidir(decisao: DecisaoOrcamento): Orcamento {
+    if (this.situacao !== SituacaoOrcamento.PENDENTE) {
+      throw new ErroValidacao('O orçamento já foi decidido');
+    }
+
+    const agora = new Date();
+    const situacao =
+      decisao === DecisaoOrcamento.APROVAR
+        ? SituacaoOrcamento.APROVADO
+        : SituacaoOrcamento.REJEITADO;
+    return new Orcamento(
+      this.identificador,
+      this.ordemServicoId,
+      this.subtotalServicosEmCentavos,
+      this.subtotalPecasInsumosEmCentavos,
+      this.totalEmCentavos,
+      situacao,
+      this.geradoEm,
+      agora,
+      agora,
     );
   }
 }
