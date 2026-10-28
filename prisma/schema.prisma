@@ -57,3 +57,27 @@ model OrdemServico {
   @@index([veiculoId])
   @@map("ordens_servico")
 }
+
+model Servico {
+  identificador   String   @id @default(uuid())
+  nome            String   @unique
+  descricao       String?
+  precoEmCentavos Int      @map("preco_em_centavos")
+  criadoEm        DateTime @default(now()) @map("criado_em")
+  atualizadoEm    DateTime @updatedAt @map("atualizado_em")
+
+  @@map("servicos")
+}
+
+model PecaInsumo {
+  identificador            String   @id @default(uuid())
+  codigo                   String   @unique
+  nome                     String
+  descricao                String?
+  precoUnitarioEmCentavos  Int      @map("preco_unitario_em_centavos")
+  quantidadeEstoque        Int      @default(0) @map("quantidade_estoque")
+  criadoEm                 DateTime @default(now()) @map("criado_em")
+  atualizadoEm             DateTime @updatedAt @map("atualizado_em")
+
+  @@map("pecas_insumos")
+}

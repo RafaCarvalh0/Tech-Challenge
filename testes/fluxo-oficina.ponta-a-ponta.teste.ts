@@ -31,12 +31,16 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     await aplicacao.init();
 
     servicoPrisma = aplicacao.get(ServicoPrisma);
+    await servicoPrisma.pecaInsumo.deleteMany();
+    await servicoPrisma.servico.deleteMany();
     await servicoPrisma.ordemServico.deleteMany();
     await servicoPrisma.veiculo.deleteMany();
     await servicoPrisma.cliente.deleteMany();
   });
 
   afterAll(async () => {
+    await servicoPrisma.pecaInsumo.deleteMany();
+    await servicoPrisma.servico.deleteMany();
     await servicoPrisma.ordemServico.deleteMany();
     await servicoPrisma.veiculo.deleteMany();
     await servicoPrisma.cliente.deleteMany();
@@ -281,5 +285,180 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       veiculoId: primeiraOrdem.body.veiculoId,
       status: 'RECEBIDA',
     });
+  });
+
+  it('cadastra, lista, atualiza, consulta e exclui um serviço', async () => {
+    const respostaCriacao = await requisicao(aplicacao.getHttpServer())
+      .post('/api/servicos')
+      .send({
+        nome: 'Troca de óleo',
+        descricao: 'Substituição do óleo e do filtro',
+        precoEmCentavos: 15000,
+      })
+      .expect(201);
+
+    expect(respostaCriacao.body).toMatchObject({
+      nome: 'Troca de óleo',
+      descricao: 'Substituição do óleo e do filtro',
+      precoEmCentavos: 15000,
+    });
+
+    await requisicao(aplicacao.getHttpServer())
+      .post('/api/servicos')
+      .send({ nome: 'Troca de óleo', precoEmCentavos: 16000 })
+      .expect(409);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get('/api/servicos')
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              identificador: respostaCriacao.body.identificador,
+              nome: 'Troca de óleo',
+            }),
+          ]),
+        );
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(`/api/servicos/${respostaCriacao.body.identificador}`)
+      .send({ precoEmCentavos: 17500 })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.precoEmCentavos).toBe(17500);
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(`/api/servicos/${respostaCriacao.body.identificador}`)
+      .send({})
+      .expect(400);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/servicos/${respostaCriacao.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          identificador: respostaCriacao.body.identificador,
+          nome: 'Troca de óleo',
+          precoEmCentavos: 17500,
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .delete(`/api/servicos/${respostaCriacao.body.identificador}`)
+      .expect(204);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/servicos/${respostaCriacao.body.identificador}`)
+      .expect(404);
+  });
+
+  it('rejeita serviço com preço negativo', async () => {
+    await requisicao(aplicacao.getHttpServer())
+      .post('/api/servicos')
+      .send({ nome: 'Alinhamento', precoEmCentavos: -1 })
+      .expect(400);
+  });
+
+  it('gerencia peças e insumos com movimentação de estoque', async () => {
+    const respostaCriacao = await requisicao(aplicacao.getHttpServer())
+      .post('/api/pecas-insumos')
+      .send({
+        codigo: 'OLEO-5W30',
+        nome: 'Óleo 5W30',
+        descricao: 'Embalagem de um litro',
+        precoUnitarioEmCentavos: 4500,
+        quantidadeEstoque: 10,
+      })
+      .expect(201);
+
+    expect(respostaCriacao.body).toMatchObject({
+      codigo: 'OLEO-5W30',
+      nome: 'Óleo 5W30',
+      precoUnitarioEmCentavos: 4500,
+      quantidadeEstoque: 10,
+    });
+
+    await requisicao(aplicacao.getHttpServer())
+      .post('/api/pecas-insumos')
+      .send({
+        codigo: 'oleo-5w30',
+        nome: 'Óleo concorrente',
+        precoUnitarioEmCentavos: 4000,
+        quantidadeEstoque: 1,
+      })
+      .expect(409);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get('/api/pecas-insumos')
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              identificador: respostaCriacao.body.identificador,
+              codigo: 'OLEO-5W30',
+            }),
+          ]),
+        );
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(`/api/pecas-insumos/${respostaCriacao.body.identificador}`)
+      .send({ nome: 'Óleo sintético 5W30', precoUnitarioEmCentavos: 5000 })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          nome: 'Óleo sintético 5W30',
+          precoUnitarioEmCentavos: 5000,
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`,
+      )
+      .send({ tipo: 'ENTRADA', quantidade: 5 })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.quantidadeEstoque).toBe(15);
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`,
+      )
+      .send({ tipo: 'SAIDA', quantidade: 4 })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.quantidadeEstoque).toBe(11);
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`,
+      )
+      .send({ tipo: 'SAIDA', quantidade: 12 })
+      .expect(400);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/pecas-insumos/${respostaCriacao.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          identificador: respostaCriacao.body.identificador,
+          quantidadeEstoque: 11,
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .delete(`/api/pecas-insumos/${respostaCriacao.body.identificador}`)
+      .expect(204);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/pecas-insumos/${respostaCriacao.body.identificador}`)
+      .expect(404);
   });
 });
