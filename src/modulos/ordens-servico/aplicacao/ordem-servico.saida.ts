@@ -2,6 +2,8 @@ import { OrdemServico } from '../dominio/ordem-servico';
 import { StatusOrdemServico } from '../dominio/status-ordem-servico';
 import { SaidaCliente } from '../../clientes/aplicacao/cliente.saida';
 import { SaidaVeiculo } from '../../veiculos/aplicacao/veiculo.saida';
+import { SaidaComposicaoOrdemServico } from './composicao-ordem-servico.saida';
+import { SaidaOrcamento } from './orcamento.saida';
 
 export interface SaidaOrdemServico {
   identificador: string;
@@ -16,6 +18,8 @@ export interface SaidaOrdemServico {
 export interface SaidaDetalheOrdemServico extends SaidaOrdemServico {
   cliente: SaidaCliente;
   veiculo: SaidaVeiculo;
+  composicao: SaidaComposicaoOrdemServico | null;
+  orcamento: SaidaOrcamento | null;
 }
 
 export function paraSaidaOrdemServico(ordemServico: OrdemServico): SaidaOrdemServico {

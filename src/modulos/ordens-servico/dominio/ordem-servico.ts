@@ -20,6 +20,10 @@ const TRANSICOES: Record<
     origem: StatusOrdemServico.AGUARDANDO_APROVACAO,
     destino: StatusOrdemServico.EM_EXECUCAO,
   },
+  [AcaoOrdemServico.REJEITAR]: {
+    origem: StatusOrdemServico.AGUARDANDO_APROVACAO,
+    destino: StatusOrdemServico.EM_DIAGNOSTICO,
+  },
   [AcaoOrdemServico.FINALIZAR]: {
     origem: StatusOrdemServico.EM_EXECUCAO,
     destino: StatusOrdemServico.FINALIZADA,

@@ -10,9 +10,12 @@ import {
   Min,
   MinLength,
   ValidateNested,
+  IsArray,
+  ArrayUnique,
 } from 'class-validator';
 
 import { StatusOrdemServico } from '../dominio/status-ordem-servico';
+import { DecisaoOrcamento } from '../dominio/decisao-orcamento';
 
 export class DadosCriarOrdemServico {
   @ApiProperty()
@@ -86,4 +89,48 @@ export class DadosAbrirOrdemServico {
   @ValidateNested()
   @Type(() => DadosVeiculoAberturaOrdemServico)
   veiculo!: DadosVeiculoAberturaOrdemServico;
+}
+
+export class DadosItemServicoComposicao {
+  @ApiProperty()
+  @IsString()
+  servicoId!: string;
+
+  @ApiProperty({ example: 1 })
+  @IsInt()
+  @Min(1)
+  quantidade!: number;
+}
+
+export class DadosItemPecaInsumoComposicao {
+  @ApiProperty()
+  @IsString()
+  pecaInsumoId!: string;
+
+  @ApiProperty({ example: 2 })
+  @IsInt()
+  @Min(1)
+  quantidade!: number;
+}
+
+export class DadosDefinirComposicaoOrdemServico {
+  @ApiProperty({ type: [DadosItemServicoComposicao] })
+  @IsArray()
+  @ArrayUnique((item: DadosItemServicoComposicao) => item.servicoId)
+  @ValidateNested({ each: true })
+  @Type(() => DadosItemServicoComposicao)
+  servicos!: DadosItemServicoComposicao[];
+
+  @ApiProperty({ type: [DadosItemPecaInsumoComposicao] })
+  @IsArray()
+  @ArrayUnique((item: DadosItemPecaInsumoComposicao) => item.pecaInsumoId)
+  @ValidateNested({ each: true })
+  @Type(() => DadosItemPecaInsumoComposicao)
+  pecasInsumos!: DadosItemPecaInsumoComposicao[];
+}
+
+export class DadosDecidirOrcamento {
+  @ApiProperty({ enum: DecisaoOrcamento, example: DecisaoOrcamento.APROVAR })
+  @IsEnum(DecisaoOrcamento)
+  decisao!: DecisaoOrcamento;
 }

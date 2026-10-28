@@ -90,6 +90,9 @@ export class ControladorPecaInsumo {
   @HttpCode(204)
   @ApiNoContentResponse({ description: 'Peça ou insumo excluído' })
   @ApiNotFoundResponse({ description: 'Peça ou insumo não encontrado' })
+  @ApiConflictResponse({
+    description: 'Peça ou insumo vinculado a uma ordem de serviço',
+  })
   async excluir(@Param('identificador') identificador: string): Promise<void> {
     await this.excluirPecaInsumo.executar(identificador);
   }

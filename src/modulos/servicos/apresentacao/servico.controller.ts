@@ -70,6 +70,9 @@ export class ControladorServico {
   @HttpCode(204)
   @ApiNoContentResponse({ description: "Serviço excluído" })
   @ApiNotFoundResponse({ description: "Serviço não encontrado" })
+  @ApiConflictResponse({
+    description: "Serviço vinculado a uma ordem de serviço",
+  })
   async excluir(@Param("identificador") identificador: string): Promise<void> {
     await this.excluirServico.executar(identificador);
   }

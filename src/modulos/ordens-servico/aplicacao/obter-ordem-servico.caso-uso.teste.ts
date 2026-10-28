@@ -6,6 +6,10 @@ import { Veiculo } from '../../veiculos/dominio/veiculo';
 import { OrdemServico } from '../dominio/ordem-servico';
 import { CasoUsoObterOrdemServico } from './obter-ordem-servico.caso-uso';
 import { RepositorioOrdemServico } from './ordem-servico.repositorio';
+import { RepositorioComposicaoOrdemServico } from './composicao-ordem-servico.repositorio';
+import { ComposicaoOrdemServico } from '../dominio/composicao-ordem-servico';
+import { RepositorioOrcamento } from './orcamento.repositorio';
+import { Orcamento } from '../dominio/orcamento';
 
 class ConsultaOrdemServico implements RepositorioOrdemServico {
   constructor(private readonly ordemServico: OrdemServico | null) {}
@@ -76,6 +80,31 @@ class ConsultaVeiculo implements RepositorioVeiculo {
   async excluir(): Promise<void> {}
 }
 
+class ConsultaComposicao implements RepositorioComposicaoOrdemServico {
+  async buscarPorOrdemServicoId(): Promise<ComposicaoOrdemServico | null> {
+    return null;
+  }
+
+  async substituir(): Promise<void> {}
+}
+
+class ConsultaOrcamento implements RepositorioOrcamento {
+  async buscarPorOrdemServicoId(): Promise<Orcamento | null> {
+    return null;
+  }
+
+  async enviar(): Promise<Orcamento> {
+    throw new Error('Método não utilizado neste teste');
+  }
+
+  async decidir(): Promise<{
+    orcamento: Orcamento;
+    ordemServico: OrdemServico;
+  }> {
+    throw new Error('Método não utilizado neste teste');
+  }
+}
+
 describe('CasoUsoObterOrdemServico', () => {
   it('retorna uma ordem de serviço existente', async () => {
     const ordemServico = OrdemServico.restaurar({
@@ -91,6 +120,8 @@ describe('CasoUsoObterOrdemServico', () => {
       new ConsultaOrdemServico(ordemServico),
       new ConsultaCliente(),
       new ConsultaVeiculo(),
+      new ConsultaComposicao(),
+      new ConsultaOrcamento(),
     );
 
     await expect(
@@ -110,6 +141,8 @@ describe('CasoUsoObterOrdemServico', () => {
         modelo: 'Civic',
         ano: 2022,
       },
+      composicao: null,
+      orcamento: null,
     });
   });
 
@@ -118,8 +151,12 @@ describe('CasoUsoObterOrdemServico', () => {
       new ConsultaOrdemServico(null),
       new ConsultaCliente(),
       new ConsultaVeiculo(),
+      new ConsultaComposicao(),
+      new ConsultaOrcamento(),
     );
 
-    await expect(casoUso.executar('ausente')).rejects.toThrow(ErroNaoEncontrado);
+    await expect(casoUso.executar('ausente')).rejects.toThrow(
+      ErroNaoEncontrado,
+    );
   });
 });
