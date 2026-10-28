@@ -31,6 +31,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     await aplicacao.init();
 
     servicoPrisma = aplicacao.get(ServicoPrisma);
+    await servicoPrisma.orcamento.deleteMany();
     await servicoPrisma.itemPecaInsumoOrdem.deleteMany();
     await servicoPrisma.itemServicoOrdem.deleteMany();
     await servicoPrisma.pecaInsumo.deleteMany();
@@ -41,6 +42,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
   });
 
   afterAll(async () => {
+    await servicoPrisma.orcamento.deleteMany();
     await servicoPrisma.itemPecaInsumoOrdem.deleteMany();
     await servicoPrisma.itemServicoOrdem.deleteMany();
     await servicoPrisma.pecaInsumo.deleteMany();
@@ -557,6 +559,96 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
               subtotalEmCentavos: 24000,
             }),
           ],
+        });
+      });
+  });
+
+  it('gera e envia orçamento calculado automaticamente', async () => {
+    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Empresa de Teste', cpfCnpj: '04.252.011/0001-10' })
+      .expect(201);
+
+    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+      .post('/api/veiculos')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        placa: 'MNO7P89',
+        marca: 'Fiat',
+        modelo: 'Strada',
+        ano: 2023,
+      })
+      .expect(201);
+
+    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+      .post('/api/ordens-servico')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        veiculoId: respostaVeiculo.body.identificador,
+        descricao: 'Preparação do orçamento automático',
+      })
+      .expect(201);
+
+    const respostaServico = await requisicao(aplicacao.getHttpServer())
+      .post('/api/servicos')
+      .send({ nome: 'Revisão elétrica completa', precoEmCentavos: 10000 })
+      .expect(201);
+
+    const respostaPeca = await requisicao(aplicacao.getHttpServer())
+      .post('/api/pecas-insumos')
+      .send({
+        codigo: 'BATERIA-TESTE',
+        nome: 'Bateria de teste',
+        precoUnitarioEmCentavos: 5000,
+        quantidadeEstoque: 10,
+      })
+      .expect(201);
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/INICIAR_DIAGNOSTICO`,
+      )
+      .expect(200);
+
+    await requisicao(aplicacao.getHttpServer())
+      .put(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`,
+      )
+      .send({
+        servicos: [
+          { servicoId: respostaServico.body.identificador, quantidade: 1 },
+        ],
+        pecasInsumos: [
+          { pecaInsumoId: respostaPeca.body.identificador, quantidade: 3 },
+        ],
+      })
+      .expect(200);
+
+    await requisicao(aplicacao.getHttpServer())
+      .post(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`,
+      )
+      .expect(201)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          ordemServicoId: respostaOrdem.body.identificador,
+          subtotalServicosEmCentavos: 10000,
+          subtotalPecasInsumosEmCentavos: 15000,
+          totalEmCentavos: 25000,
+          situacao: 'PENDENTE',
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/ordens-servico/${respostaOrdem.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          status: 'AGUARDANDO_APROVACAO',
+          orcamento: {
+            totalEmCentavos: 25000,
+            situacao: 'PENDENTE',
+          },
         });
       });
   });

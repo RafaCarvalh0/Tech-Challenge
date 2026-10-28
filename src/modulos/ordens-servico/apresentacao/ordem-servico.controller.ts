@@ -23,6 +23,7 @@ import { CasoUsoExecutarAcaoOrdemServico } from '../aplicacao/executar-acao-orde
 import { CasoUsoListarOrdensServico } from '../aplicacao/listar-ordens-servico.caso-uso';
 import { CasoUsoObterOrdemServico } from '../aplicacao/obter-ordem-servico.caso-uso';
 import { CasoUsoDefinirComposicaoOrdemServico } from '../aplicacao/definir-composicao-ordem-servico.caso-uso';
+import { CasoUsoGerarOrcamento } from '../aplicacao/gerar-orcamento.caso-uso';
 import { AcaoOrdemServico } from '../dominio/acao-ordem-servico';
 import {
   DadosAbrirOrdemServico,
@@ -41,6 +42,7 @@ export class ControladorOrdemServico {
     private readonly listarOrdensServico: CasoUsoListarOrdensServico,
     private readonly executarAcaoOrdemServico: CasoUsoExecutarAcaoOrdemServico,
     private readonly definirComposicaoOrdemServico: CasoUsoDefinirComposicaoOrdemServico,
+    private readonly gerarOrcamento: CasoUsoGerarOrcamento,
   ) {}
 
   @Post()
@@ -83,6 +85,13 @@ export class ControladorOrdemServico {
       identificador,
       dadosEntrada,
     );
+  }
+
+  @Post(':identificador/orcamento')
+  @ApiCreatedResponse({ description: 'Orçamento gerado e enviado' })
+  @ApiNotFoundResponse({ description: 'Ordem de serviço não encontrada' })
+  gerar(@Param('identificador') identificador: string) {
+    return this.gerarOrcamento.executar(identificador);
   }
 
   @Patch(':identificador/acoes/:acao')

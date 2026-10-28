@@ -38,6 +38,12 @@ import {
 } from './aplicacao/composicao-ordem-servico.repositorio';
 import { CasoUsoDefinirComposicaoOrdemServico } from './aplicacao/definir-composicao-ordem-servico.caso-uso';
 import { RepositorioPrismaComposicaoOrdemServico } from './infraestrutura/prisma-composicao-ordem-servico.repositorio';
+import {
+  REPOSITORIO_ORCAMENTO,
+  RepositorioOrcamento,
+} from './aplicacao/orcamento.repositorio';
+import { RepositorioPrismaOrcamento } from './infraestrutura/prisma-orcamento.repositorio';
+import { CasoUsoGerarOrcamento } from './aplicacao/gerar-orcamento.caso-uso';
 
 @Module({
   imports: [
@@ -58,6 +64,12 @@ import { RepositorioPrismaComposicaoOrdemServico } from './infraestrutura/prisma
       provide: REPOSITORIO_COMPOSICAO_ORDEM_SERVICO,
       useFactory: (servicoPrisma: ServicoPrisma) =>
         new RepositorioPrismaComposicaoOrdemServico(servicoPrisma),
+      inject: [ServicoPrisma],
+    },
+    {
+      provide: REPOSITORIO_ORCAMENTO,
+      useFactory: (servicoPrisma: ServicoPrisma) =>
+        new RepositorioPrismaOrcamento(servicoPrisma),
       inject: [ServicoPrisma],
     },
     {
@@ -93,18 +105,21 @@ import { RepositorioPrismaComposicaoOrdemServico } from './infraestrutura/prisma
         clientes: RepositorioCliente,
         veiculos: RepositorioVeiculo,
         composicoes: RepositorioComposicaoOrdemServico,
+        orcamentos: RepositorioOrcamento,
       ) =>
         new CasoUsoObterOrdemServico(
           ordensServico,
           clientes,
           veiculos,
           composicoes,
+          orcamentos,
         ),
       inject: [
         REPOSITORIO_ORDEM_SERVICO,
         REPOSITORIO_CLIENTE,
         REPOSITORIO_VEICULO,
         REPOSITORIO_COMPOSICAO_ORDEM_SERVICO,
+        REPOSITORIO_ORCAMENTO,
       ],
     },
     {
@@ -138,6 +153,24 @@ import { RepositorioPrismaComposicaoOrdemServico } from './infraestrutura/prisma
         REPOSITORIO_COMPOSICAO_ORDEM_SERVICO,
         REPOSITORIO_SERVICO,
         REPOSITORIO_PECA_INSUMO,
+      ],
+    },
+    {
+      provide: CasoUsoGerarOrcamento,
+      useFactory: (
+        ordensServico: RepositorioOrdemServico,
+        composicoes: RepositorioComposicaoOrdemServico,
+        orcamentos: RepositorioOrcamento,
+      ) =>
+        new CasoUsoGerarOrcamento(
+          ordensServico,
+          composicoes,
+          orcamentos,
+        ),
+      inject: [
+        REPOSITORIO_ORDEM_SERVICO,
+        REPOSITORIO_COMPOSICAO_ORDEM_SERVICO,
+        REPOSITORIO_ORCAMENTO,
       ],
     },
   ],

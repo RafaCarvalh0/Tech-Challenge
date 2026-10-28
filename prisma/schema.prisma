@@ -42,6 +42,12 @@ enum StatusOrdemServico {
   ENTREGUE
 }
 
+enum SituacaoOrcamento {
+  PENDENTE
+  APROVADO
+  REJEITADO
+}
+
 model OrdemServico {
   identificador String          @id @default(uuid())
   clienteId   String          @map("cliente_id")
@@ -54,6 +60,7 @@ model OrdemServico {
   veiculo     Veiculo         @relation(fields: [veiculoId], references: [identificador])
   itensServico ItemServicoOrdem[]
   itensPecaInsumo ItemPecaInsumoOrdem[]
+  orcamento   Orcamento?
 
   @@index([clienteId])
   @@index([veiculoId])
@@ -115,4 +122,19 @@ model ItemPecaInsumoOrdem {
   @@unique([ordemServicoId, pecaInsumoId])
   @@index([pecaInsumoId])
   @@map("itens_pecas_insumos_ordem")
+}
+
+model Orcamento {
+  identificador                    String            @id @default(uuid())
+  ordemServicoId                   String            @unique @map("ordem_servico_id")
+  subtotalServicosEmCentavos       Int               @map("subtotal_servicos_em_centavos")
+  subtotalPecasInsumosEmCentavos   Int               @map("subtotal_pecas_insumos_em_centavos")
+  totalEmCentavos                  Int               @map("total_em_centavos")
+  situacao                         SituacaoOrcamento  @default(PENDENTE)
+  geradoEm                         DateTime           @default(now()) @map("gerado_em")
+  atualizadoEm                     DateTime           @updatedAt @map("atualizado_em")
+  decididoEm                       DateTime?          @map("decidido_em")
+  ordemServico                     OrdemServico       @relation(fields: [ordemServicoId], references: [identificador], onDelete: Cascade)
+
+  @@map("orcamentos")
 }

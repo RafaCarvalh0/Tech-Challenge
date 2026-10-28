@@ -10,6 +10,8 @@ import {
 import { RepositorioOrdemServico } from './ordem-servico.repositorio';
 import { RepositorioComposicaoOrdemServico } from './composicao-ordem-servico.repositorio';
 import { paraSaidaComposicaoOrdemServico } from './composicao-ordem-servico.saida';
+import { RepositorioOrcamento } from './orcamento.repositorio';
+import { paraSaidaOrcamento } from './orcamento.saida';
 
 export class CasoUsoObterOrdemServico {
   constructor(
@@ -17,6 +19,7 @@ export class CasoUsoObterOrdemServico {
     private readonly clientes: RepositorioCliente,
     private readonly veiculos: RepositorioVeiculo,
     private readonly composicoes: RepositorioComposicaoOrdemServico,
+    private readonly orcamentos: RepositorioOrcamento,
   ) {}
 
   async executar(identificador: string): Promise<SaidaDetalheOrdemServico> {
@@ -25,10 +28,11 @@ export class CasoUsoObterOrdemServico {
       throw new ErroNaoEncontrado('Ordem de serviço não encontrada');
     }
 
-    const [cliente, veiculo, composicao] = await Promise.all([
+    const [cliente, veiculo, composicao, orcamento] = await Promise.all([
       this.clientes.buscarPorId(ordemServico.clienteId),
       this.veiculos.buscarPorId(ordemServico.veiculoId),
       this.composicoes.buscarPorOrdemServicoId(ordemServico.identificador),
+      this.orcamentos.buscarPorOrdemServicoId(ordemServico.identificador),
     ]);
     if (!cliente || !veiculo) {
       throw new ErroNaoEncontrado(
@@ -43,6 +47,7 @@ export class CasoUsoObterOrdemServico {
       composicao: composicao
         ? paraSaidaComposicaoOrdemServico(composicao)
         : null,
+      orcamento: orcamento ? paraSaidaOrcamento(orcamento) : null,
     };
   }
 }
