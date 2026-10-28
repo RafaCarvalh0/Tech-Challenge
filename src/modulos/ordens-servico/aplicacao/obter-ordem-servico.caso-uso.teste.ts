@@ -93,8 +93,16 @@ class ConsultaOrcamento implements RepositorioOrcamento {
     return null;
   }
 
-  async enviar(): Promise<void> {}
-  async decidir(): Promise<void> {}
+  async enviar(): Promise<Orcamento> {
+    throw new Error('Método não utilizado neste teste');
+  }
+
+  async decidir(): Promise<{
+    orcamento: Orcamento;
+    ordemServico: OrdemServico;
+  }> {
+    throw new Error('Método não utilizado neste teste');
+  }
 }
 
 describe('CasoUsoObterOrdemServico', () => {
@@ -147,6 +155,8 @@ describe('CasoUsoObterOrdemServico', () => {
       new ConsultaOrcamento(),
     );
 
-    await expect(casoUso.executar('ausente')).rejects.toThrow(ErroNaoEncontrado);
+    await expect(casoUso.executar('ausente')).rejects.toThrow(
+      ErroNaoEncontrado,
+    );
   });
 });

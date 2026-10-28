@@ -1,15 +1,14 @@
 import { Orcamento } from '../dominio/orcamento';
 import { OrdemServico } from '../dominio/ordem-servico';
-import { ComposicaoOrdemServico } from '../dominio/composicao-ordem-servico';
+import { DecisaoOrcamento } from '../dominio/decisao-orcamento';
 
 export const REPOSITORIO_ORCAMENTO = Symbol('REPOSITORIO_ORCAMENTO');
 
 export interface RepositorioOrcamento {
   buscarPorOrdemServicoId(ordemServicoId: string): Promise<Orcamento | null>;
-  enviar(orcamento: Orcamento, ordemServico: OrdemServico): Promise<void>;
+  enviar(ordemServicoId: string): Promise<Orcamento>;
   decidir(
-    orcamento: Orcamento,
-    ordemServico: OrdemServico,
-    composicao: ComposicaoOrdemServico,
-  ): Promise<void>;
+    ordemServicoId: string,
+    decisao: DecisaoOrcamento,
+  ): Promise<{ orcamento: Orcamento; ordemServico: OrdemServico }>;
 }

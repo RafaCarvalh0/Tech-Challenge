@@ -54,7 +54,17 @@ export class RepositorioPrismaServico implements RepositorioServico {
   }
 
   async excluir(identificador: string): Promise<void> {
-    await this.servicoPrisma.servico.delete({ where: { identificador } });
+    try {
+      await this.servicoPrisma.servico.delete({ where: { identificador } });
+    } catch (error_) {
+      if (
+        error_ instanceof PrismaClientKnownRequestError &&
+        error_.code === "P2003"
+      ) {
+        throw new ErroConflito("Serviço está vinculado a uma ordem de serviço");
+      }
+      throw error_;
+    }
   }
 
   private converterErroUnicidade(error_: unknown): never {

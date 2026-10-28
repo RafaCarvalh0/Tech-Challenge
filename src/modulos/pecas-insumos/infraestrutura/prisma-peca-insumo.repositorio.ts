@@ -67,7 +67,19 @@ export class RepositorioPrismaPecaInsumo implements RepositorioPecaInsumo {
   }
 
   async excluir(identificador: string): Promise<void> {
-    await this.servicoPrisma.pecaInsumo.delete({ where: { identificador } });
+    try {
+      await this.servicoPrisma.pecaInsumo.delete({ where: { identificador } });
+    } catch (error_) {
+      if (
+        error_ instanceof PrismaClientKnownRequestError &&
+        error_.code === 'P2003'
+      ) {
+        throw new ErroConflito(
+          'Peça ou insumo está vinculado a uma ordem de serviço',
+        );
+      }
+      throw error_;
+    }
   }
 
   private converterErroUnicidade(error_: unknown): never {
@@ -75,9 +87,7 @@ export class RepositorioPrismaPecaInsumo implements RepositorioPecaInsumo {
       error_ instanceof PrismaClientKnownRequestError &&
       error_.code === 'P2002'
     ) {
-      throw new ErroConflito(
-        'Peça ou insumo já cadastrado com este código',
-      );
+      throw new ErroConflito('Peça ou insumo já cadastrado com este código');
     }
     throw error_;
   }

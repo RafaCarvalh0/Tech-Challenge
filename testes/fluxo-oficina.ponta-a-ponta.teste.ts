@@ -56,9 +56,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       )
       .expect(200);
     await requisicao(aplicacao.getHttpServer())
-      .put(
-        `/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`,
-      )
+      .put(`/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`)
       .send({
         servicos: [],
         pecasInsumos: [
@@ -70,9 +68,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(200);
     await requisicao(aplicacao.getHttpServer())
-      .post(
-        `/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`,
-      )
+      .post(`/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`)
       .expect(201);
 
     return {
@@ -483,9 +479,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       });
 
     await requisicao(aplicacao.getHttpServer())
-      .patch(
-        `/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`,
-      )
+      .patch(`/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`)
       .send({ tipo: 'ENTRADA', quantidade: 5 })
       .expect(200)
       .expect((resposta) => {
@@ -493,9 +487,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       });
 
     await requisicao(aplicacao.getHttpServer())
-      .patch(
-        `/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`,
-      )
+      .patch(`/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`)
       .send({ tipo: 'SAIDA', quantidade: 4 })
       .expect(200)
       .expect((resposta) => {
@@ -503,9 +495,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       });
 
     await requisicao(aplicacao.getHttpServer())
-      .patch(
-        `/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`,
-      )
+      .patch(`/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`)
       .send({ tipo: 'SAIDA', quantidade: 12 })
       .expect(400);
 
@@ -576,9 +566,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       .expect(200);
 
     await requisicao(aplicacao.getHttpServer())
-      .put(
-        `/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`,
-      )
+      .put(`/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`)
       .send({
         servicos: [
           { servicoId: respostaServico.body.identificador, quantidade: 2 },
@@ -621,6 +609,13 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
           ],
         });
       });
+
+    await requisicao(aplicacao.getHttpServer())
+      .delete(`/api/servicos/${respostaServico.body.identificador}`)
+      .expect(409);
+    await requisicao(aplicacao.getHttpServer())
+      .delete(`/api/pecas-insumos/${respostaPeca.body.identificador}`)
+      .expect(409);
   });
 
   it('gera e envia orçamento calculado automaticamente', async () => {
@@ -671,9 +666,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       .expect(200);
 
     await requisicao(aplicacao.getHttpServer())
-      .put(
-        `/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`,
-      )
+      .put(`/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`)
       .send({
         servicos: [
           { servicoId: respostaServico.body.identificador, quantidade: 1 },
@@ -685,9 +678,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       .expect(200);
 
     await requisicao(aplicacao.getHttpServer())
-      .post(
-        `/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`,
-      )
+      .post(`/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`)
       .expect(201)
       .expect((resposta) => {
         expect(resposta.body).toMatchObject({
@@ -723,9 +714,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     });
 
     await requisicao(aplicacao.getHttpServer())
-      .patch(
-        `/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`,
-      )
+      .patch(`/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`)
       .send({ decisao: 'APROVAR' })
       .expect(200)
       .expect((resposta) => {
@@ -753,9 +742,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     });
 
     await requisicao(aplicacao.getHttpServer())
-      .patch(
-        `/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`,
-      )
+      .patch(`/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`)
       .send({ decisao: 'REJEITAR' })
       .expect(200)
       .expect((resposta) => {
@@ -788,9 +775,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       .expect(200);
 
     await requisicao(aplicacao.getHttpServer())
-      .patch(
-        `/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`,
-      )
+      .patch(`/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`)
       .send({ decisao: 'APROVAR' })
       .expect(400);
 
@@ -805,9 +790,156 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       });
 
     await requisicao(aplicacao.getHttpServer())
-      .patch(
-        `/api/ordens-servico/${dados.ordemServicoId}/acoes/APROVAR`,
-      )
+      .patch(`/api/ordens-servico/${dados.ordemServicoId}/acoes/APROVAR`)
       .expect(400);
+  });
+
+  it('aceita apenas uma de duas aprovações concorrentes', async () => {
+    const dados = await prepararOrcamentoParaDecisao({
+      sufixo: 'CONCORRENTE-APROVA',
+      cpfCnpj: '31415926590',
+      placa: 'CDE1F23',
+      quantidadeEstoque: 5,
+      quantidadeOrcamento: 2,
+    });
+
+    const decidir = () =>
+      requisicao(aplicacao.getHttpServer())
+        .patch(`/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`)
+        .send({ decisao: 'APROVAR' });
+    const respostas = await Promise.all([decidir(), decidir()]);
+
+    expect(respostas.map((resposta) => resposta.status).sort()).toEqual([
+      200, 400,
+    ]);
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/pecas-insumos/${dados.pecaInsumoId}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.quantidadeEstoque).toBe(3);
+      });
+  });
+
+  it('mantém decisão e estoque consistentes em aprovação e rejeição concorrentes', async () => {
+    const dados = await prepararOrcamentoParaDecisao({
+      sufixo: 'CONCORRENTE-MISTA',
+      cpfCnpj: '27182818205',
+      placa: 'FGH4J56',
+      quantidadeEstoque: 5,
+      quantidadeOrcamento: 2,
+    });
+    const decidir = (decisao: 'APROVAR' | 'REJEITAR') =>
+      requisicao(aplicacao.getHttpServer())
+        .patch(`/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`)
+        .send({ decisao });
+
+    const respostas = await Promise.all([
+      decidir('APROVAR'),
+      decidir('REJEITAR'),
+    ]);
+    expect(respostas.map((resposta) => resposta.status).sort()).toEqual([
+      200, 400,
+    ]);
+
+    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+      .get(`/api/ordens-servico/${dados.ordemServicoId}`)
+      .expect(200);
+    const respostaPeca = await requisicao(aplicacao.getHttpServer())
+      .get(`/api/pecas-insumos/${dados.pecaInsumoId}`)
+      .expect(200);
+    if (respostaOrdem.body.orcamento.situacao === 'APROVADO') {
+      expect(respostaOrdem.body.status).toBe('EM_EXECUCAO');
+      expect(respostaPeca.body.quantidadeEstoque).toBe(3);
+    } else {
+      expect(respostaOrdem.body.orcamento.situacao).toBe('REJEITADO');
+      expect(respostaOrdem.body.status).toBe('EM_DIAGNOSTICO');
+      expect(respostaPeca.body.quantidadeEstoque).toBe(5);
+    }
+  });
+
+  it('mantém composição e orçamento na mesma versão durante concorrência', async () => {
+    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Cliente Versão', cpfCnpj: '16180339805' })
+      .expect(201);
+    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+      .post('/api/veiculos')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        placa: 'JKL1M23',
+        marca: 'Honda',
+        modelo: 'Fit',
+        ano: 2020,
+      })
+      .expect(201);
+    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+      .post('/api/ordens-servico')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        veiculoId: respostaVeiculo.body.identificador,
+        descricao: 'Teste de versão do orçamento',
+      })
+      .expect(201);
+    const respostaServico = await requisicao(aplicacao.getHttpServer())
+      .post('/api/servicos')
+      .send({ nome: 'Serviço versionado', precoEmCentavos: 9000 })
+      .expect(201);
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/INICIAR_DIAGNOSTICO`,
+      )
+      .expect(200);
+    const definirComposicao = (quantidade: number) =>
+      requisicao(aplicacao.getHttpServer())
+        .put(
+          `/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`,
+        )
+        .send({
+          servicos: [
+            { servicoId: respostaServico.body.identificador, quantidade },
+          ],
+          pecasInsumos: [],
+        });
+    await definirComposicao(1).expect(200);
+
+    let liberarBloqueio: () => void = () => {};
+    let sinalizarBloqueio: () => void = () => {};
+    const bloqueioAdquirido = new Promise<void>((resolver) => {
+      sinalizarBloqueio = resolver;
+    });
+    const aguardarLiberacao = new Promise<void>((resolver) => {
+      liberarBloqueio = resolver;
+    });
+    const transacaoBloqueio = servicoPrisma.$transaction(async (transacao) => {
+      await transacao.$queryRawUnsafe(
+        'SELECT identificador FROM ordens_servico WHERE identificador = $1 FOR UPDATE',
+        respostaOrdem.body.identificador,
+      );
+      sinalizarBloqueio();
+      await aguardarLiberacao;
+    });
+    await bloqueioAdquirido;
+
+    const envio = requisicao(aplicacao.getHttpServer())
+      .post(`/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`)
+      .then((resposta) => resposta);
+    const alteracao = definirComposicao(2).then((resposta) => resposta);
+    await new Promise((resolver) => setTimeout(resolver, 100));
+    liberarBloqueio();
+    const [respostaEnvio] = await Promise.all([
+      envio,
+      alteracao,
+      transacaoBloqueio,
+    ]);
+    expect(respostaEnvio.status).toBe(201);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/ordens-servico/${respostaOrdem.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.orcamento.totalEmCentavos).toBe(
+          resposta.body.composicao.totalEmCentavos,
+        );
+      });
   });
 });

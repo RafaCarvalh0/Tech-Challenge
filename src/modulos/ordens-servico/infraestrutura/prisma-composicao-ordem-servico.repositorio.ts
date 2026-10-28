@@ -1,10 +1,13 @@
 import { ServicoPrisma } from '../../../banco-dados/prisma.servico';
 import { RepositorioComposicaoOrdemServico } from '../aplicacao/composicao-ordem-servico.repositorio';
 import { ComposicaoOrdemServico } from '../dominio/composicao-ordem-servico';
+import {
+  ErroNaoEncontrado,
+  ErroValidacao,
+} from '../../../compartilhado/dominio/erros';
+import { StatusOrdemServico } from '../dominio/status-ordem-servico';
 
-export class RepositorioPrismaComposicaoOrdemServico
-  implements RepositorioComposicaoOrdemServico
-{
+export class RepositorioPrismaComposicaoOrdemServico implements RepositorioComposicaoOrdemServico {
   constructor(private readonly servicoPrisma: ServicoPrisma) {}
 
   async buscarPorOrdemServicoId(
@@ -44,6 +47,18 @@ export class RepositorioPrismaComposicaoOrdemServico
 
   async substituir(composicao: ComposicaoOrdemServico): Promise<void> {
     await this.servicoPrisma.$transaction(async (transacao) => {
+      const ordensBloqueadas = await transacao.$queryRaw<
+        Array<{ identificador: string; status: StatusOrdemServico }>
+      >`SELECT "identificador", "status"::text FROM "ordens_servico" WHERE "identificador" = ${composicao.ordemServicoId} FOR UPDATE`;
+      if (ordensBloqueadas.length === 0) {
+        throw new ErroNaoEncontrado('Ordem de serviço não encontrada');
+      }
+      if (ordensBloqueadas[0].status !== StatusOrdemServico.EM_DIAGNOSTICO) {
+        throw new ErroValidacao(
+          'A composição só pode ser alterada durante o diagnóstico',
+        );
+      }
+
       await transacao.itemServicoOrdem.deleteMany({
         where: { ordemServicoId: composicao.ordemServicoId },
       });

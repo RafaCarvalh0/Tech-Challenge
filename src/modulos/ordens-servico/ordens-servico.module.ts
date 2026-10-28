@@ -47,12 +47,7 @@ import { CasoUsoGerarOrcamento } from './aplicacao/gerar-orcamento.caso-uso';
 import { CasoUsoDecidirOrcamento } from './aplicacao/decidir-orcamento.caso-uso';
 
 @Module({
-  imports: [
-    ModuloClientes,
-    ModuloVeiculos,
-    ModuloServicos,
-    ModuloPecasInsumos,
-  ],
+  imports: [ModuloClientes, ModuloVeiculos, ModuloServicos, ModuloPecasInsumos],
   controllers: [ControladorOrdemServico],
   providers: [
     {
@@ -158,39 +153,15 @@ import { CasoUsoDecidirOrcamento } from './aplicacao/decidir-orcamento.caso-uso'
     },
     {
       provide: CasoUsoGerarOrcamento,
-      useFactory: (
-        ordensServico: RepositorioOrdemServico,
-        composicoes: RepositorioComposicaoOrdemServico,
-        orcamentos: RepositorioOrcamento,
-      ) =>
-        new CasoUsoGerarOrcamento(
-          ordensServico,
-          composicoes,
-          orcamentos,
-        ),
-      inject: [
-        REPOSITORIO_ORDEM_SERVICO,
-        REPOSITORIO_COMPOSICAO_ORDEM_SERVICO,
-        REPOSITORIO_ORCAMENTO,
-      ],
+      useFactory: (orcamentos: RepositorioOrcamento) =>
+        new CasoUsoGerarOrcamento(orcamentos),
+      inject: [REPOSITORIO_ORCAMENTO],
     },
     {
       provide: CasoUsoDecidirOrcamento,
-      useFactory: (
-        ordensServico: RepositorioOrdemServico,
-        composicoes: RepositorioComposicaoOrdemServico,
-        orcamentos: RepositorioOrcamento,
-      ) =>
-        new CasoUsoDecidirOrcamento(
-          ordensServico,
-          composicoes,
-          orcamentos,
-        ),
-      inject: [
-        REPOSITORIO_ORDEM_SERVICO,
-        REPOSITORIO_COMPOSICAO_ORDEM_SERVICO,
-        REPOSITORIO_ORCAMENTO,
-      ],
+      useFactory: (orcamentos: RepositorioOrcamento) =>
+        new CasoUsoDecidirOrcamento(orcamentos),
+      inject: [REPOSITORIO_ORCAMENTO],
     },
   ],
 })
