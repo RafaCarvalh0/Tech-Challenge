@@ -57,6 +57,8 @@ export class RepositorioPrismaOrcamento implements RepositorioOrcamento {
         where: { identificador: ordemServicoId },
         data: {
           status: ordemAtualizada.status,
+          inicioExecucaoEm: ordemAtualizada.inicioExecucaoEm,
+          finalizadoEm: ordemAtualizada.finalizadoEm,
           atualizadoEm: ordemAtualizada.atualizadoEm,
         },
       });
@@ -121,6 +123,8 @@ export class RepositorioPrismaOrcamento implements RepositorioOrcamento {
         where: { identificador: ordemServicoId },
         data: {
           status: ordemAtualizada.status,
+          inicioExecucaoEm: ordemAtualizada.inicioExecucaoEm,
+          finalizadoEm: ordemAtualizada.finalizadoEm,
           atualizadoEm: ordemAtualizada.atualizadoEm,
         },
       });

@@ -1112,4 +1112,95 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         );
       });
   });
+
+  it('calcula o tempo médio apenas com ordens finalizadas e protege o indicador', async () => {
+    await requisicao(aplicacao.getHttpServer())
+      .get('/api/indicadores/tempo-medio-servicos')
+      .expect(401);
+
+    const cliente = await servicoPrisma.cliente.create({
+      data: { nome: 'Cliente Indicadores', cpfCnpj: '11222333000181' },
+    });
+    const veiculo = await servicoPrisma.veiculo.create({
+      data: {
+        clienteId: cliente.identificador,
+        placa: 'TEM5P67',
+        marca: 'Fiat',
+        modelo: 'Cronos',
+        ano: 2023,
+      },
+    });
+    const servico = await servicoPrisma.servico.create({
+      data: {
+        nome: 'Serviço para indicador',
+        precoEmCentavos: 12000,
+      },
+    });
+    const criarOrdemComServico = async (dados: {
+      codigoAcompanhamento: string;
+      status: 'FINALIZADA' | 'ENTREGUE' | 'EM_EXECUCAO';
+      inicioExecucaoEm: Date;
+      finalizadoEm: Date | null;
+      nomeServico: string;
+    }) => {
+      const ordemServico = await servicoPrisma.ordemServico.create({
+        data: {
+          clienteId: cliente.identificador,
+          veiculoId: veiculo.identificador,
+          codigoAcompanhamento: dados.codigoAcompanhamento,
+          descricao: 'Medição do indicador',
+          status: dados.status,
+          inicioExecucaoEm: dados.inicioExecucaoEm,
+          finalizadoEm: dados.finalizadoEm,
+        },
+      });
+      await servicoPrisma.itemServicoOrdem.create({
+        data: {
+          ordemServicoId: ordemServico.identificador,
+          servicoId: servico.identificador,
+          nome: dados.nomeServico,
+          precoUnitarioEmCentavos: servico.precoEmCentavos,
+          quantidade: 1,
+        },
+      });
+    };
+
+    await criarOrdemComServico({
+      codigoAcompanhamento: 'INDICADOR-FINALIZADA',
+      status: 'FINALIZADA',
+      inicioExecucaoEm: new Date('2026-10-28T08:00:00.000Z'),
+      finalizadoEm: new Date('2026-10-28T09:00:00.000Z'),
+      nomeServico: 'Serviço para indicador',
+    });
+    await servicoPrisma.servico.update({
+      where: { identificador: servico.identificador },
+      data: { nome: 'Serviço renomeado para indicador' },
+    });
+    await criarOrdemComServico({
+      codigoAcompanhamento: 'INDICADOR-ENTREGUE',
+      status: 'ENTREGUE',
+      inicioExecucaoEm: new Date('2026-10-28T10:00:00.000Z'),
+      finalizadoEm: new Date('2026-10-28T12:00:00.000Z'),
+      nomeServico: 'Serviço renomeado para indicador',
+    });
+    await criarOrdemComServico({
+      codigoAcompanhamento: 'INDICADOR-EM-EXECUCAO',
+      status: 'EM_EXECUCAO',
+      inicioExecucaoEm: new Date('2026-10-28T13:00:00.000Z'),
+      finalizadoEm: null,
+      nomeServico: 'Serviço renomeado para indicador',
+    });
+
+    await requisicaoAdministrativa()
+      .get('/api/indicadores/tempo-medio-servicos')
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toContainEqual({
+          servicoId: servico.identificador,
+          nome: 'Serviço renomeado para indicador',
+          quantidadeOrdens: 2,
+          tempoMedioExecucaoEmSegundos: 5400,
+        });
+      });
+  });
 });

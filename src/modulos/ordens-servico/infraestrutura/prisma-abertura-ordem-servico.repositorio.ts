@@ -64,6 +64,8 @@ export class RepositorioPrismaAberturaOrdemServico
             codigoAcompanhamento: ordemServico.codigoAcompanhamento,
             descricao: ordemServico.descricao,
             status: ordemServico.status,
+            inicioExecucaoEm: ordemServico.inicioExecucaoEm,
+            finalizadoEm: ordemServico.finalizadoEm,
             criadoEm: ordemServico.criadoEm,
             atualizadoEm: ordemServico.atualizadoEm,
           },

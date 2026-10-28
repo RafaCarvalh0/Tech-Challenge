@@ -7,6 +7,7 @@ coverage/
 !.env.example
 !.env.test.example
 *.log
+*.tsbuildinfo
 .idea/
 .vscode/
 .superpowers/
