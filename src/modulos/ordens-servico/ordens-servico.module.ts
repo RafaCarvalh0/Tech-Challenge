@@ -45,11 +45,22 @@ import {
 import { RepositorioPrismaOrcamento } from './infraestrutura/prisma-orcamento.repositorio';
 import { CasoUsoGerarOrcamento } from './aplicacao/gerar-orcamento.caso-uso';
 import { CasoUsoDecidirOrcamento } from './aplicacao/decidir-orcamento.caso-uso';
+import {
+  REPOSITORIO_ABERTURA_ORDEM_SERVICO,
+  RepositorioAberturaOrdemServico,
+} from './aplicacao/abertura-ordem-servico.repositorio';
+import { RepositorioPrismaAberturaOrdemServico } from './infraestrutura/prisma-abertura-ordem-servico.repositorio';
 
 @Module({
   imports: [ModuloClientes, ModuloVeiculos, ModuloServicos, ModuloPecasInsumos],
   controllers: [ControladorOrdemServico],
   providers: [
+    {
+      provide: REPOSITORIO_ABERTURA_ORDEM_SERVICO,
+      useFactory: (servicoPrisma: ServicoPrisma) =>
+        new RepositorioPrismaAberturaOrdemServico(servicoPrisma),
+      inject: [ServicoPrisma],
+    },
     {
       provide: REPOSITORIO_ORDEM_SERVICO,
       useFactory: (servicoPrisma: ServicoPrisma) =>
@@ -84,14 +95,12 @@ import { CasoUsoDecidirOrcamento } from './aplicacao/decidir-orcamento.caso-uso'
     {
       provide: CasoUsoAbrirOrdemServico,
       useFactory: (
-        ordensServico: RepositorioOrdemServico,
         clientes: RepositorioCliente,
-        veiculos: RepositorioVeiculo,
-      ) => new CasoUsoAbrirOrdemServico(ordensServico, clientes, veiculos),
+        aberturas: RepositorioAberturaOrdemServico,
+      ) => new CasoUsoAbrirOrdemServico(clientes, aberturas),
       inject: [
-        REPOSITORIO_ORDEM_SERVICO,
         REPOSITORIO_CLIENTE,
-        REPOSITORIO_VEICULO,
+        REPOSITORIO_ABERTURA_ORDEM_SERVICO,
       ],
     },
     {

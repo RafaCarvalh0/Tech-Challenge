@@ -78,11 +78,11 @@
 **Interfaces:**
 - `abrir(dados): Promise<{ ordemServico: OrdemServico; veiculo: Veiculo; codigoAcompanhamento: string }>` executa criação/vínculo do veículo e OS em uma única transação Prisma.
 
-- [ ] Escrever teste que force conflito/erro na criação da OS e confirme que o veículo novo não permanece.
-- [ ] Mover a orquestração de persistência para uma transação única.
-- [ ] Preservar as validações atuais de CPF/CNPJ, placa, propriedade e dados do veículo.
-- [ ] Executar unitários, E2E, lint e build.
-- [ ] Commitar: `fix: torna abertura da ordem transacional`.
+- [x] Escrever teste que force conflito/erro na criação da OS e confirme que o veículo novo não permanece.
+- [x] Mover a orquestração de persistência para uma transação única.
+- [x] Preservar as validações atuais de CPF/CNPJ, placa, propriedade e dados do veículo.
+- [x] Executar unitários, E2E, lint e build.
+- [x] Commitar: `fix: torna abertura da ordem transacional`.
 
 ### Tarefa 4: Tempo médio de execução dos serviços
 

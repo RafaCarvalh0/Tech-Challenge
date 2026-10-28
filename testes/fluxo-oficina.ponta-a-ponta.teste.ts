@@ -414,6 +414,80 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       });
   });
 
+  it('desfaz o veículo quando a abertura da OS falha dentro da transação', async () => {
+    await requisicaoAdministrativa()
+      .post('/api/clientes')
+      .send({ nome: 'Cliente Transação', cpfCnpj: '111.444.777-35' })
+      .expect(201);
+
+    await servicoPrisma.$executeRawUnsafe(`
+      CREATE OR REPLACE FUNCTION falhar_ordem_abertura_teste()
+      RETURNS trigger AS $$
+      BEGIN
+        IF NEW.descricao = 'FALHA_TRANSACAO_TESTE' THEN
+          RAISE EXCEPTION 'Falha intencional ao criar ordem';
+        END IF;
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql
+    `);
+    await servicoPrisma.$executeRawUnsafe(`
+      CREATE TRIGGER falhar_ordem_abertura_teste
+      BEFORE INSERT ON ordens_servico
+      FOR EACH ROW EXECUTE FUNCTION falhar_ordem_abertura_teste()
+    `);
+    await servicoPrisma.$executeRawUnsafe(`
+      CREATE OR REPLACE FUNCTION falhar_exclusao_veiculo_teste()
+      RETURNS trigger AS $$
+      BEGIN
+        IF OLD.placa = 'TXA1B23' THEN
+          RAISE EXCEPTION 'Falha intencional ao excluir veículo';
+        END IF;
+        RETURN OLD;
+      END;
+      $$ LANGUAGE plpgsql
+    `);
+    await servicoPrisma.$executeRawUnsafe(`
+      CREATE TRIGGER falhar_exclusao_veiculo_teste
+      BEFORE DELETE ON veiculos
+      FOR EACH ROW EXECUTE FUNCTION falhar_exclusao_veiculo_teste()
+    `);
+
+    try {
+      await requisicaoAdministrativa()
+        .post('/api/ordens-servico/abertura')
+        .send({
+          cpfCnpj: '111.444.777-35',
+          descricao: 'FALHA_TRANSACAO_TESTE',
+          veiculo: {
+            placa: 'TXA1B23',
+            marca: 'Toyota',
+            modelo: 'Yaris',
+            ano: 2025,
+          },
+        })
+        .expect(500);
+
+      await expect(
+        servicoPrisma.veiculo.findUnique({ where: { placa: 'TXA1B23' } }),
+      ).resolves.toBeNull();
+    } finally {
+      await servicoPrisma.$executeRawUnsafe(
+        'DROP TRIGGER IF EXISTS falhar_ordem_abertura_teste ON ordens_servico',
+      );
+      await servicoPrisma.$executeRawUnsafe(
+        'DROP FUNCTION IF EXISTS falhar_ordem_abertura_teste()',
+      );
+      await servicoPrisma.$executeRawUnsafe(
+        'DROP TRIGGER IF EXISTS falhar_exclusao_veiculo_teste ON veiculos',
+      );
+      await servicoPrisma.$executeRawUnsafe(
+        'DROP FUNCTION IF EXISTS falhar_exclusao_veiculo_teste()',
+      );
+      await servicoPrisma.veiculo.deleteMany({ where: { placa: 'TXA1B23' } });
+    }
+  });
+
   it('cadastra, lista, atualiza, consulta e exclui um serviço', async () => {
     const respostaCriacao = await requisicaoAdministrativa()
       .post('/api/servicos')
