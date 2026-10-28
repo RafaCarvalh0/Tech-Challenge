@@ -11,6 +11,8 @@ export interface SaidaOrdemServico {
   veiculoId: string;
   descricao: string;
   status: StatusOrdemServico;
+  inicioExecucaoEm: Date | null;
+  finalizadoEm: Date | null;
   criadoEm: Date;
   atualizadoEm: Date;
 }
@@ -29,6 +31,8 @@ export function paraSaidaOrdemServico(ordemServico: OrdemServico): SaidaOrdemSer
     veiculoId: ordemServico.veiculoId,
     descricao: ordemServico.descricao,
     status: ordemServico.status,
+    inicioExecucaoEm: ordemServico.inicioExecucaoEm,
+    finalizadoEm: ordemServico.finalizadoEm,
     criadoEm: ordemServico.criadoEm,
     atualizadoEm: ordemServico.atualizadoEm,
   };

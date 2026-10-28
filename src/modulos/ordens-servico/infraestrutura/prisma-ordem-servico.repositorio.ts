@@ -18,6 +18,8 @@ export class RepositorioPrismaOrdemServico implements RepositorioOrdemServico {
           descricao: registro.descricao,
           codigoAcompanhamento: registro.codigoAcompanhamento,
           status: registro.status,
+          inicioExecucaoEm: registro.inicioExecucaoEm,
+          finalizadoEm: registro.finalizadoEm,
           criadoEm: registro.criadoEm,
           atualizadoEm: registro.atualizadoEm,
         })
@@ -41,6 +43,8 @@ export class RepositorioPrismaOrdemServico implements RepositorioOrdemServico {
         descricao: registro.descricao,
         codigoAcompanhamento: registro.codigoAcompanhamento,
         status: registro.status,
+        inicioExecucaoEm: registro.inicioExecucaoEm,
+        finalizadoEm: registro.finalizadoEm,
         criadoEm: registro.criadoEm,
         atualizadoEm: registro.atualizadoEm,
       }),
@@ -56,6 +60,8 @@ export class RepositorioPrismaOrdemServico implements RepositorioOrdemServico {
         codigoAcompanhamento: ordemServico.codigoAcompanhamento,
         descricao: ordemServico.descricao,
         status: ordemServico.status,
+        inicioExecucaoEm: ordemServico.inicioExecucaoEm,
+        finalizadoEm: ordemServico.finalizadoEm,
         criadoEm: ordemServico.criadoEm,
         atualizadoEm: ordemServico.atualizadoEm,
       },
@@ -65,7 +71,12 @@ export class RepositorioPrismaOrdemServico implements RepositorioOrdemServico {
   async atualizarStatus(ordemServico: OrdemServico): Promise<void> {
     await this.servicoPrisma.ordemServico.update({
       where: { identificador: ordemServico.identificador },
-      data: { status: ordemServico.status },
+      data: {
+        status: ordemServico.status,
+        inicioExecucaoEm: ordemServico.inicioExecucaoEm,
+        finalizadoEm: ordemServico.finalizadoEm,
+        atualizadoEm: ordemServico.atualizadoEm,
+      },
     });
   }
 }

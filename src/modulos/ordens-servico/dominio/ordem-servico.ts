@@ -44,6 +44,8 @@ interface EntradaRestaurarOrdemServico extends PropriedadesOrdemServico {
   identificador: string;
   codigoAcompanhamento: string;
   status: string;
+  inicioExecucaoEm?: Date | null;
+  finalizadoEm?: Date | null;
   criadoEm: Date;
   atualizadoEm: Date;
 }
@@ -56,6 +58,8 @@ export class OrdemServico {
     readonly descricao: string,
     readonly codigoAcompanhamento: string,
     readonly status: StatusOrdemServico,
+    readonly inicioExecucaoEm: Date | null,
+    readonly finalizadoEm: Date | null,
     readonly criadoEm: Date,
     readonly atualizadoEm: Date,
   ) {}
@@ -74,6 +78,8 @@ export class OrdemServico {
       descricao,
       randomUUID(),
       StatusOrdemServico.RECEBIDA,
+      null,
+      null,
       agora,
       agora,
     );
@@ -87,12 +93,14 @@ export class OrdemServico {
       dadosEntrada.descricao,
       dadosEntrada.codigoAcompanhamento,
       dadosEntrada.status as StatusOrdemServico,
+      dadosEntrada.inicioExecucaoEm ?? null,
+      dadosEntrada.finalizadoEm ?? null,
       dadosEntrada.criadoEm,
       dadosEntrada.atualizadoEm,
     );
   }
 
-  executarAcao(acao: AcaoOrdemServico): OrdemServico {
+  executarAcao(acao: AcaoOrdemServico, agora = new Date()): OrdemServico {
     const transicao = TRANSICOES[acao];
     if (this.status !== transicao.origem) {
       throw new ErroValidacao(
@@ -107,8 +115,10 @@ export class OrdemServico {
       this.descricao,
       this.codigoAcompanhamento,
       transicao.destino,
+      acao === AcaoOrdemServico.APROVAR ? agora : this.inicioExecucaoEm,
+      acao === AcaoOrdemServico.FINALIZAR ? agora : this.finalizadoEm,
       this.criadoEm,
-      new Date(),
+      agora,
     );
   }
 }
