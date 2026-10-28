@@ -13,7 +13,7 @@ export class RepositorioPrismaIndicadorTempoMedio
     return this.servicoPrisma.$queryRaw<IndicadorTempoMedioServico[]>`
       SELECT
         item.servico_id AS "servicoId",
-        item.nome AS "nome",
+        servico.nome AS "nome",
         COUNT(DISTINCT item.ordem_servico_id)::int AS "quantidadeOrdens",
         ROUND(
           AVG(EXTRACT(EPOCH FROM (ordem.finalizado_em - ordem.inicio_execucao_em)))
@@ -21,11 +21,13 @@ export class RepositorioPrismaIndicadorTempoMedio
       FROM itens_servicos_ordem item
       INNER JOIN ordens_servico ordem
         ON ordem.identificador = item.ordem_servico_id
+      INNER JOIN servicos servico
+        ON servico.identificador = item.servico_id
       WHERE ordem.inicio_execucao_em IS NOT NULL
         AND ordem.finalizado_em IS NOT NULL
         AND ordem.status IN ('FINALIZADA', 'ENTREGUE')
-      GROUP BY item.servico_id, item.nome
-      ORDER BY item.nome ASC
+      GROUP BY item.servico_id, servico.nome
+      ORDER BY servico.nome ASC
     `;
   }
 }

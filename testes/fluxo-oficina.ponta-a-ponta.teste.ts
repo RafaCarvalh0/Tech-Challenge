@@ -1141,6 +1141,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       status: 'FINALIZADA' | 'ENTREGUE' | 'EM_EXECUCAO';
       inicioExecucaoEm: Date;
       finalizadoEm: Date | null;
+      nomeServico: string;
     }) => {
       const ordemServico = await servicoPrisma.ordemServico.create({
         data: {
@@ -1157,7 +1158,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         data: {
           ordemServicoId: ordemServico.identificador,
           servicoId: servico.identificador,
-          nome: servico.nome,
+          nome: dados.nomeServico,
           precoUnitarioEmCentavos: servico.precoEmCentavos,
           quantidade: 1,
         },
@@ -1169,18 +1170,25 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       status: 'FINALIZADA',
       inicioExecucaoEm: new Date('2026-10-28T08:00:00.000Z'),
       finalizadoEm: new Date('2026-10-28T09:00:00.000Z'),
+      nomeServico: 'Serviço para indicador',
+    });
+    await servicoPrisma.servico.update({
+      where: { identificador: servico.identificador },
+      data: { nome: 'Serviço renomeado para indicador' },
     });
     await criarOrdemComServico({
       codigoAcompanhamento: 'INDICADOR-ENTREGUE',
       status: 'ENTREGUE',
       inicioExecucaoEm: new Date('2026-10-28T10:00:00.000Z'),
       finalizadoEm: new Date('2026-10-28T12:00:00.000Z'),
+      nomeServico: 'Serviço renomeado para indicador',
     });
     await criarOrdemComServico({
       codigoAcompanhamento: 'INDICADOR-EM-EXECUCAO',
       status: 'EM_EXECUCAO',
       inicioExecucaoEm: new Date('2026-10-28T13:00:00.000Z'),
       finalizadoEm: null,
+      nomeServico: 'Serviço renomeado para indicador',
     });
 
     await requisicaoAdministrativa()
@@ -1189,7 +1197,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       .expect((resposta) => {
         expect(resposta.body).toContainEqual({
           servicoId: servico.identificador,
-          nome: 'Serviço para indicador',
+          nome: 'Serviço renomeado para indicador',
           quantidadeOrdens: 2,
           tempoMedioExecucaoEmSegundos: 5400,
         });
