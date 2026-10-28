@@ -31,12 +31,14 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     await aplicacao.init();
 
     servicoPrisma = aplicacao.get(ServicoPrisma);
+    await servicoPrisma.servico.deleteMany();
     await servicoPrisma.ordemServico.deleteMany();
     await servicoPrisma.veiculo.deleteMany();
     await servicoPrisma.cliente.deleteMany();
   });
 
   afterAll(async () => {
+    await servicoPrisma.servico.deleteMany();
     await servicoPrisma.ordemServico.deleteMany();
     await servicoPrisma.veiculo.deleteMany();
     await servicoPrisma.cliente.deleteMany();
@@ -281,5 +283,80 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       veiculoId: primeiraOrdem.body.veiculoId,
       status: 'RECEBIDA',
     });
+  });
+
+  it('cadastra, lista, atualiza, consulta e exclui um serviço', async () => {
+    const respostaCriacao = await requisicao(aplicacao.getHttpServer())
+      .post('/api/servicos')
+      .send({
+        nome: 'Troca de óleo',
+        descricao: 'Substituição do óleo e do filtro',
+        precoEmCentavos: 15000,
+      })
+      .expect(201);
+
+    expect(respostaCriacao.body).toMatchObject({
+      nome: 'Troca de óleo',
+      descricao: 'Substituição do óleo e do filtro',
+      precoEmCentavos: 15000,
+    });
+
+    await requisicao(aplicacao.getHttpServer())
+      .post('/api/servicos')
+      .send({ nome: 'Troca de óleo', precoEmCentavos: 16000 })
+      .expect(409);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get('/api/servicos')
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              identificador: respostaCriacao.body.identificador,
+              nome: 'Troca de óleo',
+            }),
+          ]),
+        );
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(`/api/servicos/${respostaCriacao.body.identificador}`)
+      .send({ precoEmCentavos: 17500 })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.precoEmCentavos).toBe(17500);
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(`/api/servicos/${respostaCriacao.body.identificador}`)
+      .send({})
+      .expect(400);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/servicos/${respostaCriacao.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          identificador: respostaCriacao.body.identificador,
+          nome: 'Troca de óleo',
+          precoEmCentavos: 17500,
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .delete(`/api/servicos/${respostaCriacao.body.identificador}`)
+      .expect(204);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/servicos/${respostaCriacao.body.identificador}`)
+      .expect(404);
+  });
+
+  it('rejeita serviço com preço negativo', async () => {
+    await requisicao(aplicacao.getHttpServer())
+      .post('/api/servicos')
+      .send({ nome: 'Alinhamento', precoEmCentavos: -1 })
+      .expect(400);
   });
 });
