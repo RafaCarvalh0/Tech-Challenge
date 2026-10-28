@@ -63,12 +63,12 @@
 - `RepositorioIndicadorTempoMedio.obterPorServico(): Promise<IndicadorTempoMedioServico[]>`.
 - `GET /api/indicadores/tempo-medio-servicos` retorna `servicoId`, `nome`, `quantidadeOrdens` e `tempoMedioExecucaoEmSegundos`.
 
-- [ ] Escrever teste do caso de uso para lista vazia e dados agregados.
-- [ ] Executar o teste e confirmar a falha por módulos ausentes.
-- [ ] Implementar contrato, caso de uso, consulta SQL agregada, módulo e controller.
-- [ ] Escrever E2E para média, exclusão de OS não finalizada e resposta 401 sem token.
-- [ ] Executar unitários, E2E, lint e build.
-- [ ] Commitar: `feat: adiciona indicador de tempo medio dos servicos`.
+- [x] Escrever teste do caso de uso para lista vazia e dados agregados.
+- [x] Executar o teste e confirmar a falha por módulos ausentes.
+- [x] Implementar contrato, caso de uso, consulta SQL agregada, módulo e controller.
+- [x] Escrever E2E para média, exclusão de OS não finalizada e resposta 401 sem token.
+- [x] Executar unitários, E2E, lint e build.
+- [x] Commitar: `feat: adiciona indicador de tempo medio dos servicos`.
 
 ### Task 3: Verificação final
 

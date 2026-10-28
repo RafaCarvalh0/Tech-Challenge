@@ -10,6 +10,7 @@ import { ModuloServicos } from './modulos/servicos/servicos.module';
 import { ModuloPecasInsumos } from './modulos/pecas-insumos/pecas-insumos.module';
 import { ModuloAutenticacao } from './modulos/autenticacao/autenticacao.module';
 import { ModuloAcompanhamento } from './modulos/acompanhamento/acompanhamento.module';
+import { ModuloIndicadores } from './modulos/indicadores/indicadores.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ModuloAcompanhamento } from './modulos/acompanhamento/acompanhamento.mo
     ModuloOrdensServico,
     ModuloServicos,
     ModuloPecasInsumos,
+    ModuloIndicadores,
   ],
   controllers: [ControladorSaude],
 })
