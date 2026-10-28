@@ -489,6 +489,36 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     }
   });
 
+  it('reutiliza o mesmo veículo em aberturas concorrentes', async () => {
+    await requisicaoAdministrativa()
+      .post('/api/clientes')
+      .send({ nome: 'Cliente Concorrente', cpfCnpj: '741.852.963-55' })
+      .expect(201);
+
+    const abrir = (descricao: string) =>
+      requisicaoAdministrativa()
+        .post('/api/ordens-servico/abertura')
+        .send({
+          cpfCnpj: '741.852.963-55',
+          descricao,
+          veiculo: {
+            placa: 'RTX4B26',
+            marca: 'Honda',
+            modelo: 'City',
+            ano: 2025,
+          },
+        });
+    const respostas = await Promise.all([
+      abrir('Abertura concorrente 1'),
+      abrir('Abertura concorrente 2'),
+    ]);
+
+    expect(respostas.map((resposta) => resposta.status).sort()).toEqual([
+      201, 201,
+    ]);
+    expect(respostas[0].body.veiculoId).toBe(respostas[1].body.veiculoId);
+  });
+
   it('cadastra, lista, atualiza, consulta e exclui um serviço', async () => {
     const respostaCriacao = await requisicaoAdministrativa()
       .post('/api/servicos')
