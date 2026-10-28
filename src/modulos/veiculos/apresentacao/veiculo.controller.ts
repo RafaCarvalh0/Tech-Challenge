@@ -10,6 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -26,6 +27,7 @@ import { CasoUsoObterVeiculo } from '../aplicacao/obter-veiculo.caso-uso';
 import { DadosAtualizarVeiculo, DadosCriarVeiculo } from './veiculo.dto';
 
 @ApiTags('veiculos')
+@ApiBearerAuth()
 @Controller('veiculos')
 export class ControladorVeiculo {
   constructor(

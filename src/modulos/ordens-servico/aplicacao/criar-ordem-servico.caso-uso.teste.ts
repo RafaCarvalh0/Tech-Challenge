@@ -112,6 +112,7 @@ describe('CasoUsoCriarOrdemServico', () => {
       clienteId: 'cliente-identificador',
       veiculoId: 'veiculo-identificador',
       status: 'RECEBIDA',
+      codigoAcompanhamento: expect.any(String),
     });
     expect(repositorio.ordensServico).toHaveLength(1);
   });

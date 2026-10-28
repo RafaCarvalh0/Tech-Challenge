@@ -8,10 +8,14 @@ import { ModuloVeiculos } from './modulos/veiculos/veiculos.module';
 import { ModuloOrdensServico } from './modulos/ordens-servico/ordens-servico.module';
 import { ModuloServicos } from './modulos/servicos/servicos.module';
 import { ModuloPecasInsumos } from './modulos/pecas-insumos/pecas-insumos.module';
+import { ModuloAutenticacao } from './modulos/autenticacao/autenticacao.module';
+import { ModuloAcompanhamento } from './modulos/acompanhamento/acompanhamento.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ModuloAutenticacao,
+    ModuloAcompanhamento,
     ModuloBancoDados,
     ModuloClientes,
     ModuloVeiculos,

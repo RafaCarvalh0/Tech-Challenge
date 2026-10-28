@@ -51,6 +51,7 @@ function criarOrdem(
 ) {
   return OrdemServico.restaurar({
     identificador,
+    codigoAcompanhamento: `codigo-${identificador}`,
     clienteId,
     veiculoId: 'veiculo-1',
     descricao: 'Troca de óleo',

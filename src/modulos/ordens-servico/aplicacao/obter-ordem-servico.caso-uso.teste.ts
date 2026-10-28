@@ -109,6 +109,7 @@ describe('CasoUsoObterOrdemServico', () => {
   it('retorna uma ordem de serviço existente', async () => {
     const ordemServico = OrdemServico.restaurar({
       identificador: 'ordem-servico-identificador',
+      codigoAcompanhamento: 'codigo-acompanhamento',
       clienteId: 'cliente-identificador',
       veiculoId: 'veiculo-identificador',
       descricao: 'Troca de óleo',

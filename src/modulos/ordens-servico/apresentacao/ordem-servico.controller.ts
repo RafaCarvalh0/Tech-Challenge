@@ -10,6 +10,7 @@ import {
   Put,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -35,6 +36,7 @@ import {
 } from './ordem-servico.dto';
 
 @ApiTags('ordens-servico')
+@ApiBearerAuth()
 @Controller('ordens-servico')
 export class ControladorOrdemServico {
   constructor(

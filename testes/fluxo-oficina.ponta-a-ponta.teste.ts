@@ -10,6 +10,22 @@ import { validarUrlBancoDadosTeste } from './seguranca-banco-dados';
 describe('Fluxo da oficina (ponta a ponta)', () => {
   let aplicacao: INestApplication;
   let servicoPrisma: ServicoPrisma;
+  let tokenAdministrador: string;
+
+  function requisicaoAdministrativa() {
+    const servidor = aplicacao.getHttpServer();
+    const autenticar = (teste: requisicao.Test): requisicao.Test =>
+      teste.auth(tokenAdministrador, { type: 'bearer' });
+    return {
+      get: (caminho: string) => autenticar(requisicao(servidor).get(caminho)),
+      post: (caminho: string) => autenticar(requisicao(servidor).post(caminho)),
+      put: (caminho: string) => autenticar(requisicao(servidor).put(caminho)),
+      patch: (caminho: string) =>
+        autenticar(requisicao(servidor).patch(caminho)),
+      delete: (caminho: string) =>
+        autenticar(requisicao(servidor).delete(caminho)),
+    };
+  }
 
   async function prepararOrcamentoParaDecisao(dados: {
     sufixo: string;
@@ -18,11 +34,11 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     quantidadeEstoque: number;
     quantidadeOrcamento: number;
   }): Promise<{ ordemServicoId: string; pecaInsumoId: string }> {
-    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+    const respostaCliente = await requisicaoAdministrativa()
       .post('/api/clientes')
       .send({ nome: `Cliente ${dados.sufixo}`, cpfCnpj: dados.cpfCnpj })
       .expect(201);
-    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+    const respostaVeiculo = await requisicaoAdministrativa()
       .post('/api/veiculos')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -32,7 +48,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         ano: 2024,
       })
       .expect(201);
-    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+    const respostaOrdem = await requisicaoAdministrativa()
       .post('/api/ordens-servico')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -40,7 +56,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         descricao: `Orçamento para ${dados.sufixo}`,
       })
       .expect(201);
-    const respostaPeca = await requisicao(aplicacao.getHttpServer())
+    const respostaPeca = await requisicaoAdministrativa()
       .post('/api/pecas-insumos')
       .send({
         codigo: `PECA-${dados.sufixo}`,
@@ -50,12 +66,12 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(
         `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/INICIAR_DIAGNOSTICO`,
       )
       .expect(200);
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .put(`/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`)
       .send({
         servicos: [],
@@ -67,7 +83,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         ],
       })
       .expect(200);
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .post(`/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`)
       .expect(201);
 
@@ -96,6 +112,12 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     );
     await aplicacao.init();
 
+    const respostaLogin = await requisicao(aplicacao.getHttpServer())
+      .post('/api/autenticacao/login')
+      .send({ usuario: 'administrador', senha: 'senha-de-teste' })
+      .expect(201);
+    tokenAdministrador = respostaLogin.body.accessToken;
+
     servicoPrisma = aplicacao.get(ServicoPrisma);
     await servicoPrisma.orcamento.deleteMany();
     await servicoPrisma.itemPecaInsumoOrdem.deleteMany();
@@ -120,12 +142,12 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
   });
 
   it('cria e consulta cliente, veículo e ordem de serviço recebida', async () => {
-    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+    const respostaCliente = await requisicaoAdministrativa()
       .post('/api/clientes')
       .send({ nome: 'Maria da Silva', cpfCnpj: '529.982.247-25' })
       .expect(201);
 
-    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+    const respostaVeiculo = await requisicaoAdministrativa()
       .post('/api/veiculos')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -136,7 +158,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    const respostaOrdemServico = await requisicao(aplicacao.getHttpServer())
+    const respostaOrdemServico = await requisicaoAdministrativa()
       .post('/api/ordens-servico')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -149,9 +171,10 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       clienteId: respostaCliente.body.identificador,
       veiculoId: respostaVeiculo.body.identificador,
       status: 'RECEBIDA',
+      codigoAcompanhamento: expect.any(String),
     });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/ordens-servico/${respostaOrdemServico.body.identificador}`)
       .expect(200)
       .expect((resposta) => {
@@ -160,12 +183,12 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
   });
 
   it('lista, edita e exclui cliente sem vínculos', async () => {
-    const respostaCriacao = await requisicao(aplicacao.getHttpServer())
+    const respostaCriacao = await requisicaoAdministrativa()
       .post('/api/clientes')
       .send({ nome: 'Carlos Souza', cpfCnpj: '111.444.777-35' })
       .expect(201);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get('/api/clientes')
       .expect(200)
       .expect((resposta) => {
@@ -179,7 +202,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         );
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/clientes/${respostaCriacao.body.identificador}`)
       .send({ nome: 'Carlos de Souza' })
       .expect(200)
@@ -187,22 +210,22 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         expect(resposta.body.nome).toBe('Carlos de Souza');
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .delete(`/api/clientes/${respostaCriacao.body.identificador}`)
       .expect(204);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/clientes/${respostaCriacao.body.identificador}`)
       .expect(404);
   });
 
   it('lista, edita e exclui veículo sem ordem de serviço', async () => {
-    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+    const respostaCliente = await requisicaoAdministrativa()
       .post('/api/clientes')
       .send({ nome: 'Fernanda Lima', cpfCnpj: '123.456.789-09' })
       .expect(201);
 
-    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+    const respostaVeiculo = await requisicaoAdministrativa()
       .post('/api/veiculos')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -213,7 +236,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/veiculos?clienteId=${respostaCliente.body.identificador}`)
       .expect(200)
       .expect((resposta) => {
@@ -225,7 +248,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         ]);
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/veiculos/${respostaVeiculo.body.identificador}`)
       .send({ modelo: 'Corolla Altis', ano: 2024 })
       .expect(200)
@@ -236,18 +259,18 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .delete(`/api/veiculos/${respostaVeiculo.body.identificador}`)
       .expect(204);
   });
 
   it('lista, detalha e controla as transições da ordem de serviço', async () => {
-    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+    const respostaCliente = await requisicaoAdministrativa()
       .post('/api/clientes')
       .send({ nome: 'Roberto Alves', cpfCnpj: '935.411.347-80' })
       .expect(201);
 
-    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+    const respostaVeiculo = await requisicaoAdministrativa()
       .post('/api/veiculos')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -258,7 +281,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+    const respostaOrdem = await requisicaoAdministrativa()
       .post('/api/ordens-servico')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -267,7 +290,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(
         `/api/ordens-servico?clienteId=${respostaCliente.body.identificador}&status=RECEBIDA`,
       )
@@ -281,7 +304,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         ]);
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/ordens-servico/${respostaOrdem.body.identificador}`)
       .expect(200)
       .expect((resposta) => {
@@ -297,7 +320,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(
         `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/INICIAR_DIAGNOSTICO`,
       )
@@ -306,7 +329,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         expect(resposta.body.status).toBe('EM_DIAGNOSTICO');
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(
         `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/SOLICITAR_APROVACAO`,
       )
@@ -314,12 +337,12 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
   });
 
   it('abre OS por CPF/CNPJ cadastrando ou reutilizando o veículo pela placa', async () => {
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .post('/api/clientes')
       .send({ nome: 'Juliana Costa', cpfCnpj: '390.533.447-05' })
       .expect(201);
 
-    const primeiraOrdem = await requisicao(aplicacao.getHttpServer())
+    const primeiraOrdem = await requisicaoAdministrativa()
       .post('/api/ordens-servico/abertura')
       .send({
         cpfCnpj: '390.533.447-05',
@@ -333,7 +356,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    const segundaOrdem = await requisicao(aplicacao.getHttpServer())
+    const segundaOrdem = await requisicaoAdministrativa()
       .post('/api/ordens-servico/abertura')
       .send({
         cpfCnpj: '39053344705',
@@ -342,15 +365,162 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    expect(primeiraOrdem.body).toMatchObject({ status: 'RECEBIDA' });
+    expect(primeiraOrdem.body).toMatchObject({
+      status: 'RECEBIDA',
+      codigoAcompanhamento: expect.any(String),
+    });
     expect(segundaOrdem.body).toMatchObject({
       veiculoId: primeiraOrdem.body.veiculoId,
       status: 'RECEBIDA',
+      codigoAcompanhamento: expect.any(String),
     });
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(
+        `/api/acompanhamento/ordens-servico/${primeiraOrdem.body.identificador}`,
+      )
+      .set('X-Codigo-Acompanhamento', primeiraOrdem.body.codigoAcompanhamento)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          identificador: primeiraOrdem.body.identificador,
+          descricao: 'Revisão preventiva',
+          status: 'RECEBIDA',
+          composicao: null,
+          orcamento: null,
+        });
+        expect(resposta.body).not.toHaveProperty('clienteId');
+        expect(resposta.body).not.toHaveProperty('veiculoId');
+        expect(resposta.body).not.toHaveProperty('codigoAcompanhamento');
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(
+        `/api/acompanhamento/ordens-servico/${primeiraOrdem.body.identificador}`,
+      )
+      .set('X-Codigo-Acompanhamento', 'codigo-invalido')
+      .expect(404);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(
+        `/api/acompanhamento/ordens-servico/${primeiraOrdem.body.identificador}`,
+      )
+      .expect(404);
+
+    await requisicaoAdministrativa()
+      .get(`/api/ordens-servico/${primeiraOrdem.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).not.toHaveProperty('codigoAcompanhamento');
+      });
+  });
+
+  it('desfaz o veículo quando a abertura da OS falha dentro da transação', async () => {
+    await requisicaoAdministrativa()
+      .post('/api/clientes')
+      .send({ nome: 'Cliente Transação', cpfCnpj: '111.444.777-35' })
+      .expect(201);
+
+    await servicoPrisma.$executeRawUnsafe(`
+      CREATE OR REPLACE FUNCTION falhar_ordem_abertura_teste()
+      RETURNS trigger AS $$
+      BEGIN
+        IF NEW.descricao = 'FALHA_TRANSACAO_TESTE' THEN
+          RAISE EXCEPTION 'Falha intencional ao criar ordem';
+        END IF;
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql
+    `);
+    await servicoPrisma.$executeRawUnsafe(`
+      CREATE TRIGGER falhar_ordem_abertura_teste
+      BEFORE INSERT ON ordens_servico
+      FOR EACH ROW EXECUTE FUNCTION falhar_ordem_abertura_teste()
+    `);
+    await servicoPrisma.$executeRawUnsafe(`
+      CREATE OR REPLACE FUNCTION falhar_exclusao_veiculo_teste()
+      RETURNS trigger AS $$
+      BEGIN
+        IF OLD.placa = 'TXA1B23' THEN
+          RAISE EXCEPTION 'Falha intencional ao excluir veículo';
+        END IF;
+        RETURN OLD;
+      END;
+      $$ LANGUAGE plpgsql
+    `);
+    await servicoPrisma.$executeRawUnsafe(`
+      CREATE TRIGGER falhar_exclusao_veiculo_teste
+      BEFORE DELETE ON veiculos
+      FOR EACH ROW EXECUTE FUNCTION falhar_exclusao_veiculo_teste()
+    `);
+
+    try {
+      await requisicaoAdministrativa()
+        .post('/api/ordens-servico/abertura')
+        .send({
+          cpfCnpj: '111.444.777-35',
+          descricao: 'FALHA_TRANSACAO_TESTE',
+          veiculo: {
+            placa: 'TXA1B23',
+            marca: 'Toyota',
+            modelo: 'Yaris',
+            ano: 2025,
+          },
+        })
+        .expect(500);
+
+      await expect(
+        servicoPrisma.veiculo.findUnique({ where: { placa: 'TXA1B23' } }),
+      ).resolves.toBeNull();
+    } finally {
+      await servicoPrisma.$executeRawUnsafe(
+        'DROP TRIGGER IF EXISTS falhar_ordem_abertura_teste ON ordens_servico',
+      );
+      await servicoPrisma.$executeRawUnsafe(
+        'DROP FUNCTION IF EXISTS falhar_ordem_abertura_teste()',
+      );
+      await servicoPrisma.$executeRawUnsafe(
+        'DROP TRIGGER IF EXISTS falhar_exclusao_veiculo_teste ON veiculos',
+      );
+      await servicoPrisma.$executeRawUnsafe(
+        'DROP FUNCTION IF EXISTS falhar_exclusao_veiculo_teste()',
+      );
+      await servicoPrisma.veiculo.deleteMany({ where: { placa: 'TXA1B23' } });
+    }
+  });
+
+  it('reutiliza o mesmo veículo em aberturas concorrentes', async () => {
+    await requisicaoAdministrativa()
+      .post('/api/clientes')
+      .send({ nome: 'Cliente Concorrente', cpfCnpj: '741.852.963-55' })
+      .expect(201);
+
+    const abrir = (descricao: string) =>
+      requisicaoAdministrativa()
+        .post('/api/ordens-servico/abertura')
+        .send({
+          cpfCnpj: '741.852.963-55',
+          descricao,
+          veiculo: {
+            placa: 'RTX4B26',
+            marca: 'Honda',
+            modelo: 'City',
+            ano: 2025,
+          },
+        });
+    const respostas = await Promise.all([
+      abrir('Abertura concorrente 1'),
+      abrir('Abertura concorrente 2'),
+    ]);
+
+    expect(respostas.map((resposta) => resposta.status).sort()).toEqual([
+      201, 201,
+    ]);
+    expect(respostas[0].body.veiculoId).toBe(respostas[1].body.veiculoId);
   });
 
   it('cadastra, lista, atualiza, consulta e exclui um serviço', async () => {
-    const respostaCriacao = await requisicao(aplicacao.getHttpServer())
+    const respostaCriacao = await requisicaoAdministrativa()
       .post('/api/servicos')
       .send({
         nome: 'Troca de óleo',
@@ -365,12 +535,12 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       precoEmCentavos: 15000,
     });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .post('/api/servicos')
       .send({ nome: 'Troca de óleo', precoEmCentavos: 16000 })
       .expect(409);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get('/api/servicos')
       .expect(200)
       .expect((resposta) => {
@@ -384,7 +554,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         );
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/servicos/${respostaCriacao.body.identificador}`)
       .send({ precoEmCentavos: 17500 })
       .expect(200)
@@ -392,12 +562,12 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         expect(resposta.body.precoEmCentavos).toBe(17500);
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/servicos/${respostaCriacao.body.identificador}`)
       .send({})
       .expect(400);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/servicos/${respostaCriacao.body.identificador}`)
       .expect(200)
       .expect((resposta) => {
@@ -408,24 +578,24 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .delete(`/api/servicos/${respostaCriacao.body.identificador}`)
       .expect(204);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/servicos/${respostaCriacao.body.identificador}`)
       .expect(404);
   });
 
   it('rejeita serviço com preço negativo', async () => {
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .post('/api/servicos')
       .send({ nome: 'Alinhamento', precoEmCentavos: -1 })
       .expect(400);
   });
 
   it('gerencia peças e insumos com movimentação de estoque', async () => {
-    const respostaCriacao = await requisicao(aplicacao.getHttpServer())
+    const respostaCriacao = await requisicaoAdministrativa()
       .post('/api/pecas-insumos')
       .send({
         codigo: 'OLEO-5W30',
@@ -443,7 +613,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       quantidadeEstoque: 10,
     });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .post('/api/pecas-insumos')
       .send({
         codigo: 'oleo-5w30',
@@ -453,7 +623,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(409);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get('/api/pecas-insumos')
       .expect(200)
       .expect((resposta) => {
@@ -467,7 +637,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         );
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/pecas-insumos/${respostaCriacao.body.identificador}`)
       .send({ nome: 'Óleo sintético 5W30', precoUnitarioEmCentavos: 5000 })
       .expect(200)
@@ -478,7 +648,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`)
       .send({ tipo: 'ENTRADA', quantidade: 5 })
       .expect(200)
@@ -486,7 +656,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         expect(resposta.body.quantidadeEstoque).toBe(15);
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`)
       .send({ tipo: 'SAIDA', quantidade: 4 })
       .expect(200)
@@ -494,12 +664,12 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         expect(resposta.body.quantidadeEstoque).toBe(11);
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/pecas-insumos/${respostaCriacao.body.identificador}/estoque`)
       .send({ tipo: 'SAIDA', quantidade: 12 })
       .expect(400);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/pecas-insumos/${respostaCriacao.body.identificador}`)
       .expect(200)
       .expect((resposta) => {
@@ -509,22 +679,22 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .delete(`/api/pecas-insumos/${respostaCriacao.body.identificador}`)
       .expect(204);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/pecas-insumos/${respostaCriacao.body.identificador}`)
       .expect(404);
   });
 
   it('define e consulta a composição da ordem de serviço', async () => {
-    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+    const respostaCliente = await requisicaoAdministrativa()
       .post('/api/clientes')
       .send({ nome: 'Paulo Mendes', cpfCnpj: '168.995.350-09' })
       .expect(201);
 
-    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+    const respostaVeiculo = await requisicaoAdministrativa()
       .post('/api/veiculos')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -535,7 +705,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+    const respostaOrdem = await requisicaoAdministrativa()
       .post('/api/ordens-servico')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -544,12 +714,12 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    const respostaServico = await requisicao(aplicacao.getHttpServer())
+    const respostaServico = await requisicaoAdministrativa()
       .post('/api/servicos')
       .send({ nome: 'Balanceamento completo', precoEmCentavos: 8000 })
       .expect(201);
 
-    const respostaPeca = await requisicao(aplicacao.getHttpServer())
+    const respostaPeca = await requisicaoAdministrativa()
       .post('/api/pecas-insumos')
       .send({
         codigo: 'PASTILHA-FREIO-TESTE',
@@ -559,13 +729,13 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(
         `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/INICIAR_DIAGNOSTICO`,
       )
       .expect(200);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .put(`/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`)
       .send({
         servicos: [
@@ -585,7 +755,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/ordens-servico/${respostaOrdem.body.identificador}`)
       .expect(200)
       .expect((resposta) => {
@@ -610,21 +780,21 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .delete(`/api/servicos/${respostaServico.body.identificador}`)
       .expect(409);
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .delete(`/api/pecas-insumos/${respostaPeca.body.identificador}`)
       .expect(409);
   });
 
   it('gera e envia orçamento calculado automaticamente', async () => {
-    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+    const respostaCliente = await requisicaoAdministrativa()
       .post('/api/clientes')
       .send({ nome: 'Empresa de Teste', cpfCnpj: '04.252.011/0001-10' })
       .expect(201);
 
-    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+    const respostaVeiculo = await requisicaoAdministrativa()
       .post('/api/veiculos')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -635,7 +805,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+    const respostaOrdem = await requisicaoAdministrativa()
       .post('/api/ordens-servico')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -644,12 +814,12 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    const respostaServico = await requisicao(aplicacao.getHttpServer())
+    const respostaServico = await requisicaoAdministrativa()
       .post('/api/servicos')
       .send({ nome: 'Revisão elétrica completa', precoEmCentavos: 10000 })
       .expect(201);
 
-    const respostaPeca = await requisicao(aplicacao.getHttpServer())
+    const respostaPeca = await requisicaoAdministrativa()
       .post('/api/pecas-insumos')
       .send({
         codigo: 'BATERIA-TESTE',
@@ -659,13 +829,13 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(201);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(
         `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/INICIAR_DIAGNOSTICO`,
       )
       .expect(200);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .put(`/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`)
       .send({
         servicos: [
@@ -677,7 +847,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       })
       .expect(200);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .post(`/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`)
       .expect(201)
       .expect((resposta) => {
@@ -690,7 +860,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/ordens-servico/${respostaOrdem.body.identificador}`)
       .expect(200)
       .expect((resposta) => {
@@ -713,7 +883,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       quantidadeOrcamento: 2,
     });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`)
       .send({ decisao: 'APROVAR' })
       .expect(200)
@@ -724,7 +894,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/pecas-insumos/${dados.pecaInsumoId}`)
       .expect(200)
       .expect((resposta) => {
@@ -741,7 +911,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       quantidadeOrcamento: 2,
     });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`)
       .send({ decisao: 'REJEITAR' })
       .expect(200)
@@ -752,7 +922,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/pecas-insumos/${dados.pecaInsumoId}`)
       .expect(200)
       .expect((resposta) => {
@@ -769,17 +939,17 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       quantidadeOrcamento: 1,
     });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/pecas-insumos/${dados.pecaInsumoId}/estoque`)
       .send({ tipo: 'SAIDA', quantidade: 1 })
       .expect(200);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`)
       .send({ decisao: 'APROVAR' })
       .expect(400);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/ordens-servico/${dados.ordemServicoId}`)
       .expect(200)
       .expect((resposta) => {
@@ -789,7 +959,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         });
       });
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(`/api/ordens-servico/${dados.ordemServicoId}/acoes/APROVAR`)
       .expect(400);
   });
@@ -804,7 +974,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     });
 
     const decidir = () =>
-      requisicao(aplicacao.getHttpServer())
+      requisicaoAdministrativa()
         .patch(`/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`)
         .send({ decisao: 'APROVAR' });
     const respostas = await Promise.all([decidir(), decidir()]);
@@ -812,7 +982,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     expect(respostas.map((resposta) => resposta.status).sort()).toEqual([
       200, 400,
     ]);
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/pecas-insumos/${dados.pecaInsumoId}`)
       .expect(200)
       .expect((resposta) => {
@@ -829,7 +999,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       quantidadeOrcamento: 2,
     });
     const decidir = (decisao: 'APROVAR' | 'REJEITAR') =>
-      requisicao(aplicacao.getHttpServer())
+      requisicaoAdministrativa()
         .patch(`/api/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`)
         .send({ decisao });
 
@@ -841,10 +1011,10 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       200, 400,
     ]);
 
-    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+    const respostaOrdem = await requisicaoAdministrativa()
       .get(`/api/ordens-servico/${dados.ordemServicoId}`)
       .expect(200);
-    const respostaPeca = await requisicao(aplicacao.getHttpServer())
+    const respostaPeca = await requisicaoAdministrativa()
       .get(`/api/pecas-insumos/${dados.pecaInsumoId}`)
       .expect(200);
     if (respostaOrdem.body.orcamento.situacao === 'APROVADO') {
@@ -858,11 +1028,11 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
   });
 
   it('mantém composição e orçamento na mesma versão durante concorrência', async () => {
-    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+    const respostaCliente = await requisicaoAdministrativa()
       .post('/api/clientes')
       .send({ nome: 'Cliente Versão', cpfCnpj: '16180339805' })
       .expect(201);
-    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+    const respostaVeiculo = await requisicaoAdministrativa()
       .post('/api/veiculos')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -872,7 +1042,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         ano: 2020,
       })
       .expect(201);
-    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+    const respostaOrdem = await requisicaoAdministrativa()
       .post('/api/ordens-servico')
       .send({
         clienteId: respostaCliente.body.identificador,
@@ -880,17 +1050,17 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         descricao: 'Teste de versão do orçamento',
       })
       .expect(201);
-    const respostaServico = await requisicao(aplicacao.getHttpServer())
+    const respostaServico = await requisicaoAdministrativa()
       .post('/api/servicos')
       .send({ nome: 'Serviço versionado', precoEmCentavos: 9000 })
       .expect(201);
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .patch(
         `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/INICIAR_DIAGNOSTICO`,
       )
       .expect(200);
     const definirComposicao = (quantidade: number) =>
-      requisicao(aplicacao.getHttpServer())
+      requisicaoAdministrativa()
         .put(
           `/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`,
         )
@@ -920,7 +1090,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     });
     await bloqueioAdquirido;
 
-    const envio = requisicao(aplicacao.getHttpServer())
+    const envio = requisicaoAdministrativa()
       .post(`/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`)
       .then((resposta) => resposta);
     const alteracao = definirComposicao(2).then((resposta) => resposta);
@@ -933,7 +1103,7 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     ]);
     expect(respostaEnvio.status).toBe(201);
 
-    await requisicao(aplicacao.getHttpServer())
+    await requisicaoAdministrativa()
       .get(`/api/ordens-servico/${respostaOrdem.body.identificador}`)
       .expect(200)
       .expect((resposta) => {
