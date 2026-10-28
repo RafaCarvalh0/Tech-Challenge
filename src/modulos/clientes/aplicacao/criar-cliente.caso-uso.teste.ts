@@ -7,16 +7,30 @@ class RepositorioClienteEmMemoria implements RepositorioCliente {
   readonly clientes: Cliente[] = [];
 
   async buscarPorId(identificador: string): Promise<Cliente | null> {
-    return this.clientes.find((cliente) => cliente.identificador === identificador) ?? null;
+    return (
+      this.clientes.find(
+        (cliente) => cliente.identificador === identificador,
+      ) ?? null
+    );
   }
 
   async buscarPorCpfCnpj(cpfCnpj: string): Promise<Cliente | null> {
-    return this.clientes.find((cliente) => cliente.cpfCnpj.valor === cpfCnpj) ?? null;
+    return (
+      this.clientes.find((cliente) => cliente.cpfCnpj.valor === cpfCnpj) ?? null
+    );
+  }
+
+  async listar(): Promise<Cliente[]> {
+    return this.clientes;
   }
 
   async salvar(cliente: Cliente): Promise<void> {
     this.clientes.push(cliente);
   }
+
+  async atualizar(): Promise<void> {}
+
+  async excluir(): Promise<void> {}
 }
 
 describe('CasoUsoCriarCliente', () => {
@@ -44,4 +58,3 @@ describe('CasoUsoCriarCliente', () => {
     await expect(casoUso.executar(entrada)).rejects.toThrow(ErroConflito);
   });
 });
-

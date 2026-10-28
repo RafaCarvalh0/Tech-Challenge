@@ -37,6 +37,19 @@ export class Cliente {
     );
   }
 
+  atualizar(dadosEntrada: { nome?: string; cpfCnpj?: string }): Cliente {
+    return new Cliente(
+      this.identificador,
+      dadosEntrada.nome === undefined
+        ? this.nome
+        : Cliente.normalizarNome(dadosEntrada.nome),
+      dadosEntrada.cpfCnpj === undefined
+        ? this.cpfCnpj
+        : CpfCnpj.criar(dadosEntrada.cpfCnpj),
+      this.criadoEm,
+    );
+  }
+
   private static normalizarNome(nome: string): string {
     const nomeNormalizado = nome.trim();
     if (!nomeNormalizado) {

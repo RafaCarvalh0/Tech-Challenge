@@ -82,4 +82,204 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
         expect(resposta.body.status).toBe('RECEBIDA');
       });
   });
+
+  it('lista, edita e exclui cliente sem vínculos', async () => {
+    const respostaCriacao = await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Carlos Souza', cpfCnpj: '111.444.777-35' })
+      .expect(201);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get('/api/clientes')
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              identificador: respostaCriacao.body.identificador,
+              nome: 'Carlos Souza',
+            }),
+          ]),
+        );
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(`/api/clientes/${respostaCriacao.body.identificador}`)
+      .send({ nome: 'Carlos de Souza' })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.nome).toBe('Carlos de Souza');
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .delete(`/api/clientes/${respostaCriacao.body.identificador}`)
+      .expect(204);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/clientes/${respostaCriacao.body.identificador}`)
+      .expect(404);
+  });
+
+  it('lista, edita e exclui veículo sem ordem de serviço', async () => {
+    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Fernanda Lima', cpfCnpj: '123.456.789-09' })
+      .expect(201);
+
+    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+      .post('/api/veiculos')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        placa: 'BRA2E19',
+        marca: 'Toyota',
+        modelo: 'Corolla',
+        ano: 2023,
+      })
+      .expect(201);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/veiculos?clienteId=${respostaCliente.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toEqual([
+          expect.objectContaining({
+            identificador: respostaVeiculo.body.identificador,
+            placa: 'BRA2E19',
+          }),
+        ]);
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(`/api/veiculos/${respostaVeiculo.body.identificador}`)
+      .send({ modelo: 'Corolla Altis', ano: 2024 })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          modelo: 'Corolla Altis',
+          ano: 2024,
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .delete(`/api/veiculos/${respostaVeiculo.body.identificador}`)
+      .expect(204);
+  });
+
+  it('lista, detalha e controla as transições da ordem de serviço', async () => {
+    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Roberto Alves', cpfCnpj: '935.411.347-80' })
+      .expect(201);
+
+    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+      .post('/api/veiculos')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        placa: 'DEF4G56',
+        marca: 'Ford',
+        modelo: 'Ka',
+        ano: 2020,
+      })
+      .expect(201);
+
+    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+      .post('/api/ordens-servico')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        veiculoId: respostaVeiculo.body.identificador,
+        descricao: 'Diagnóstico completo',
+      })
+      .expect(201);
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(
+        `/api/ordens-servico?clienteId=${respostaCliente.body.identificador}&status=RECEBIDA`,
+      )
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toEqual([
+          expect.objectContaining({
+            identificador: respostaOrdem.body.identificador,
+            status: 'RECEBIDA',
+          }),
+        ]);
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/ordens-servico/${respostaOrdem.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          cliente: {
+            identificador: respostaCliente.body.identificador,
+            cpfCnpj: '93541134780',
+          },
+          veiculo: {
+            identificador: respostaVeiculo.body.identificador,
+            placa: 'DEF4G56',
+          },
+        });
+      });
+
+    const transicoes = [
+      ['INICIAR_DIAGNOSTICO', 'EM_DIAGNOSTICO'],
+      ['SOLICITAR_APROVACAO', 'AGUARDANDO_APROVACAO'],
+      ['APROVAR', 'EM_EXECUCAO'],
+      ['FINALIZAR', 'FINALIZADA'],
+      ['ENTREGAR', 'ENTREGUE'],
+    ];
+
+    for (const [acao, status] of transicoes) {
+      await requisicao(aplicacao.getHttpServer())
+        .patch(
+          `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/${acao}`,
+        )
+        .expect(200)
+        .expect((resposta) => {
+          expect(resposta.body.status).toBe(status);
+        });
+    }
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/APROVAR`,
+      )
+      .expect(400);
+  });
+
+  it('abre OS por CPF/CNPJ cadastrando ou reutilizando o veículo pela placa', async () => {
+    await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Juliana Costa', cpfCnpj: '390.533.447-05' })
+      .expect(201);
+
+    const primeiraOrdem = await requisicao(aplicacao.getHttpServer())
+      .post('/api/ordens-servico/abertura')
+      .send({
+        cpfCnpj: '390.533.447-05',
+        descricao: 'Revisão preventiva',
+        veiculo: {
+          placa: 'GHI5J67',
+          marca: 'Chevrolet',
+          modelo: 'Onix',
+          ano: 2021,
+        },
+      })
+      .expect(201);
+
+    const segundaOrdem = await requisicao(aplicacao.getHttpServer())
+      .post('/api/ordens-servico/abertura')
+      .send({
+        cpfCnpj: '39053344705',
+        descricao: 'Verificação dos freios',
+        veiculo: { placa: 'ghi5j67' },
+      })
+      .expect(201);
+
+    expect(primeiraOrdem.body).toMatchObject({ status: 'RECEBIDA' });
+    expect(segundaOrdem.body).toMatchObject({
+      veiculoId: primeiraOrdem.body.veiculoId,
+      status: 'RECEBIDA',
+    });
+  });
 });

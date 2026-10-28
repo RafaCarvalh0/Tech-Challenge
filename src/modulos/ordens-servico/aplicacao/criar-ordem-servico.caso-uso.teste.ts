@@ -25,7 +25,16 @@ class ConsultaCliente implements RepositorioCliente {
     return null;
   }
 
+  async listar(): Promise<Cliente[]> {
+    const cliente = await this.buscarPorId();
+    return cliente ? [cliente] : [];
+  }
+
   async salvar(): Promise<void> {}
+
+  async atualizar(): Promise<void> {}
+
+  async excluir(): Promise<void> {}
 }
 
 class ConsultaVeiculo implements RepositorioVeiculo {
@@ -52,7 +61,16 @@ class ConsultaVeiculo implements RepositorioVeiculo {
     return null;
   }
 
+  async listar(): Promise<Veiculo[]> {
+    const veiculo = await this.buscarPorId();
+    return veiculo ? [veiculo] : [];
+  }
+
   async salvar(): Promise<void> {}
+
+  async atualizar(): Promise<void> {}
+
+  async excluir(): Promise<void> {}
 }
 
 class RepositorioOrdemServicoEmMemoria implements RepositorioOrdemServico {
@@ -62,9 +80,15 @@ class RepositorioOrdemServicoEmMemoria implements RepositorioOrdemServico {
     return this.ordensServico.find((ordemServico) => ordemServico.identificador === identificador) ?? null;
   }
 
+  async listar(): Promise<OrdemServico[]> {
+    return this.ordensServico;
+  }
+
   async salvar(ordemServico: OrdemServico): Promise<void> {
     this.ordensServico.push(ordemServico);
   }
+
+  async atualizarStatus(): Promise<void> {}
 }
 
 describe('CasoUsoCriarOrdemServico', () => {

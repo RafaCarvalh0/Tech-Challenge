@@ -23,7 +23,16 @@ class ConsultaCliente implements RepositorioCliente {
     return null;
   }
 
+  async listar(): Promise<Cliente[]> {
+    const cliente = await this.buscarPorId();
+    return cliente ? [cliente] : [];
+  }
+
   async salvar(): Promise<void> {}
+
+  async atualizar(): Promise<void> {}
+
+  async excluir(): Promise<void> {}
 }
 
 class RepositorioVeiculoEmMemoria implements RepositorioVeiculo {
@@ -37,9 +46,17 @@ class RepositorioVeiculoEmMemoria implements RepositorioVeiculo {
     return this.veiculos.find((veiculo) => veiculo.placa.valor === placa) ?? null;
   }
 
+  async listar(): Promise<Veiculo[]> {
+    return this.veiculos;
+  }
+
   async salvar(veiculo: Veiculo): Promise<void> {
     this.veiculos.push(veiculo);
   }
+
+  async atualizar(): Promise<void> {}
+
+  async excluir(): Promise<void> {}
 }
 
 describe('CasoUsoCriarVeiculo', () => {

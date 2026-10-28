@@ -14,7 +14,15 @@ class ConsultaVeiculo implements RepositorioVeiculo {
     return null;
   }
 
+  async listar(): Promise<Veiculo[]> {
+    return this.veiculo ? [this.veiculo] : [];
+  }
+
   async salvar(): Promise<void> {}
+
+  async atualizar(): Promise<void> {}
+
+  async excluir(): Promise<void> {}
 }
 
 describe('CasoUsoObterVeiculo', () => {

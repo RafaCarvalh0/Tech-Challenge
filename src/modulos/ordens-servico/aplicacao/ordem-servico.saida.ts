@@ -1,5 +1,7 @@
 import { OrdemServico } from '../dominio/ordem-servico';
 import { StatusOrdemServico } from '../dominio/status-ordem-servico';
+import { SaidaCliente } from '../../clientes/aplicacao/cliente.saida';
+import { SaidaVeiculo } from '../../veiculos/aplicacao/veiculo.saida';
 
 export interface SaidaOrdemServico {
   identificador: string;
@@ -9,6 +11,11 @@ export interface SaidaOrdemServico {
   status: StatusOrdemServico;
   criadoEm: Date;
   atualizadoEm: Date;
+}
+
+export interface SaidaDetalheOrdemServico extends SaidaOrdemServico {
+  cliente: SaidaCliente;
+  veiculo: SaidaVeiculo;
 }
 
 export function paraSaidaOrdemServico(ordemServico: OrdemServico): SaidaOrdemServico {

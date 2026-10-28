@@ -55,6 +55,31 @@ export class Veiculo {
     );
   }
 
+  atualizar(dadosEntrada: {
+    placa?: string;
+    marca?: string;
+    modelo?: string;
+    ano?: number;
+  }): Veiculo {
+    const ano = dadosEntrada.ano ?? this.ano;
+    Veiculo.validarAno(ano);
+    return new Veiculo(
+      this.identificador,
+      this.clienteId,
+      dadosEntrada.placa === undefined
+        ? this.placa
+        : Placa.criar(dadosEntrada.placa),
+      dadosEntrada.marca === undefined
+        ? this.marca
+        : Veiculo.normalizarTextoObrigatorio(dadosEntrada.marca, 'Marca'),
+      dadosEntrada.modelo === undefined
+        ? this.modelo
+        : Veiculo.normalizarTextoObrigatorio(dadosEntrada.modelo, 'Modelo'),
+      ano,
+      this.criadoEm,
+    );
+  }
+
   private static validarAno(ano: number): void {
     const anoMaximo = new Date().getFullYear() + 1;
     if (!Number.isInteger(ano) || ano < 1886 || ano > anoMaximo) {

@@ -7,6 +7,9 @@ import {
 } from '../clientes/aplicacao/cliente.repositorio';
 import { ModuloClientes } from '../clientes/clientes.module';
 import { CasoUsoCriarVeiculo } from './aplicacao/criar-veiculo.caso-uso';
+import { CasoUsoAtualizarVeiculo } from './aplicacao/atualizar-veiculo.caso-uso';
+import { CasoUsoExcluirVeiculo } from './aplicacao/excluir-veiculo.caso-uso';
+import { CasoUsoListarVeiculos } from './aplicacao/listar-veiculos.caso-uso';
 import { CasoUsoObterVeiculo } from './aplicacao/obter-veiculo.caso-uso';
 import {
   REPOSITORIO_VEICULO,
@@ -36,6 +39,24 @@ import { ControladorVeiculo } from './apresentacao/veiculo.controller';
       provide: CasoUsoObterVeiculo,
       useFactory: (veiculos: RepositorioVeiculo) =>
         new CasoUsoObterVeiculo(veiculos),
+      inject: [REPOSITORIO_VEICULO],
+    },
+    {
+      provide: CasoUsoListarVeiculos,
+      useFactory: (veiculos: RepositorioVeiculo) =>
+        new CasoUsoListarVeiculos(veiculos),
+      inject: [REPOSITORIO_VEICULO],
+    },
+    {
+      provide: CasoUsoAtualizarVeiculo,
+      useFactory: (veiculos: RepositorioVeiculo) =>
+        new CasoUsoAtualizarVeiculo(veiculos),
+      inject: [REPOSITORIO_VEICULO],
+    },
+    {
+      provide: CasoUsoExcluirVeiculo,
+      useFactory: (veiculos: RepositorioVeiculo) =>
+        new CasoUsoExcluirVeiculo(veiculos),
       inject: [REPOSITORIO_VEICULO],
     },
   ],
