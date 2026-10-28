@@ -9,6 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -30,6 +31,7 @@ import {
 } from './peca-insumo.dto';
 
 @ApiTags('peças e insumos')
+@ApiBearerAuth()
 @Controller('pecas-insumos')
 export class ControladorPecaInsumo {
   constructor(

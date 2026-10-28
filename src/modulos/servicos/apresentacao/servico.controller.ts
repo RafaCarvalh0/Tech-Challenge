@@ -9,6 +9,7 @@ import {
   Post,
 } from "@nestjs/common";
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -25,6 +26,7 @@ import { CasoUsoObterServico } from "../aplicacao/obter-servico.caso-uso";
 import { DadosAtualizarServico, DadosCriarServico } from "./servico.dto";
 
 @ApiTags("serviços")
+@ApiBearerAuth()
 @Controller("servicos")
 export class ControladorServico {
   constructor(

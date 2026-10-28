@@ -9,6 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -25,6 +26,7 @@ import { CasoUsoObterCliente } from '../aplicacao/obter-cliente.caso-uso';
 import { DadosAtualizarCliente, DadosCriarCliente } from './cliente.dto';
 
 @ApiTags('clientes')
+@ApiBearerAuth()
 @Controller('clientes')
 export class ControladorCliente {
   constructor(
