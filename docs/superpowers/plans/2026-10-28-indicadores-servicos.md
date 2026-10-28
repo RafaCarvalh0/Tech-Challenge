@@ -72,8 +72,8 @@
 
 ### Task 3: Verificação final
 
-- [ ] Executar `npm run lint`.
-- [ ] Executar `npm run build`.
-- [ ] Executar `npm test -- --runInBand`.
-- [ ] Executar `npm run test:ponta-a-ponta -- --runInBand` no banco de teste.
-- [ ] Conferir migration, Swagger, proteção JWT e árvore Git limpa.
+- [x] Executar `npm run lint`.
+- [x] Executar `npm run build`.
+- [x] Executar `npm test -- --runInBand`.
+- [x] Executar `npm run test:ponta-a-ponta -- --runInBand` no banco de teste.
+- [x] Conferir migration, Swagger, proteção JWT e árvore Git limpa.
