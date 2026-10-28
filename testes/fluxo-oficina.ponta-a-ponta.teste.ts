@@ -31,6 +31,8 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     await aplicacao.init();
 
     servicoPrisma = aplicacao.get(ServicoPrisma);
+    await servicoPrisma.itemPecaInsumoOrdem.deleteMany();
+    await servicoPrisma.itemServicoOrdem.deleteMany();
     await servicoPrisma.pecaInsumo.deleteMany();
     await servicoPrisma.servico.deleteMany();
     await servicoPrisma.ordemServico.deleteMany();
@@ -39,6 +41,8 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
   });
 
   afterAll(async () => {
+    await servicoPrisma.itemPecaInsumoOrdem.deleteMany();
+    await servicoPrisma.itemServicoOrdem.deleteMany();
     await servicoPrisma.pecaInsumo.deleteMany();
     await servicoPrisma.servico.deleteMany();
     await servicoPrisma.ordemServico.deleteMany();
@@ -460,5 +464,100 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     await requisicao(aplicacao.getHttpServer())
       .get(`/api/pecas-insumos/${respostaCriacao.body.identificador}`)
       .expect(404);
+  });
+
+  it('define e consulta a composição da ordem de serviço', async () => {
+    const respostaCliente = await requisicao(aplicacao.getHttpServer())
+      .post('/api/clientes')
+      .send({ nome: 'Paulo Mendes', cpfCnpj: '168.995.350-09' })
+      .expect(201);
+
+    const respostaVeiculo = await requisicao(aplicacao.getHttpServer())
+      .post('/api/veiculos')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        placa: 'JKL6M78',
+        marca: 'Volkswagen',
+        modelo: 'Polo',
+        ano: 2022,
+      })
+      .expect(201);
+
+    const respostaOrdem = await requisicao(aplicacao.getHttpServer())
+      .post('/api/ordens-servico')
+      .send({
+        clienteId: respostaCliente.body.identificador,
+        veiculoId: respostaVeiculo.body.identificador,
+        descricao: 'Diagnóstico para orçamento',
+      })
+      .expect(201);
+
+    const respostaServico = await requisicao(aplicacao.getHttpServer())
+      .post('/api/servicos')
+      .send({ nome: 'Balanceamento completo', precoEmCentavos: 8000 })
+      .expect(201);
+
+    const respostaPeca = await requisicao(aplicacao.getHttpServer())
+      .post('/api/pecas-insumos')
+      .send({
+        codigo: 'PASTILHA-FREIO-TESTE',
+        nome: 'Pastilha de freio',
+        precoUnitarioEmCentavos: 12000,
+        quantidadeEstoque: 5,
+      })
+      .expect(201);
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/acoes/INICIAR_DIAGNOSTICO`,
+      )
+      .expect(200);
+
+    await requisicao(aplicacao.getHttpServer())
+      .put(
+        `/api/ordens-servico/${respostaOrdem.body.identificador}/composicao`,
+      )
+      .send({
+        servicos: [
+          { servicoId: respostaServico.body.identificador, quantidade: 2 },
+        ],
+        pecasInsumos: [
+          { pecaInsumoId: respostaPeca.body.identificador, quantidade: 2 },
+        ],
+      })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          ordemServicoId: respostaOrdem.body.identificador,
+          subtotalServicosEmCentavos: 16000,
+          subtotalPecasInsumosEmCentavos: 24000,
+          totalEmCentavos: 40000,
+        });
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .get(`/api/ordens-servico/${respostaOrdem.body.identificador}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.composicao).toMatchObject({
+          totalEmCentavos: 40000,
+          servicos: [
+            expect.objectContaining({
+              servicoId: respostaServico.body.identificador,
+              nome: 'Balanceamento completo',
+              quantidade: 2,
+              subtotalEmCentavos: 16000,
+            }),
+          ],
+          pecasInsumos: [
+            expect.objectContaining({
+              pecaInsumoId: respostaPeca.body.identificador,
+              codigo: 'PASTILHA-FREIO-TESTE',
+              quantidade: 2,
+              subtotalEmCentavos: 24000,
+            }),
+          ],
+        });
+      });
   });
 });

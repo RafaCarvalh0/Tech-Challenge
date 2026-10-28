@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Put,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -21,11 +22,13 @@ import { CasoUsoAbrirOrdemServico } from '../aplicacao/abrir-ordem-servico.caso-
 import { CasoUsoExecutarAcaoOrdemServico } from '../aplicacao/executar-acao-ordem-servico.caso-uso';
 import { CasoUsoListarOrdensServico } from '../aplicacao/listar-ordens-servico.caso-uso';
 import { CasoUsoObterOrdemServico } from '../aplicacao/obter-ordem-servico.caso-uso';
+import { CasoUsoDefinirComposicaoOrdemServico } from '../aplicacao/definir-composicao-ordem-servico.caso-uso';
 import { AcaoOrdemServico } from '../dominio/acao-ordem-servico';
 import {
   DadosAbrirOrdemServico,
   DadosCriarOrdemServico,
   DadosListarOrdensServico,
+  DadosDefinirComposicaoOrdemServico,
 } from './ordem-servico.dto';
 
 @ApiTags('ordens-servico')
@@ -37,6 +40,7 @@ export class ControladorOrdemServico {
     private readonly obterOrdemServico: CasoUsoObterOrdemServico,
     private readonly listarOrdensServico: CasoUsoListarOrdensServico,
     private readonly executarAcaoOrdemServico: CasoUsoExecutarAcaoOrdemServico,
+    private readonly definirComposicaoOrdemServico: CasoUsoDefinirComposicaoOrdemServico,
   ) {}
 
   @Post()
@@ -64,6 +68,21 @@ export class ControladorOrdemServico {
   @ApiNotFoundResponse({ description: 'Ordem de serviço não encontrada' })
   buscarPorId(@Param('identificador') identificador: string) {
     return this.obterOrdemServico.executar(identificador);
+  }
+
+  @Put(':identificador/composicao')
+  @ApiOkResponse({ description: 'Composição da ordem de serviço definida' })
+  @ApiNotFoundResponse({
+    description: 'Ordem de serviço, serviço ou peça não encontrada',
+  })
+  definirComposicao(
+    @Param('identificador') identificador: string,
+    @Body() dadosEntrada: DadosDefinirComposicaoOrdemServico,
+  ) {
+    return this.definirComposicaoOrdemServico.executar(
+      identificador,
+      dadosEntrada,
+    );
   }
 
   @Patch(':identificador/acoes/:acao')

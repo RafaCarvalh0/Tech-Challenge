@@ -6,6 +6,8 @@ import { Veiculo } from '../../veiculos/dominio/veiculo';
 import { OrdemServico } from '../dominio/ordem-servico';
 import { CasoUsoObterOrdemServico } from './obter-ordem-servico.caso-uso';
 import { RepositorioOrdemServico } from './ordem-servico.repositorio';
+import { RepositorioComposicaoOrdemServico } from './composicao-ordem-servico.repositorio';
+import { ComposicaoOrdemServico } from '../dominio/composicao-ordem-servico';
 
 class ConsultaOrdemServico implements RepositorioOrdemServico {
   constructor(private readonly ordemServico: OrdemServico | null) {}
@@ -76,6 +78,14 @@ class ConsultaVeiculo implements RepositorioVeiculo {
   async excluir(): Promise<void> {}
 }
 
+class ConsultaComposicao implements RepositorioComposicaoOrdemServico {
+  async buscarPorOrdemServicoId(): Promise<ComposicaoOrdemServico | null> {
+    return null;
+  }
+
+  async substituir(): Promise<void> {}
+}
+
 describe('CasoUsoObterOrdemServico', () => {
   it('retorna uma ordem de serviço existente', async () => {
     const ordemServico = OrdemServico.restaurar({
@@ -91,6 +101,7 @@ describe('CasoUsoObterOrdemServico', () => {
       new ConsultaOrdemServico(ordemServico),
       new ConsultaCliente(),
       new ConsultaVeiculo(),
+      new ConsultaComposicao(),
     );
 
     await expect(
@@ -110,6 +121,7 @@ describe('CasoUsoObterOrdemServico', () => {
         modelo: 'Civic',
         ano: 2022,
       },
+      composicao: null,
     });
   });
 
@@ -118,6 +130,7 @@ describe('CasoUsoObterOrdemServico', () => {
       new ConsultaOrdemServico(null),
       new ConsultaCliente(),
       new ConsultaVeiculo(),
+      new ConsultaComposicao(),
     );
 
     await expect(casoUso.executar('ausente')).rejects.toThrow(ErroNaoEncontrado);
