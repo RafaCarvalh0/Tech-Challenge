@@ -10,6 +10,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/principal.js",
+    "iniciar": "docker compose up -d banco-dados && npm ci && npm run prisma:generate && npm run prisma:deploy && npm run start:dev",
     "lint": "eslint \"{src,testes}/**/*.ts\"",
     "test": "jest",
     "test:watch": "jest --watch",
