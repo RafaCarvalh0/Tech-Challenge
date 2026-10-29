@@ -33,7 +33,11 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
     placa: string;
     quantidadeEstoque: number;
     quantidadeOrcamento: number;
-  }): Promise<{ ordemServicoId: string; pecaInsumoId: string }> {
+  }): Promise<{
+    ordemServicoId: string;
+    pecaInsumoId: string;
+    codigoAcompanhamento: string;
+  }> {
     const respostaCliente = await requisicaoAdministrativa()
       .post('/api/clientes')
       .send({ nome: `Cliente ${dados.sufixo}`, cpfCnpj: dados.cpfCnpj })
@@ -87,9 +91,15 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       .post(`/api/ordens-servico/${respostaOrdem.body.identificador}/orcamento`)
       .expect(201);
 
+    const ordemPersistida = await servicoPrisma.ordemServico.findUniqueOrThrow({
+      where: { identificador: respostaOrdem.body.identificador },
+      select: { codigoAcompanhamento: true },
+    });
+
     return {
       ordemServicoId: respostaOrdem.body.identificador,
       pecaInsumoId: respostaPeca.body.identificador,
+      codigoAcompanhamento: ordemPersistida.codigoAcompanhamento,
     };
   }
 
@@ -899,6 +909,84 @@ describe('Fluxo da oficina (ponta a ponta)', () => {
       .expect(200)
       .expect((resposta) => {
         expect(resposta.body.quantidadeEstoque).toBe(3);
+      });
+  });
+
+  it('permite ao cliente decidir apenas o orçamento vinculado ao código privado', async () => {
+    const dados = await prepararOrcamentoParaDecisao({
+      sufixo: 'CLIENTE-PUBLICO',
+      cpfCnpj: '86420975310',
+      placa: 'PUB1C23',
+      quantidadeEstoque: 5,
+      quantidadeOrcamento: 2,
+    });
+    const outrosDados = await prepararOrcamentoParaDecisao({
+      sufixo: 'OUTRO-CLIENTE-PUBLICO',
+      cpfCnpj: '70814296378',
+      placa: 'OUT2R34',
+      quantidadeEstoque: 4,
+      quantidadeOrcamento: 2,
+    });
+
+    const caminho = `/api/acompanhamento/ordens-servico/${dados.ordemServicoId}/orcamento/decisao`;
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(caminho)
+      .set('X-Codigo-Acompanhamento', 'codigo-invalido')
+      .send({ decisao: 'APROVAR' })
+      .expect(404);
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(caminho)
+      .set('X-Codigo-Acompanhamento', outrosDados.codigoAcompanhamento)
+      .send({ decisao: 'APROVAR' })
+      .expect(404);
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(caminho)
+      .set('X-Codigo-Acompanhamento', dados.codigoAcompanhamento)
+      .send({ decisao: 'APROVAR' })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          identificador: dados.ordemServicoId,
+          status: 'EM_EXECUCAO',
+          orcamento: { situacao: 'APROVADO' },
+        });
+        expect(resposta.body).not.toHaveProperty('clienteId');
+        expect(resposta.body).not.toHaveProperty('veiculoId');
+        expect(resposta.body).not.toHaveProperty('codigoAcompanhamento');
+      });
+
+    await requisicao(aplicacao.getHttpServer())
+      .patch(
+        `/api/acompanhamento/ordens-servico/${outrosDados.ordemServicoId}/orcamento/decisao`,
+      )
+      .set('X-Codigo-Acompanhamento', outrosDados.codigoAcompanhamento)
+      .send({ decisao: 'REJEITAR' })
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body).toMatchObject({
+          identificador: outrosDados.ordemServicoId,
+          status: 'EM_DIAGNOSTICO',
+          orcamento: { situacao: 'REJEITADO' },
+        });
+        expect(resposta.body).not.toHaveProperty('clienteId');
+        expect(resposta.body).not.toHaveProperty('veiculoId');
+      });
+
+    await requisicaoAdministrativa()
+      .get(`/api/pecas-insumos/${dados.pecaInsumoId}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.quantidadeEstoque).toBe(3);
+      });
+
+    await requisicaoAdministrativa()
+      .get(`/api/pecas-insumos/${outrosDados.pecaInsumoId}`)
+      .expect(200)
+      .expect((resposta) => {
+        expect(resposta.body.quantidadeEstoque).toBe(4);
       });
   });
 

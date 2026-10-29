@@ -173,5 +173,6 @@ import { RepositorioPrismaAberturaOrdemServico } from './infraestrutura/prisma-a
       inject: [REPOSITORIO_ORCAMENTO],
     },
   ],
+  exports: [CasoUsoDecidirOrcamento],
 })
 export class ModuloOrdensServico {}
