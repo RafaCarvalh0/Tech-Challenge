@@ -199,7 +199,7 @@ O limite configurado é de 80% para statements, branches, functions e lines nas 
 
 ## Segurança
 
-A API valida os dados recebidos e bloqueia campos não declarados nos DTOs. O relatório inicial de dependências está em `docs/security/npm-audit-2026-10-27.md`.
+A API valida os dados recebidos e bloqueia campos não declarados nos DTOs. O relatório atualizado de dependências está em `docs/security/npm-audit-2026-10-28.md`.
 
 A autenticação JWT protege todas as APIs administrativas. As credenciais e o segredo são obrigatoriamente configurados por variáveis de ambiente; a rota de saúde e o acompanhamento com código privado permanecem públicos.
 
