@@ -1,6 +1,12 @@
 # Tech Challenge - Sistema de Oficina
 
-MVP de um sistema integrado para atendimento e execução de serviços de uma oficina mecânica.
+## Objetivo do projeto
+
+Desenvolver uma API para apoiar o atendimento, orçamento, execução e acompanhamento de serviços de uma oficina mecânica.
+
+## Descrição resumida da solução
+
+MVP de um sistema integrado que permite à oficina cadastrar clientes, veículos, serviços e peças/insumos; abrir e acompanhar ordens de serviço; gerar orçamentos; controlar estoque; e disponibilizar ao cliente um acompanhamento público protegido por código privado.
 
 ## Funcionalidades implementadas
 
@@ -136,6 +142,7 @@ npm run start:dev
 | PATCH | `/api/ordens-servico/:identificador/orcamento/decisao` | Registra aprovação ou rejeição do orçamento |
 | PATCH | `/api/ordens-servico/:identificador/acoes/:acao` | Executa uma transição de status da OS |
 | GET | `/api/acompanhamento/ordens-servico/:identificador` | Consulta pública com `X-Codigo-Acompanhamento` |
+| PATCH | `/api/acompanhamento/ordens-servico/:identificador/orcamento/decisao` | Registra a decisão pública do cliente com `X-Codigo-Acompanhamento` |
 | GET | `/api/indicadores/tempo-medio-servicos` | Calcula o tempo médio de execução por serviço |
 
 As rotas administrativas exigem `Authorization: Bearer <token>`. As ações aceitas para a OS são `INICIAR_DIAGNOSTICO`, `SOLICITAR_APROVACAO`, `APROVAR`, `REJEITAR`, `FINALIZAR` e `ENTREGAR`. O contrato completo, incluindo corpos e respostas, está disponível no Swagger.
@@ -153,7 +160,7 @@ Envie as credenciais configuradas para `POST /api/autenticacao/login`:
 }
 ```
 
-Use o token retornado no cabeçalho `Authorization: Bearer <token>` das rotas administrativas. Apenas `/api/saude`, `/api/autenticacao/login` e o acompanhamento com código privado são públicos.
+Use o token retornado no cabeçalho `Authorization: Bearer <token>` das rotas administrativas. Apenas `/api/saude`, `/api/autenticacao/login` e as rotas de acompanhamento com código privado são públicas.
 
 ## Testes
 
@@ -225,6 +232,9 @@ prisma/
 testes/
 ```
 
-## Pendências da entrega acadêmica
+## Materiais da entrega acadêmica
 
-- Documentação DDD exportada e vídeo da entrega.
+Substitua os links abaixo antes da entrega final:
+
+- Documentação DDD: [ADICIONAR_LINK_DA_DOCUMENTACAO_DDD](COLE_AQUI_O_LINK_DA_DOCUMENTACAO_DDD)
+- Vídeo da entrega: [ADICIONAR_LINK_DO_VIDEO](COLE_AQUI_O_LINK_DO_VIDEO)
