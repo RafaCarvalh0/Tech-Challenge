@@ -110,6 +110,15 @@ describe('Gerenciamento de clientes', () => {
     ).rejects.toThrow(ErroValidacao);
   });
 
+  it('rejeita atualização de cliente inexistente', async () => {
+    await expect(
+      new CasoUsoAtualizarCliente(new RepositorioClienteEmMemoria()).executar(
+        'ausente',
+        { nome: 'Maria' },
+      ),
+    ).rejects.toThrow(ErroNaoEncontrado);
+  });
+
   it('rejeita CPF/CNPJ já usado por outro cliente', async () => {
     const repositorio = new RepositorioClienteEmMemoria([
       criarCliente('1', 'Maria', '52998224725'),

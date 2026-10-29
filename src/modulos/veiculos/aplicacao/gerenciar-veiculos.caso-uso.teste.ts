@@ -13,11 +13,17 @@ class RepositorioVeiculoEmMemoria implements RepositorioVeiculo {
   constructor(readonly veiculos: Veiculo[] = []) {}
 
   async buscarPorId(identificador: string): Promise<Veiculo | null> {
-    return this.veiculos.find((veiculo) => veiculo.identificador === identificador) ?? null;
+    return (
+      this.veiculos.find(
+        (veiculo) => veiculo.identificador === identificador,
+      ) ?? null
+    );
   }
 
   async buscarPorPlaca(placa: string): Promise<Veiculo | null> {
-    return this.veiculos.find((veiculo) => veiculo.placa.valor === placa) ?? null;
+    return (
+      this.veiculos.find((veiculo) => veiculo.placa.valor === placa) ?? null
+    );
   }
 
   async listar(clienteId?: string): Promise<Veiculo[]> {
@@ -106,6 +112,15 @@ describe('Gerenciamento de veículos', () => {
     await expect(
       new CasoUsoAtualizarVeiculo(repositorio).executar('1', {}),
     ).rejects.toThrow(ErroValidacao);
+  });
+
+  it('rejeita atualização de veículo inexistente', async () => {
+    await expect(
+      new CasoUsoAtualizarVeiculo(new RepositorioVeiculoEmMemoria()).executar(
+        'ausente',
+        { marca: 'Honda' },
+      ),
+    ).rejects.toThrow(ErroNaoEncontrado);
   });
 
   it('rejeita placa utilizada por outro veículo', async () => {
