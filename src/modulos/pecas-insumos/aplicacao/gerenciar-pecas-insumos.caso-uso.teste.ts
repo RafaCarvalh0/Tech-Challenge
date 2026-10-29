@@ -109,9 +109,63 @@ describe('Gerenciamento de peças e insumos', () => {
         precoUnitarioEmCentavos: 5000,
       }),
     ).resolves.toMatchObject({ precoUnitarioEmCentavos: 5000 });
+    await expect(atualizar.executar(criado.identificador, {})).rejects.toThrow(
+      ErroValidacao,
+    );
+  });
+
+  it('atualiza código, nome e descrição preservando o preço', async () => {
+    const repositorio = new RepositorioPecaInsumoEmMemoria();
+    const criado = await new CasoUsoCriarPecaInsumo(repositorio).executar({
+      codigo: 'OLEO',
+      nome: 'Óleo',
+      precoUnitarioEmCentavos: 4500,
+    });
+
     await expect(
-      atualizar.executar(criado.identificador, {}),
-    ).rejects.toThrow(ErroValidacao);
+      new CasoUsoAtualizarPecaInsumo(repositorio).executar(
+        criado.identificador,
+        {
+          codigo: 'OLEO-5W30',
+          nome: 'Óleo 5W30',
+          descricao: 'Um litro',
+        },
+      ),
+    ).resolves.toMatchObject({
+      codigo: 'OLEO-5W30',
+      nome: 'Óleo 5W30',
+      descricao: 'Um litro',
+      precoUnitarioEmCentavos: 4500,
+    });
+  });
+
+  it('rejeita atualização de peça ou insumo inexistente', async () => {
+    await expect(
+      new CasoUsoAtualizarPecaInsumo(
+        new RepositorioPecaInsumoEmMemoria(),
+      ).executar('ausente', { nome: 'Filtro' }),
+    ).rejects.toThrow(ErroNaoEncontrado);
+  });
+
+  it('rejeita atualização para código utilizado por outro registro', async () => {
+    const repositorio = new RepositorioPecaInsumoEmMemoria();
+    const criar = new CasoUsoCriarPecaInsumo(repositorio);
+    const oleo = await criar.executar({
+      codigo: 'OLEO',
+      nome: 'Óleo',
+      precoUnitarioEmCentavos: 4500,
+    });
+    await criar.executar({
+      codigo: 'FILTRO',
+      nome: 'Filtro',
+      precoUnitarioEmCentavos: 3000,
+    });
+
+    await expect(
+      new CasoUsoAtualizarPecaInsumo(repositorio).executar(oleo.identificador, {
+        codigo: 'FILTRO',
+      }),
+    ).rejects.toThrow(ErroConflito);
   });
 
   it('movimenta estoque e impede saldo negativo', async () => {
@@ -138,6 +192,14 @@ describe('Gerenciamento de peças e insumos', () => {
         6,
       ),
     ).rejects.toThrow(ErroValidacao);
+  });
+
+  it('rejeita movimentação de peça ou insumo inexistente', async () => {
+    await expect(
+      new CasoUsoMovimentarEstoque(
+        new RepositorioPecaInsumoEmMemoria(),
+      ).executar('ausente', TipoMovimentacaoEstoque.ENTRADA, 1),
+    ).rejects.toThrow(ErroNaoEncontrado);
   });
 
   it('exclui registro e rejeita identificador inexistente', async () => {

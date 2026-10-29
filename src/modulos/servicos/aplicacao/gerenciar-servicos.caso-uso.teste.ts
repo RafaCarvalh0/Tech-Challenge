@@ -92,6 +92,54 @@ describe("Gerenciamento de serviços", () => {
     );
   });
 
+  it("atualiza nome e descrição preservando o preço", async () => {
+    const repositorio = new RepositorioServicoEmMemoria();
+    const criado = await new CasoUsoCriarServico(repositorio).executar({
+      nome: "Alinhamento",
+      precoEmCentavos: 9000,
+    });
+
+    await expect(
+      new CasoUsoAtualizarServico(repositorio).executar(criado.identificador, {
+        nome: "Alinhamento computadorizado",
+        descricao: "Eixos dianteiro e traseiro",
+      }),
+    ).resolves.toMatchObject({
+      nome: "Alinhamento computadorizado",
+      descricao: "Eixos dianteiro e traseiro",
+      precoEmCentavos: 9000,
+    });
+  });
+
+  it("rejeita atualização de serviço inexistente", async () => {
+    await expect(
+      new CasoUsoAtualizarServico(new RepositorioServicoEmMemoria()).executar(
+        "ausente",
+        { nome: "Alinhamento" },
+      ),
+    ).rejects.toThrow(ErroNaoEncontrado);
+  });
+
+  it("rejeita atualização para nome utilizado por outro serviço", async () => {
+    const repositorio = new RepositorioServicoEmMemoria();
+    const criar = new CasoUsoCriarServico(repositorio);
+    const alinhamento = await criar.executar({
+      nome: "Alinhamento",
+      precoEmCentavos: 9000,
+    });
+    await criar.executar({
+      nome: "Balanceamento",
+      precoEmCentavos: 7000,
+    });
+
+    await expect(
+      new CasoUsoAtualizarServico(repositorio).executar(
+        alinhamento.identificador,
+        { nome: "Balanceamento" },
+      ),
+    ).rejects.toThrow(ErroConflito);
+  });
+
   it("exclui serviço existente e rejeita identificador inexistente", async () => {
     const repositorio = new RepositorioServicoEmMemoria();
     const criado = await new CasoUsoCriarServico(repositorio).executar({

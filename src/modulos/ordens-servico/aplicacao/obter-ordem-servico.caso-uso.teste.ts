@@ -10,6 +10,7 @@ import { RepositorioComposicaoOrdemServico } from './composicao-ordem-servico.re
 import { ComposicaoOrdemServico } from '../dominio/composicao-ordem-servico';
 import { RepositorioOrcamento } from './orcamento.repositorio';
 import { Orcamento } from '../dominio/orcamento';
+import { SituacaoOrcamento } from '../dominio/situacao-orcamento';
 
 class ConsultaOrdemServico implements RepositorioOrdemServico {
   constructor(private readonly ordemServico: OrdemServico | null) {}
@@ -28,12 +29,14 @@ class ConsultaOrdemServico implements RepositorioOrdemServico {
 }
 
 class ConsultaCliente implements RepositorioCliente {
-  readonly cliente = Cliente.restaurar({
-    identificador: 'cliente-identificador',
-    nome: 'Maria da Silva',
-    cpfCnpj: '52998224725',
-    criadoEm: new Date('2026-10-27T12:00:00.000Z'),
-  });
+  constructor(
+    readonly cliente: Cliente | null = Cliente.restaurar({
+      identificador: 'cliente-identificador',
+      nome: 'Maria da Silva',
+      cpfCnpj: '52998224725',
+      criadoEm: new Date('2026-10-27T12:00:00.000Z'),
+    }),
+  ) {}
 
   async buscarPorId(): Promise<Cliente | null> {
     return this.cliente;
@@ -44,7 +47,7 @@ class ConsultaCliente implements RepositorioCliente {
   }
 
   async listar(): Promise<Cliente[]> {
-    return [this.cliente];
+    return this.cliente ? [this.cliente] : [];
   }
 
   async salvar(): Promise<void> {}
@@ -53,15 +56,17 @@ class ConsultaCliente implements RepositorioCliente {
 }
 
 class ConsultaVeiculo implements RepositorioVeiculo {
-  readonly veiculo = Veiculo.restaurar({
-    identificador: 'veiculo-identificador',
-    clienteId: 'cliente-identificador',
-    placa: 'ABC1D23',
-    marca: 'Honda',
-    modelo: 'Civic',
-    ano: 2022,
-    criadoEm: new Date('2026-10-27T12:00:00.000Z'),
-  });
+  constructor(
+    readonly veiculo: Veiculo | null = Veiculo.restaurar({
+      identificador: 'veiculo-identificador',
+      clienteId: 'cliente-identificador',
+      placa: 'ABC1D23',
+      marca: 'Honda',
+      modelo: 'Civic',
+      ano: 2022,
+      criadoEm: new Date('2026-10-27T12:00:00.000Z'),
+    }),
+  ) {}
 
   async buscarPorId(): Promise<Veiculo | null> {
     return this.veiculo;
@@ -72,7 +77,7 @@ class ConsultaVeiculo implements RepositorioVeiculo {
   }
 
   async listar(): Promise<Veiculo[]> {
-    return [this.veiculo];
+    return this.veiculo ? [this.veiculo] : [];
   }
 
   async salvar(): Promise<void> {}
@@ -81,16 +86,22 @@ class ConsultaVeiculo implements RepositorioVeiculo {
 }
 
 class ConsultaComposicao implements RepositorioComposicaoOrdemServico {
+  constructor(
+    private readonly composicao: ComposicaoOrdemServico | null = null,
+  ) {}
+
   async buscarPorOrdemServicoId(): Promise<ComposicaoOrdemServico | null> {
-    return null;
+    return this.composicao;
   }
 
   async substituir(): Promise<void> {}
 }
 
 class ConsultaOrcamento implements RepositorioOrcamento {
+  constructor(private readonly orcamento: Orcamento | null = null) {}
+
   async buscarPorOrdemServicoId(): Promise<Orcamento | null> {
-    return null;
+    return this.orcamento;
   }
 
   async enviar(): Promise<Orcamento> {
@@ -160,4 +171,91 @@ describe('CasoUsoObterOrdemServico', () => {
       ErroNaoEncontrado,
     );
   });
+
+  it('retorna composição e orçamento vinculados à ordem', async () => {
+    const ordemServico = OrdemServico.restaurar({
+      identificador: 'ordem-servico-identificador',
+      codigoAcompanhamento: 'codigo-acompanhamento',
+      clienteId: 'cliente-identificador',
+      veiculoId: 'veiculo-identificador',
+      descricao: 'Troca de óleo',
+      status: 'AGUARDANDO_APROVACAO',
+      criadoEm: new Date('2026-10-27T12:00:00.000Z'),
+      atualizadoEm: new Date('2026-10-27T12:30:00.000Z'),
+    });
+    const composicao = ComposicaoOrdemServico.restaurar({
+      ordemServicoId: ordemServico.identificador,
+      servicos: [
+        {
+          servicoId: 'servico-1',
+          nome: 'Troca de óleo',
+          precoUnitarioEmCentavos: 15000,
+          quantidade: 1,
+        },
+      ],
+      pecasInsumos: [],
+    });
+    const orcamento = Orcamento.restaurar({
+      identificador: 'orcamento-1',
+      ordemServicoId: ordemServico.identificador,
+      subtotalServicosEmCentavos: 15000,
+      subtotalPecasInsumosEmCentavos: 0,
+      totalEmCentavos: 15000,
+      situacao: SituacaoOrcamento.PENDENTE,
+      geradoEm: new Date('2026-10-27T12:30:00.000Z'),
+      atualizadoEm: new Date('2026-10-27T12:30:00.000Z'),
+      decididoEm: null,
+    });
+    const casoUso = new CasoUsoObterOrdemServico(
+      new ConsultaOrdemServico(ordemServico),
+      new ConsultaCliente(),
+      new ConsultaVeiculo(),
+      new ConsultaComposicao(composicao),
+      new ConsultaOrcamento(orcamento),
+    );
+
+    await expect(
+      casoUso.executar(ordemServico.identificador),
+    ).resolves.toMatchObject({
+      composicao: {
+        ordemServicoId: ordemServico.identificador,
+        totalEmCentavos: 15000,
+      },
+      orcamento: {
+        identificador: 'orcamento-1',
+        totalEmCentavos: 15000,
+        situacao: SituacaoOrcamento.PENDENTE,
+      },
+    });
+  });
+
+  it.each([
+    ['cliente', new ConsultaCliente(null), new ConsultaVeiculo()],
+    ['veículo', new ConsultaCliente(), new ConsultaVeiculo(null)],
+  ])(
+    'rejeita ordem quando o %s vinculado não existe',
+    async (_vinculo, clientes, veiculos) => {
+      const ordemServico = OrdemServico.restaurar({
+        identificador: 'ordem-servico-identificador',
+        codigoAcompanhamento: 'codigo-acompanhamento',
+        clienteId: 'cliente-identificador',
+        veiculoId: 'veiculo-identificador',
+        descricao: 'Troca de óleo',
+        status: 'RECEBIDA',
+        criadoEm: new Date('2026-10-27T12:00:00.000Z'),
+        atualizadoEm: new Date('2026-10-27T12:00:00.000Z'),
+      });
+      const casoUso = new CasoUsoObterOrdemServico(
+        new ConsultaOrdemServico(ordemServico),
+        clientes,
+        veiculos,
+        new ConsultaComposicao(),
+        new ConsultaOrcamento(),
+      );
+
+      await expect(
+        casoUso.executar(ordemServico.identificador),
+      ).rejects.toThrow(ErroNaoEncontrado);
+    },
+  );
 });

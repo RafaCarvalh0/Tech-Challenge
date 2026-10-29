@@ -77,6 +77,17 @@ describe('Gerenciamento de ordens de serviço', () => {
     ]);
   });
 
+  it('lista todas as ordens quando nenhum filtro é informado', async () => {
+    const repositorio = new RepositorioOrdemServicoEmMemoria([
+      criarOrdem('1', 'cliente-1'),
+      criarOrdem('2', 'cliente-2'),
+    ]);
+
+    await expect(
+      new CasoUsoListarOrdensServico(repositorio).executar(),
+    ).resolves.toHaveLength(2);
+  });
+
   it('executa as ações operacionais permitidas', async () => {
     const repositorio = new RepositorioOrdemServicoEmMemoria([
       criarOrdem('1'),
@@ -85,10 +96,7 @@ describe('Gerenciamento de ordens de serviço', () => {
     ]);
     const casoUso = new CasoUsoExecutarAcaoOrdemServico(repositorio);
     const sequencia: Array<[AcaoOrdemServico, StatusOrdemServico]> = [
-      [
-        AcaoOrdemServico.INICIAR_DIAGNOSTICO,
-        StatusOrdemServico.EM_DIAGNOSTICO,
-      ],
+      [AcaoOrdemServico.INICIAR_DIAGNOSTICO, StatusOrdemServico.EM_DIAGNOSTICO],
       [AcaoOrdemServico.FINALIZAR, StatusOrdemServico.FINALIZADA],
       [AcaoOrdemServico.ENTREGAR, StatusOrdemServico.ENTREGUE],
     ];
@@ -113,9 +121,7 @@ describe('Gerenciamento de ordens de serviço', () => {
   });
 
   it('rejeita ação fora da sequência de status', async () => {
-    const repositorio = new RepositorioOrdemServicoEmMemoria([
-      criarOrdem('1'),
-    ]);
+    const repositorio = new RepositorioOrdemServicoEmMemoria([criarOrdem('1')]);
 
     await expect(
       new CasoUsoExecutarAcaoOrdemServico(repositorio).executar(
