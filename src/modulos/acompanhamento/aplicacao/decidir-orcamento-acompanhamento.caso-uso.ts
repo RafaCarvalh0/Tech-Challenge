@@ -17,6 +17,10 @@ export class CasoUsoDecidirOrcamentoAcompanhamento {
       identificador,
       codigoAcompanhamento,
     );
-    return this.decidirOrcamento.executar(identificador, decisao);
+    await this.decidirOrcamento.executar(identificador, decisao);
+    return this.consultarAcompanhamento.executar(
+      identificador,
+      codigoAcompanhamento,
+    );
   }
 }

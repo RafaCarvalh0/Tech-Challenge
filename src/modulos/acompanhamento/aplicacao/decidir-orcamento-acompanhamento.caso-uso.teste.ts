@@ -16,6 +16,9 @@ import { CasoUsoDecidirOrcamentoAcompanhamento } from "./decidir-orcamento-acomp
 const instante = new Date("2026-10-28T12:00:00.000Z");
 
 class RepositorioAcompanhamentoFalso implements RepositorioAcompanhamento {
+  status = StatusOrdemServico.AGUARDANDO_APROVACAO;
+  situacao = SituacaoOrcamento.PENDENTE;
+
   async buscar(
     identificador: string,
     codigoAcompanhamento: string,
@@ -26,12 +29,12 @@ class RepositorioAcompanhamentoFalso implements RepositorioAcompanhamento {
     return {
       identificador,
       descricao: "Revisão preventiva",
-      status: StatusOrdemServico.AGUARDANDO_APROVACAO,
+      status: this.status,
       atualizadoEm: instante,
       composicao: null,
       orcamento: {
         totalEmCentavos: 15500,
-        situacao: SituacaoOrcamento.PENDENTE,
+        situacao: this.situacao,
         geradoEm: instante,
         decididoEm: null,
       },
@@ -41,6 +44,11 @@ class RepositorioAcompanhamentoFalso implements RepositorioAcompanhamento {
 
 class RepositorioOrcamentoFalso implements RepositorioOrcamento {
   decisoes = 0;
+  ultimaDecisao: DecisaoOrcamento | null = null;
+
+  constructor(
+    private readonly acompanhamentos: RepositorioAcompanhamentoFalso,
+  ) {}
 
   async buscarPorOrdemServicoId(): Promise<Orcamento | null> {
     return null;
@@ -52,8 +60,17 @@ class RepositorioOrcamentoFalso implements RepositorioOrcamento {
 
   async decidir(
     ordemServicoId: string,
+    decisao: DecisaoOrcamento,
   ): Promise<{ orcamento: Orcamento; ordemServico: OrdemServico }> {
     this.decisoes += 1;
+    this.ultimaDecisao = decisao;
+    const aprovado = decisao === DecisaoOrcamento.APROVAR;
+    this.acompanhamentos.status = aprovado
+      ? StatusOrdemServico.EM_EXECUCAO
+      : StatusOrdemServico.EM_DIAGNOSTICO;
+    this.acompanhamentos.situacao = aprovado
+      ? SituacaoOrcamento.APROVADO
+      : SituacaoOrcamento.REJEITADO;
     return {
       orcamento: Orcamento.restaurar({
         identificador: "orcamento-1",
@@ -61,7 +78,7 @@ class RepositorioOrcamentoFalso implements RepositorioOrcamento {
         subtotalServicosEmCentavos: 15500,
         subtotalPecasInsumosEmCentavos: 0,
         totalEmCentavos: 15500,
-        situacao: SituacaoOrcamento.APROVADO,
+        situacao: this.acompanhamentos.situacao,
         geradoEm: instante,
         atualizadoEm: instante,
         decididoEm: instante,
@@ -72,8 +89,8 @@ class RepositorioOrcamentoFalso implements RepositorioOrcamento {
         veiculoId: "veiculo-1",
         descricao: "Revisão preventiva",
         codigoAcompanhamento: "codigo-valido",
-        status: StatusOrdemServico.EM_EXECUCAO,
-        inicioExecucaoEm: instante,
+        status: this.acompanhamentos.status,
+        inicioExecucaoEm: aprovado ? instante : null,
         criadoEm: instante,
         atualizadoEm: instante,
       }),
@@ -82,9 +99,10 @@ class RepositorioOrcamentoFalso implements RepositorioOrcamento {
 }
 
 function criarCasoUso() {
-  const orcamentos = new RepositorioOrcamentoFalso();
+  const acompanhamentos = new RepositorioAcompanhamentoFalso();
+  const orcamentos = new RepositorioOrcamentoFalso(acompanhamentos);
   const casoUso = new CasoUsoDecidirOrcamentoAcompanhamento(
-    new CasoUsoConsultarAcompanhamento(new RepositorioAcompanhamentoFalso()),
+    new CasoUsoConsultarAcompanhamento(acompanhamentos),
     new CasoUsoDecidirOrcamento(orcamentos),
   );
   return { casoUso, orcamentos };
@@ -97,10 +115,25 @@ describe("CasoUsoDecidirOrcamentoAcompanhamento", () => {
     await expect(
       casoUso.executar("ordem-1", "codigo-valido", DecisaoOrcamento.APROVAR),
     ).resolves.toMatchObject({
-      ordemServico: { status: StatusOrdemServico.EM_EXECUCAO },
+      identificador: "ordem-1",
+      status: StatusOrdemServico.EM_EXECUCAO,
       orcamento: { situacao: SituacaoOrcamento.APROVADO },
     });
     expect(orcamentos.decisoes).toBe(1);
+    expect(orcamentos.ultimaDecisao).toBe(DecisaoOrcamento.APROVAR);
+  });
+
+  it("encaminha a rejeição e retorna o acompanhamento atualizado", async () => {
+    const { casoUso, orcamentos } = criarCasoUso();
+
+    await expect(
+      casoUso.executar("ordem-1", "codigo-valido", DecisaoOrcamento.REJEITAR),
+    ).resolves.toMatchObject({
+      identificador: "ordem-1",
+      status: StatusOrdemServico.EM_DIAGNOSTICO,
+      orcamento: { situacao: SituacaoOrcamento.REJEITADO },
+    });
+    expect(orcamentos.ultimaDecisao).toBe(DecisaoOrcamento.REJEITAR);
   });
 
   it("não executa a decisão quando o código é inválido", async () => {
