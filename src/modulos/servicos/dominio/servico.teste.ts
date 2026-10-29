@@ -21,4 +21,28 @@ describe("Serviço", () => {
       Servico.criar({ nome: "Alinhamento", precoEmCentavos }),
     ).toThrow(ErroValidacao);
   });
+
+  it("atualiza nome e descrição preservando o preço", () => {
+    const servico = Servico.criar({
+      nome: "Alinhamento",
+      precoEmCentavos: 9000,
+    });
+
+    const atualizado = servico.atualizar({
+      nome: "Alinhamento computadorizado",
+      descricao: "Eixos dianteiro e traseiro",
+    });
+
+    expect(atualizado).toMatchObject({
+      nome: "Alinhamento computadorizado",
+      descricao: "Eixos dianteiro e traseiro",
+      precoEmCentavos: 9000,
+    });
+  });
+
+  it("rejeita nome vazio", () => {
+    expect(() => Servico.criar({ nome: "  ", precoEmCentavos: 9000 })).toThrow(
+      ErroValidacao,
+    );
+  });
 });

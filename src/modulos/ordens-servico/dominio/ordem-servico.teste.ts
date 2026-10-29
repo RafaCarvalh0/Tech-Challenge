@@ -27,6 +27,18 @@ describe('OrdemServico', () => {
     ).toThrow(ErroValidacao);
   });
 
+  it('rejeita transição incompatível com o status atual', () => {
+    const ordemServico = OrdemServico.criar({
+      clienteId: 'cliente-identificador',
+      veiculoId: 'veiculo-identificador',
+      descricao: 'Troca de óleo',
+    });
+
+    expect(() => ordemServico.executarAcao(AcaoOrdemServico.FINALIZAR)).toThrow(
+      ErroValidacao,
+    );
+  });
+
   it('registra o início quando o orçamento é aprovado', () => {
     const inicio = new Date('2026-10-28T13:00:00.000Z');
     const ordemServico = OrdemServico.criar({

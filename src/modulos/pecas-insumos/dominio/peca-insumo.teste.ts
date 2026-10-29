@@ -54,4 +54,48 @@ describe('Peça ou insumo', () => {
       pecaInsumo.movimentarEstoque(TipoMovimentacaoEstoque.SAIDA, 2),
     ).toThrow(ErroValidacao);
   });
+
+  it.each([0, 1.5])(
+    'rejeita quantidade de movimentação inválida: %s',
+    (quantidade) => {
+      const pecaInsumo = PecaInsumo.criar({
+        codigo: 'FILTRO-01',
+        nome: 'Filtro',
+        precoUnitarioEmCentavos: 3000,
+      });
+
+      expect(() =>
+        pecaInsumo.movimentarEstoque(
+          TipoMovimentacaoEstoque.ENTRADA,
+          quantidade,
+        ),
+      ).toThrow(ErroValidacao);
+    },
+  );
+
+  it.each([
+    { codigo: '  ', nome: 'Filtro' },
+    { codigo: 'FILTRO-01', nome: '  ' },
+  ])('rejeita código ou nome vazio', ({ codigo, nome }) => {
+    expect(() =>
+      PecaInsumo.criar({
+        codigo,
+        nome,
+        precoUnitarioEmCentavos: 3000,
+      }),
+    ).toThrow(ErroValidacao);
+  });
+
+  it.each([-1, 10.5])(
+    'rejeita preço unitário inválido: %s',
+    (precoUnitarioEmCentavos) => {
+      expect(() =>
+        PecaInsumo.criar({
+          codigo: 'FILTRO-01',
+          nome: 'Filtro',
+          precoUnitarioEmCentavos,
+        }),
+      ).toThrow(ErroValidacao);
+    },
+  );
 });
