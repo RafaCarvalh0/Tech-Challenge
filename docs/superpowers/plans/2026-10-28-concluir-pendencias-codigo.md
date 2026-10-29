@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js 24, TypeScript, NestJS 11, Jest 29, Supertest, Prisma 6, PostgreSQL 17, Docker Compose e Swagger/OpenAPI.
 
-**Spec:** `Fase 1 - Tech Challenge/Fase 1 - Tech Challenge.pdf`; requisitos complementares do indicador em `docs/superpowers/specs/2026-10-28-indicadores-servicos-design.md`.
+**Spec:** `../Fase 1 - Tech Challenge.pdf`; requisitos complementares do indicador em `docs/superpowers/specs/2026-10-28-indicadores-servicos-design.md`.
 
 ## Global Constraints
 
