@@ -176,6 +176,22 @@ Cobertura dos domínios críticos:
 npm run test:cov -- --runInBand
 ```
 
+Resultado atual da suíte unitária e da cobertura:
+
+- 33 suítes passando.
+- 130 testes passando.
+- Statements: 100%.
+- Branches: 100%.
+- Functions: 100%.
+- Lines: 100%.
+
+As validações complementares de qualidade também foram executadas com sucesso:
+
+```bash
+npm run lint
+npm run build
+```
+
 Testes E2E usam obrigatoriamente um banco temporário cujo nome termina em `_teste`. A proteção impede que a limpeza do teste seja executada no banco normal de desenvolvimento.
 
 Inicie o banco exclusivo:
