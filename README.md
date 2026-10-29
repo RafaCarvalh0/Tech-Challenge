@@ -13,6 +13,7 @@ MVP de um sistema integrado para atendimento e execução de serviços de uma of
 - Autenticação JWT das APIs administrativas.
 - Acompanhamento público da OS com código privado.
 - Abertura transacional de veículo e OS.
+- Indicador administrativo de tempo médio de execução por serviço.
 - Swagger/OpenAPI.
 - Testes unitários, cobertura e fluxo E2E com PostgreSQL real.
 
@@ -25,7 +26,7 @@ O projeto é um monólito modular organizado em quatro camadas:
 - `infraestrutura`: persistência PostgreSQL com Prisma.
 - `apresentacao`: controllers REST, DTOs e documentação Swagger.
 
-Os módulos são `autenticacao`, `clientes`, `veiculos`, `servicos`, `pecas-insumos`, `ordens-servico` e `acompanhamento`. O domínio não depende de NestJS ou Prisma.
+Os módulos são `autenticacao`, `clientes`, `veiculos`, `servicos`, `pecas-insumos`, `ordens-servico`, `acompanhamento` e `indicadores`. O domínio não depende de NestJS ou Prisma.
 
 ## Tecnologias
 
@@ -85,7 +86,7 @@ Ou execute as etapas manualmente:
 docker compose up -d banco-dados
 ```
 
-3. Instale as dependências e prepare o banco:
+2. Instale as dependências e prepare o banco:
 
 ```bash
 npm ci
@@ -93,26 +94,66 @@ npm run prisma:generate
 npm run prisma:deploy
 ```
 
-4. Inicie a API:
+3. Inicie a API:
 
 ```bash
 npm run start:dev
 ```
 
-## Endpoints iniciais
+## Endpoints principais
 
 | Método | Endpoint | Descrição |
 |---|---|---|
 | GET | `/api/saude` | Verifica a saúde da API |
 | POST | `/api/autenticacao/login` | Obtém o token administrativo |
 | POST | `/api/clientes` | Cadastra um cliente |
+| GET | `/api/clientes` | Lista clientes |
+| GET | `/api/clientes/:identificador` | Detalha um cliente |
+| PATCH | `/api/clientes/:identificador` | Atualiza um cliente |
+| DELETE | `/api/clientes/:identificador` | Exclui um cliente |
 | POST | `/api/veiculos` | Cadastra um veículo |
+| GET | `/api/veiculos` | Lista veículos |
+| GET | `/api/veiculos/:identificador` | Detalha um veículo |
+| PATCH | `/api/veiculos/:identificador` | Atualiza um veículo |
+| DELETE | `/api/veiculos/:identificador` | Exclui um veículo |
+| POST | `/api/servicos` | Cadastra um serviço |
+| GET | `/api/servicos` | Lista serviços |
+| GET | `/api/servicos/:identificador` | Detalha um serviço |
+| PATCH | `/api/servicos/:identificador` | Atualiza um serviço |
+| DELETE | `/api/servicos/:identificador` | Exclui um serviço |
+| POST | `/api/pecas-insumos` | Cadastra uma peça ou insumo |
+| GET | `/api/pecas-insumos` | Lista peças e insumos |
+| GET | `/api/pecas-insumos/:identificador` | Detalha uma peça ou insumo |
+| PATCH | `/api/pecas-insumos/:identificador` | Atualiza uma peça ou insumo |
+| PATCH | `/api/pecas-insumos/:identificador/estoque` | Registra entrada ou saída de estoque |
+| DELETE | `/api/pecas-insumos/:identificador` | Exclui uma peça ou insumo |
 | POST | `/api/ordens-servico` | Cria uma ordem de serviço |
 | POST | `/api/ordens-servico/abertura` | Abre uma OS por CPF/CNPJ |
+| GET | `/api/ordens-servico` | Lista ordens, com filtros opcionais |
 | GET | `/api/ordens-servico/:identificador` | Consulta uma ordem de serviço |
+| PUT | `/api/ordens-servico/:identificador/composicao` | Define serviços, peças e insumos da OS |
+| POST | `/api/ordens-servico/:identificador/orcamento` | Gera e disponibiliza o orçamento |
+| PATCH | `/api/ordens-servico/:identificador/orcamento/decisao` | Registra aprovação ou rejeição do orçamento |
+| PATCH | `/api/ordens-servico/:identificador/acoes/:acao` | Executa uma transição de status da OS |
 | GET | `/api/acompanhamento/ordens-servico/:identificador` | Consulta pública com `X-Codigo-Acompanhamento` |
+| GET | `/api/indicadores/tempo-medio-servicos` | Calcula o tempo médio de execução por serviço |
 
-As rotas administrativas exigem `Authorization: Bearer <token>`. O contrato completo está disponível no Swagger.
+As rotas administrativas exigem `Authorization: Bearer <token>`. As ações aceitas para a OS são `INICIAR_DIAGNOSTICO`, `SOLICITAR_APROVACAO`, `APROVAR`, `REJEITAR`, `FINALIZAR` e `ENTREGAR`. O contrato completo, incluindo corpos e respostas, está disponível no Swagger.
+
+## Autenticação administrativa
+
+Defina `USUARIO_ADMINISTRADOR`, `SENHA_ADMINISTRADOR` e `SEGREDO_JWT` no arquivo `.env`. Os valores do `.env.example` são somente exemplos e a senha deve ser substituída antes da execução.
+
+Envie as credenciais configuradas para `POST /api/autenticacao/login`:
+
+```json
+{
+  "usuario": "administrador",
+  "senha": "senha-configurada-no-env"
+}
+```
+
+Use o token retornado no cabeçalho `Authorization: Bearer <token>` das rotas administrativas. Apenas `/api/saude`, `/api/autenticacao/login` e o acompanhamento com código privado são públicos.
 
 ## Testes
 
@@ -154,7 +195,7 @@ npm run test:ponta-a-ponta -- --runInBand
 
 O serviço `banco-dados-teste` usa armazenamento temporário e pode ser encerrado com `docker compose --profile test stop banco-dados-teste`.
 
-O limite configurado é de 80% para statements, branches, functions e lines nas camadas `domain` e `application`.
+O limite configurado é de 80% para statements, branches, functions e lines nas camadas `dominio` e `aplicacao`. A configuração também inclui o domínio compartilhado.
 
 ## Segurança
 
@@ -176,18 +217,14 @@ src/
     ordens-servico/
     autenticacao/
     acompanhamento/
+    indicadores/
   compartilhado/
 prisma/
   migrations/
   schema.prisma
-test/
+testes/
 ```
 
-## Próximos incrementos
+## Pendências da entrega acadêmica
 
-- Indicador de tempo médio de execução dos serviços.
-- Comprovação da cobertura mínima de 80% nos domínios críticos.
-- Revisão final da documentação técnica.
-- Regras de transição entre todos os status da OS.
-- Listagem administrativa e tempo médio de execução.
 - Documentação DDD exportada e vídeo da entrega.
