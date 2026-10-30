@@ -18,7 +18,7 @@
 
 Os arquivos representam a branch `docs/completa-materiais-entrega-fase-1`. A versão-base da preparação foi `a19f537e52d3c1faa9070f71ed716944a038d649`; o hash final deve ser preenchido no fechamento da entrega.
 
-Os PDFs são reproduções versionadas e legíveis dos frames do Miro, geradas em 30/10/2026. O Miro permanece como fonte visual editável.
+Os PDFs são reproduções versionadas e legíveis dos frames do Miro, geradas em 30/10/2026. O Miro permanece como fonte visual editável. Após a renumeração final do board principal, atualize a tabela abaixo e reexporte os PDFs, em especial `event-storming.pdf`.
 
 ## Rastreabilidade
 
