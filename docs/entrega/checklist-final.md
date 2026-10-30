@@ -29,9 +29,9 @@ Use este documento no fechamento. Um item somente pode ser marcado após verific
 
 ## Materiais externos
 
-- [ ] Informar número do grupo.
-- [ ] Informar nomes completos e RMs.
-- [ ] Informar usernames do Discord.
+- [x] Informar número do grupo: 32.
+- [x] Informar nomes completos e RMs: Rafael Abreu de Carvalho — RM378596.
+- [x] Informar usernames do Discord: Rafael Carvalho - rm378596.
 - [ ] Confirmar URL pública do repositório.
 - [ ] Confirmar proteção da `main` e uso de Pull Request.
 - [ ] Gravar vídeo com no máximo 15 minutos.

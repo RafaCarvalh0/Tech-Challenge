@@ -5,7 +5,9 @@
 - Projeto: Tech Challenge — Oficina Mecânica
 - Curso: SOAT — Software Architecture
 - Fase: 1
-- Grupo e integrantes: `PENDENTE`
+- Grupo: 32
+- Integrante: Rafael Abreu de Carvalho — RM378596
+- Discord: Rafael Carvalho - rm378596
 - Versão final: `PENDENTE`
 
 ## Contexto e escopo
@@ -41,7 +43,7 @@ Riscos conhecidos: dependências transitivas reportadas pelo `npm audit`, ausên
 
 ## Aprovação acadêmica
 
-- Responsável do grupo: `PENDENTE`
+- Responsável do grupo: Rafael Abreu de Carvalho — RM378596
 - Data: `PENDENTE`
 - Commit aprovado: `PENDENTE`
 - Resultado: apto após concluir itens externos do checklist final.

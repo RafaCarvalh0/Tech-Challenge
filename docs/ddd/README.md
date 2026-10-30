@@ -1,5 +1,13 @@
 # Documentação DDD
 
+## Identificação
+
+- Curso: SOAT — Software Architecture
+- Fase: 1
+- Grupo: 32
+- Integrante: Rafael Abreu de Carvalho — RM378596
+- Discord: Rafael Carvalho - rm378596
+
 - Miro público: [Documentação completa](https://miro.com/app/board/uXjVEXBA6FI=/?share_link_id=15194992988)
 - Event Storming offline: [event-storming.pdf](event-storming.pdf)
 - Demais diagramas: [diagramas.pdf](diagramas.pdf)

@@ -5,6 +5,9 @@
 - Branch: `docs/completa-materiais-entrega-fase-1`
 - Commit-base: `a19f537e52d3c1faa9070f71ed716944a038d649`
 - Enunciado: `Fase 1 - Tech Challenge.pdf`, páginas 4 a 11
+- Curso: SOAT — Software Architecture
+- Fase: 1 | Grupo: 32
+- Integrante: Rafael Abreu de Carvalho — RM378596 | Discord: Rafael Carvalho - rm378596
 - Estados permitidos: `FEITO`, `PARCIAL`, `PENDENTE` e `NÃO APLICÁVEL`
 - Observação: o hash acima identifica o início da preparação, não a versão final.
 
@@ -30,7 +33,7 @@
 | Listar e detalhar ordens de serviço | `listar-ordens-servico.caso-uso.ts`, `obter-ordem-servico.caso-uso.ts` | 02 e 06 | `docs/ddd/event-storming.pdf` | FEITO |
 | Calcular tempo médio de execução | `obter-tempo-medio-servicos.caso-uso.ts` e repositório Prisma | 06 e 14 | `docs/qualidade/evidencias-testes.md` | FEITO |
 | Back-end monolítico em camadas | `src/aplicacao.module.ts` e módulos NestJS separados em apresentação/aplicação/domínio/infraestrutura | 02 e 18 | `docs/arquitetura/c4.md` | FEITO |
-| Banco livre com decisão justificada | PostgreSQL em `prisma/schema.prisma` e `docker-compose.yml` | 14 | `docs/arquitetura/adr/0002-postgresql-e-prisma.md` | PARCIAL |
+| Banco livre com decisão justificada | PostgreSQL em `prisma/schema.prisma` e `docker-compose.yml` | 14 | `docs/arquitetura/adr/0002-postgresql-e-prisma.md` | FEITO |
 | APIs RESTful | Controllers em `src/modulos/*/apresentacao` | 02 | `docs/arquitetura/c4.md` | FEITO |
 | Swagger/OpenAPI | configuração em `src/principal.ts`, acesso em `/docs` | 14 | README | FEITO |
 | Autenticação JWT administrativa | `autenticacao-jwt.guarda.ts`, `jwt.servico.ts`, `autenticacao.controller.ts` | 14 | `docs/security/owasp-top-10.md` | FEITO |
@@ -42,8 +45,8 @@
 | Execução local simples | `README.md`, `Dockerfile`, `docker-compose.yml`, script `iniciar` | 14 | README | FEITO |
 | Dockerfile para build | `Dockerfile` | 14 | README | FEITO |
 | Docker Compose para ambiente completo | `docker-compose.yml` | 14 | README | FEITO |
-| Transações nos fluxos principais | repositórios Prisma de abertura, composição e orçamento | 07 e 14 | `docs/arquitetura/adr/0004-transacoes-e-controle-de-concorrencia.md` | PARCIAL |
-| Relatório de vulnerabilidades | `npm audit` executado; formalização ainda será versionada | 14 | `docs/security/npm-audit-2026-10-30.md` | PARCIAL |
+| Transações nos fluxos principais | repositórios Prisma de abertura, composição e orçamento | 07 e 14 | `docs/arquitetura/adr/0004-transacoes-e-controle-de-concorrencia.md` | FEITO |
+| Relatório de vulnerabilidades | `npm audit` e `npm audit --omit=dev` registrados | 14 | `docs/security/npm-audit-2026-10-30.md` | FEITO |
 
 ## README, repositório e versão
 
@@ -65,33 +68,33 @@
 | README: decisão do banco | justificativa PostgreSQL/Prisma | 14 | README | FEITO |
 | README: autenticação/credenciais | procedimento de login e variáveis de demonstração | 14 | README | FEITO |
 | README: diretórios principais | seção de estrutura | 02 | README | FEITO |
-| README: link DDD | placeholder deve ser substituído pelo índice e Miro | 15 | `docs/ddd/README.md` | PARCIAL |
-| README: link do vídeo | URL ainda não fornecida | 16 | PDF final | PENDENTE |
+| README: link DDD | links para índice versionado e Miro | 15 | `docs/ddd/README.md` | FEITO |
+| README: link do vídeo | URL ainda não fornecida | 16 | PDF externo | PENDENTE |
 
 ## Documentação DDD
 
 | Requisito | Evidência no código | Evidência no Miro | Arquivo exportado | Status |
 |---|---|---|---|---|
 | Link DDD direto e sem permissão manual | board `uXjVEXBA6FI`; acesso anônimo ainda deve ser validado | 01 | `docs/ddd/README.md` | PARCIAL |
-| Event Storming da criação da OS | casos de uso de abertura, composição e orçamento | 05 | `docs/ddd/event-storming.pdf` | PARCIAL |
-| Event Storming do acompanhamento | módulos de acompanhamento, OS e indicadores | 06 | `docs/ddd/event-storming.pdf` | PARCIAL |
-| Event Storming de peças e insumos | módulo `pecas-insumos` e aprovação transacional | 07 | `docs/ddd/event-storming.pdf` | PARCIAL |
-| Eventos, comandos, políticas/regras e atores | fluxos implementados nos casos de uso e entidades | 05, 06, 07 e 08 | `docs/ddd/event-storming.pdf` | PARCIAL |
-| Agregados, entidades e objetos de valor | classes de domínio; classificação será corrigida | 08, 10 e 13 | `docs/ddd/diagramas.pdf` | PARCIAL |
-| Bounded Contexts | módulos lógicos do monólito | 09 | `docs/ddd/diagramas.pdf` | PARCIAL |
-| Diagramas solicitados em DDD | modelo/ciclo existentes; Domain Storytelling e camadas pendentes | 10, 11, 17 e 18 | `docs/ddd/diagramas.pdf` | PARCIAL |
-| Linguagem Ubíqua e glossário | nomes reais do domínio | 12 | `docs/ddd/linguagem-ubiqua.md` | PARCIAL |
-| Relação documentação x código | classes, casos de uso e persistência | 13 | `docs/ddd/README.md` | PARCIAL |
-| Exportações DDD no repositório | diretório ainda será criado | 05–13, 17 e 18 | `docs/ddd/event-storming.pdf` e `docs/ddd/diagramas.pdf` | PENDENTE |
+| Event Storming da criação da OS | casos de uso de abertura, composição e orçamento | 05 | `docs/ddd/event-storming.pdf` | FEITO |
+| Event Storming do acompanhamento | módulos de acompanhamento, OS e indicadores | 06 | `docs/ddd/event-storming.pdf` | FEITO |
+| Event Storming de peças e insumos | módulo `pecas-insumos` e aprovação transacional | 07 | `docs/ddd/event-storming.pdf` | FEITO |
+| Eventos, comandos, políticas/regras e atores | fluxos implementados nos casos de uso e entidades | 05, 06, 07 e 08 | `docs/ddd/event-storming.pdf` | FEITO |
+| Agregados, entidades e objetos de valor | classificação corrigida conforme classes/interfaces/enums reais | 08, 10 e 13 | `docs/ddd/diagramas.pdf` | FEITO |
+| Bounded Contexts | módulos lógicos, upstream/downstream e comunicação em processo | 09 | `docs/ddd/diagramas.pdf` | FEITO |
+| Diagramas solicitados em DDD | modelo, ciclo, Domain Storytelling e camadas DDD | 10, 11, 17 e 18 | `docs/ddd/diagramas.pdf` | FEITO |
+| Linguagem Ubíqua e glossário | nomes reais do domínio | 12 | `docs/ddd/linguagem-ubiqua.md` | FEITO |
+| Relação documentação x código | classes, casos de uso e persistência | 13 | `docs/ddd/README.md` | FEITO |
+| Exportações DDD no repositório | PDFs, glossário e índice versionados | 05–13, 17 e 18 | `docs/ddd/event-storming.pdf` e `docs/ddd/diagramas.pdf` | FEITO |
 
 ## PDF e vídeo
 
 | Requisito | Evidência no código | Evidência no Miro | Arquivo exportado | Status |
 |---|---|---|---|---|
-| PDF único com informações e links | conteúdo planejado | 15 | `docs/entrega/fase-1-tech-challenge.pdf` | PENDENTE |
-| Identificação: curso, fase, grupo, integrantes, RMs, Discord e tecnologias | dados pessoais não fornecidos serão marcados `PENDENTE` | 15 | PDF final | PENDENTE |
-| Links completos dos repositórios | URL não confirmada | 15 | PDF final | PENDENTE |
-| Branch e hash final no PDF | disponível somente no fechamento | 15 | PDF final | PENDENTE |
+| PDF único com informações e links | material de entrega externo ao repositório | 15 | PDF externo | PENDENTE |
+| Identificação: curso, fase, grupo, integrantes, RMs, Discord e tecnologias | dados de identificação preenchidos; PDF externo ainda precisa ser atualizado | 15 | PDF externo | PARCIAL |
+| Links completos dos repositórios | URL não confirmada | 15 | PDF externo | PENDENTE |
+| Branch e hash final no PDF | disponível somente no fechamento | 15 | PDF externo | PENDENTE |
 | Vídeo público no YouTube, até 15 minutos | gravação/publicação depende do grupo | 16 | PDF final | PENDENTE |
 | Vídeo com áudio, funcionamento, documentação, arquitetura e integrantes | roteiro será preparado; gravação depende do grupo | 16 | `docs/entrega/roteiro-video.md` | PENDENTE |
 | Vídeo demonstra proposta, camadas, banco, DDD/Event Storming, fluxos, JWT, execução, Swagger, testes e vulnerabilidades | roteiro detalhado existente será alinhado ao commit final | 16 | `docs/entrega/roteiro-video.md` | PARCIAL |

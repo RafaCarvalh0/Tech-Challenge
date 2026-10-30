@@ -1,5 +1,13 @@
 # Tech Challenge - Sistema de Oficina
 
+## Identificação da entrega
+
+- Curso: SOAT — Software Architecture
+- Fase: 1
+- Grupo: 32
+- Integrante: Rafael Abreu de Carvalho — RM378596
+- Discord: Rafael Carvalho - rm378596
+
 ## Objetivo do projeto
 
 Desenvolver uma API para apoiar o atendimento, orçamento, execução e acompanhamento de serviços de uma oficina mecânica.
@@ -261,7 +269,7 @@ testes/
 - Quadro DDD no Miro: [documentação visual](https://miro.com/app/board/uXjVEXBA6FI=/?share_link_id=15194992988)
 - Estratégia e evidências de testes: [docs/qualidade/](docs/qualidade/)
 - Matriz de aderência: [docs/entrega/matriz-aderencia-fase-1.md](docs/entrega/matriz-aderencia-fase-1.md)
-- PDF final: [docs/entrega/fase-1-tech-challenge.pdf](docs/entrega/fase-1-tech-challenge.pdf)
+- PDF final: entregue separadamente, fora do repositório.
 - Vídeo da entrega: `PENDENTE — inserir URL pública do YouTube`
 
 ## Versão da entrega
