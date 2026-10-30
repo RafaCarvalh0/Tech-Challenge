@@ -15,16 +15,17 @@ Use este documento no fechamento. Um item somente pode ser marcado após verific
 
 ## Documentação
 
-- [ ] Corrigir classificação DDD nos frames 08, 10 e 13.
-- [ ] Transformar frames 05, 06 e 07 em fluxos causais completos.
-- [ ] Adicionar Domain Storytelling e arquitetura DDD em camadas.
-- [ ] Revisar mapa de contextos e criar C4.
-- [ ] Exportar `docs/ddd/event-storming.pdf`.
-- [ ] Exportar `docs/ddd/diagramas.pdf`.
-- [ ] Criar linguagem ubíqua e índice DDD.
-- [ ] Criar arquitetura, requisitos, ADRs e DAS.
-- [ ] Criar evidências de testes e checklist OWASP.
-- [ ] Atualizar README sem placeholders internos.
+- [x] Corrigir classificação DDD nos frames 08, 10 e 13.
+- [x] Transformar frames 05, 06 e 07 em fluxos causais completos.
+- [x] Adicionar Domain Storytelling e arquitetura DDD em camadas.
+- [x] Revisar mapa de contextos e criar C4.
+- [x] Exportar `docs/ddd/event-storming.pdf`.
+- [x] Exportar `docs/ddd/diagramas.pdf`.
+- [x] Criar linguagem ubíqua e índice DDD.
+- [x] Criar arquitetura, requisitos, ADRs e DAS.
+- [x] Criar evidências de testes e checklist OWASP.
+- [x] Atualizar README sem placeholders internos.
+- [ ] Sincronizar os quadros 04, 15 e 16 após a renovação do limite diário do Miro.
 
 ## Materiais externos
 

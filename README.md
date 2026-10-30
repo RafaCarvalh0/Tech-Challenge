@@ -34,6 +34,13 @@ O projeto é um monólito modular organizado em quatro camadas:
 
 Os módulos são `autenticacao`, `clientes`, `veiculos`, `servicos`, `pecas-insumos`, `ordens-servico`, `acompanhamento` e `indicadores`. O domínio não depende de NestJS ou Prisma.
 
+Documentos complementares:
+
+- [Modelo C4](docs/arquitetura/c4.md)
+- [Visão arquitetural](docs/arquitetura/visao-arquitetural.md)
+- [Requisitos e rastreabilidade](docs/arquitetura/requisitos.md)
+- [ADRs e DAS](docs/arquitetura/das.md)
+
 ## Tecnologias
 
 - Node.js 24
@@ -222,7 +229,7 @@ O limite configurado é de 80% para statements, branches, functions e lines nas 
 
 ## Segurança
 
-A API valida os dados recebidos e bloqueia campos não declarados nos DTOs. O relatório atualizado de dependências está em `docs/security/npm-audit-2026-10-28.md`.
+A API valida os dados recebidos e bloqueia campos não declarados nos DTOs. Consulte o [relatório de dependências](docs/security/npm-audit-2026-10-30.md) e o [checklist OWASP Top 10](docs/security/owasp-top-10.md).
 
 A autenticação JWT protege todas as APIs administrativas. As credenciais e o segredo são obrigatoriamente configurados por variáveis de ambiente; a rota de saúde e o acompanhamento com código privado permanecem públicos.
 
@@ -250,7 +257,15 @@ testes/
 
 ## Materiais da entrega acadêmica
 
-Substitua os links abaixo antes da entrega final:
+- Documentação DDD no repositório: [docs/ddd/README.md](docs/ddd/README.md)
+- Quadro DDD no Miro: [documentação visual](https://miro.com/app/board/uXjVEXBA6FI=/?share_link_id=15194992988)
+- Estratégia e evidências de testes: [docs/qualidade/](docs/qualidade/)
+- Matriz de aderência: [docs/entrega/matriz-aderencia-fase-1.md](docs/entrega/matriz-aderencia-fase-1.md)
+- PDF final: [docs/entrega/fase-1-tech-challenge.pdf](docs/entrega/fase-1-tech-challenge.pdf)
+- Vídeo da entrega: `PENDENTE — inserir URL pública do YouTube`
 
-- Documentação DDD: [ADICIONAR_LINK_DA_DOCUMENTACAO_DDD](COLE_AQUI_O_LINK_DA_DOCUMENTACAO_DDD)
-- Vídeo da entrega: [ADICIONAR_LINK_DO_VIDEO](COLE_AQUI_O_LINK_DO_VIDEO)
+## Versão da entrega
+
+- Branch em preparação: `docs/completa-materiais-entrega-fase-1`
+- Tag: `PENDENTE`
+- Hash final: `PENDENTE — preencher após o último commit e antes da gravação`
