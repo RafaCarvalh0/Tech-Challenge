@@ -1,0 +1,51 @@
+name: Qualidade
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: oficina_teste
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d oficina_teste"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      URL_BANCO_DADOS: postgresql://postgres:postgres@localhost:5432/oficina_teste?schema=public
+      SEGREDO_JWT: segredo-de-teste-com-tamanho-suficiente
+      USUARIO_ADMINISTRADOR: administrador
+      SENHA_ADMINISTRADOR: senha-de-teste
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - run: npm run prisma:generate
+      - run: npm run prisma:deploy
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run test:cov -- --runInBand
+      - run: npm run test:ponta-a-ponta -- --runInBand
+
+      - name: Auditoria de dependências de produção
+        continue-on-error: true
+        run: npm audit --omit=dev
