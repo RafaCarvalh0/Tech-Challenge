@@ -1,0 +1,47 @@
+# Checklist final da entrega — Fase 1
+
+Use este documento no fechamento. Um item somente pode ser marcado após verificação direta.
+
+## Código e qualidade
+
+- [x] Funcionalidades obrigatórias implementadas.
+- [x] `npm run lint` aprovado.
+- [x] `npm run build` aprovado.
+- [x] Testes unitários: 33 suítes e 130 testes aprovados.
+- [x] Cobertura: 100% no escopo configurado, acima do mínimo de 80%.
+- [x] Testes E2E: 4 suítes e 26 testes aprovados em `oficina_teste`.
+- [ ] Reexecutar todas as validações no commit final.
+- [ ] Confirmar que nenhum segredo ou artefato local foi versionado.
+
+## Documentação
+
+- [ ] Corrigir classificação DDD nos frames 08, 10 e 13.
+- [ ] Transformar frames 05, 06 e 07 em fluxos causais completos.
+- [ ] Adicionar Domain Storytelling e arquitetura DDD em camadas.
+- [ ] Revisar mapa de contextos e criar C4.
+- [ ] Exportar `docs/ddd/event-storming.pdf`.
+- [ ] Exportar `docs/ddd/diagramas.pdf`.
+- [ ] Criar linguagem ubíqua e índice DDD.
+- [ ] Criar arquitetura, requisitos, ADRs e DAS.
+- [ ] Criar evidências de testes e checklist OWASP.
+- [ ] Atualizar README sem placeholders internos.
+
+## Materiais externos
+
+- [ ] Informar número do grupo.
+- [ ] Informar nomes completos e RMs.
+- [ ] Informar usernames do Discord.
+- [ ] Confirmar URL pública do repositório.
+- [ ] Confirmar proteção da `main` e uso de Pull Request.
+- [ ] Gravar vídeo com no máximo 15 minutos.
+- [ ] Publicar vídeo como público no YouTube.
+- [ ] Abrir Miro, repositório e vídeo em janela anônima.
+
+## Definition of Done da entrega
+
+- [ ] Branch/tag e hash finais registrados no README e no PDF.
+- [ ] README, Miro, exports, vídeo e PDF representam o mesmo commit.
+- [ ] PDF único renderizado e revisado página a página.
+- [ ] Todos os hyperlinks do PDF foram clicados e validados.
+- [ ] Todos os links públicos abrem sem solicitação de permissão.
+- [ ] Pull Request revisado e pronto para integração na `main` protegida.
