@@ -10,7 +10,7 @@
 - Integrante: Rafael Abreu de Carvalho — RM378596 | Discord: Rafael Carvalho - rm378596
 - Estados permitidos: `FEITO`, `PARCIAL`, `PENDENTE` e `NÃO APLICÁVEL`
 - Observação: o hash acima identifica o início da preparação, não a versão final.
-- Organização do Miro: conteúdos auxiliares dos antigos quadros 15 e 16 foram transferidos ao board de anotações; a renumeração do board principal e a reexportação dos PDFs permanecem pendentes.
+- Organização do Miro: conteúdos auxiliares dos antigos quadros 15 e 16 foram retirados do board principal de entrega; a renumeração do board principal e a reexportação dos PDFs permanecem pendentes.
 
 ## Funcionalidades e requisitos técnicos
 
@@ -53,9 +53,9 @@
 
 | Requisito | Evidência no código | Evidência no Miro | Arquivo exportado | Status |
 |---|---|---|---|---|
-| Repositório público durante a avaliação | URL pública ainda não confirmada | Board de anotações — antigo quadro 15 | PDF externo | PENDENTE |
-| Versão identificada por branch/tag/hash | branch registrada; hash final somente após conclusão | Board de anotações — antigo quadro 15 | PDF externo | PARCIAL |
-| Código igual ao vídeo e à documentação | depende da gravação e do hash final | Board de anotações — antigo quadro 16 | PDF externo | PENDENTE |
+| Repositório público durante a avaliação | URL pública ainda não confirmada | N/A — material externo | PDF externo | PENDENTE |
+| Versão identificada por branch/tag/hash | branch registrada; hash final somente após conclusão | N/A — material externo | PDF externo | PARCIAL |
+| Código igual ao vídeo e à documentação | depende da gravação e do hash final | N/A — material externo | PDF externo | PENDENTE |
 | Ausência de credenciais, senhas, tokens e segredos | `.gitignore` e variáveis de ambiente; varredura final pendente | 14 | checklist final | PARCIAL |
 | Branch `main` protegida e integração por PR | configuração externa ao repositório | N/A — configuração do repositório | PDF externo | PENDENTE |
 | README: objetivo | seção `Objetivo` | 01 | README | FEITO |
@@ -70,7 +70,7 @@
 | README: autenticação/credenciais | procedimento de login e variáveis de demonstração | 14 | README | FEITO |
 | README: diretórios principais | seção de estrutura | 02 | README | FEITO |
 | README: link DDD | links para índice versionado e Miro | Board principal | `docs/ddd/README.md` | FEITO |
-| README: link do vídeo | URL ainda não fornecida | Board de anotações — antigo quadro 16 | PDF externo | PENDENTE |
+| README: link do vídeo | URL ainda não fornecida | N/A — material externo | PDF externo | PENDENTE |
 
 ## Documentação DDD
 
@@ -92,13 +92,13 @@
 
 | Requisito | Evidência no código | Evidência no Miro | Arquivo exportado | Status |
 |---|---|---|---|---|
-| PDF único com informações e links | material de entrega externo ao repositório | Board de anotações — antigo quadro 15 | PDF externo | PENDENTE |
-| Identificação: curso, fase, grupo, integrantes, RMs, Discord e tecnologias | dados de identificação preenchidos; PDF externo ainda precisa ser atualizado | Board de anotações — antigo quadro 15 | PDF externo | PARCIAL |
-| Links completos dos repositórios | URL não confirmada | Board de anotações — antigo quadro 15 | PDF externo | PENDENTE |
-| Branch e hash final no PDF | disponível somente no fechamento | Board de anotações — antigo quadro 15 | PDF externo | PENDENTE |
-| Vídeo público no YouTube, até 15 minutos | gravação/publicação depende do grupo | Board de anotações — antigo quadro 16 | PDF externo | PENDENTE |
-| Vídeo com áudio, funcionamento, documentação, arquitetura e integrantes | roteiro preparado; gravação depende do grupo | Board de anotações — antigo quadro 16 | `docs/entrega/roteiro-video.md` | PENDENTE |
-| Vídeo demonstra proposta, camadas, banco, DDD/Event Storming, fluxos, JWT, execução, Swagger, testes e vulnerabilidades | roteiro detalhado existe; alinhar ao commit final | Board de anotações — antigo quadro 16 | `docs/entrega/roteiro-video.md` | PARCIAL |
+| PDF único com informações e links | material de entrega externo ao repositório | N/A — material externo | PDF externo | PENDENTE |
+| Identificação: curso, fase, grupo, integrantes, RMs, Discord e tecnologias | dados de identificação preenchidos; PDF externo ainda precisa ser atualizado | N/A — material externo | PDF externo | PARCIAL |
+| Links completos dos repositórios | URL não confirmada | N/A — material externo | PDF externo | PENDENTE |
+| Branch e hash final no PDF | disponível somente no fechamento | N/A — material externo | PDF externo | PENDENTE |
+| Vídeo público no YouTube, até 15 minutos | gravação/publicação depende do grupo | N/A — material externo | PDF externo | PENDENTE |
+| Vídeo com áudio, funcionamento, documentação, arquitetura e integrantes | roteiro preparado; gravação depende do grupo | N/A — material externo | `docs/entrega/roteiro-video.md` | PENDENTE |
+| Vídeo demonstra proposta, camadas, banco, DDD/Event Storming, fluxos, JWT, execução, Swagger, testes e vulnerabilidades | roteiro detalhado existe; alinhar ao commit final | N/A — material externo | `docs/entrega/roteiro-video.md` | PARCIAL |
 
 ## Responsabilidade pelas pendências
 

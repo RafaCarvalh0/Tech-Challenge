@@ -25,7 +25,7 @@ Use este documento no fechamento. Um item somente pode ser marcado após verific
 - [x] Criar arquitetura, requisitos, ADRs e DAS.
 - [x] Criar evidências de testes e checklist OWASP.
 - [x] Atualizar README sem placeholders internos.
-- [x] Transferir os conteúdos auxiliares dos antigos quadros 15 e 16 para o board de anotações.
+- [x] Retirar os conteúdos auxiliares dos antigos quadros 15 e 16 do board principal de entrega.
 - [ ] Transferir ou remover o contêiner vazio remanescente do antigo quadro 04 no board principal.
 - [ ] Renumerar os quadros do board principal e sincronizar as referências textuais e os PDFs exportados.
 
