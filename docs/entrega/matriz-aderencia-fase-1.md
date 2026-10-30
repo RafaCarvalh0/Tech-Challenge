@@ -10,6 +10,7 @@
 - Integrante: Rafael Abreu de Carvalho — RM378596 | Discord: Rafael Carvalho - rm378596
 - Estados permitidos: `FEITO`, `PARCIAL`, `PENDENTE` e `NÃO APLICÁVEL`
 - Observação: o hash acima identifica o início da preparação, não a versão final.
+- Organização do Miro: o board principal Tech Challenge está em reorganização; concluir a renumeração e reexportar os PDFs após a revisão visual dos fluxos.
 
 ## Funcionalidades e requisitos técnicos
 
@@ -52,11 +53,11 @@
 
 | Requisito | Evidência no código | Evidência no Miro | Arquivo exportado | Status |
 |---|---|---|---|---|
-| Repositório público durante a avaliação | URL pública ainda não confirmada | 15 | PDF final | PENDENTE |
-| Versão identificada por branch/tag/hash | branch registrada; hash final somente após conclusão | 15 | PDF final | PARCIAL |
-| Código igual ao vídeo e à documentação | depende da gravação e do hash final | 16 | PDF final | PENDENTE |
+| Repositório público durante a avaliação | URL pública ainda não confirmada | N/A — evidência externa | PDF externo | PENDENTE |
+| Versão identificada por branch/tag/hash | branch registrada; hash final somente após conclusão | N/A — evidência externa | PDF externo | PARCIAL |
+| Código igual ao vídeo e à documentação | depende da gravação e do hash final | N/A — evidência externa | PDF externo | PENDENTE |
 | Ausência de credenciais, senhas, tokens e segredos | `.gitignore` e variáveis de ambiente; varredura final pendente | 14 | checklist final | PARCIAL |
-| Branch `main` protegida e integração por PR | configuração externa ao repositório | 04 | PDF final | PENDENTE |
+| Branch `main` protegida e integração por PR | configuração externa ao repositório | N/A — configuração do repositório | PDF externo | PENDENTE |
 | README: objetivo | seção `Objetivo` | 01 | README | FEITO |
 | README: resumo da solução | seção `Solução` | 01 | README | FEITO |
 | README: arquitetura | seção `Arquitetura` | 02 | README | FEITO |
@@ -68,8 +69,8 @@
 | README: decisão do banco | justificativa PostgreSQL/Prisma | 14 | README | FEITO |
 | README: autenticação/credenciais | procedimento de login e variáveis de demonstração | 14 | README | FEITO |
 | README: diretórios principais | seção de estrutura | 02 | README | FEITO |
-| README: link DDD | links para índice versionado e Miro | 15 | `docs/ddd/README.md` | FEITO |
-| README: link do vídeo | URL ainda não fornecida | 16 | PDF externo | PENDENTE |
+| README: link DDD | links para índice versionado e Miro | Board principal Tech Challenge | `docs/ddd/README.md` | FEITO |
+| README: link do vídeo | URL ainda não fornecida | N/A — evidência externa | PDF externo | PENDENTE |
 
 ## Documentação DDD
 
@@ -91,15 +92,15 @@
 
 | Requisito | Evidência no código | Evidência no Miro | Arquivo exportado | Status |
 |---|---|---|---|---|
-| PDF único com informações e links | material de entrega externo ao repositório | 15 | PDF externo | PENDENTE |
-| Identificação: curso, fase, grupo, integrantes, RMs, Discord e tecnologias | dados de identificação preenchidos; PDF externo ainda precisa ser atualizado | 15 | PDF externo | PARCIAL |
-| Links completos dos repositórios | URL não confirmada | 15 | PDF externo | PENDENTE |
-| Branch e hash final no PDF | disponível somente no fechamento | 15 | PDF externo | PENDENTE |
-| Vídeo público no YouTube, até 15 minutos | gravação/publicação depende do grupo | 16 | PDF final | PENDENTE |
-| Vídeo com áudio, funcionamento, documentação, arquitetura e integrantes | roteiro será preparado; gravação depende do grupo | 16 | `docs/entrega/roteiro-video.md` | PENDENTE |
-| Vídeo demonstra proposta, camadas, banco, DDD/Event Storming, fluxos, JWT, execução, Swagger, testes e vulnerabilidades | roteiro detalhado existente será alinhado ao commit final | 16 | `docs/entrega/roteiro-video.md` | PARCIAL |
+| PDF único com informações e links | material de entrega externo ao repositório | N/A — evidência externa | PDF externo | PENDENTE |
+| Identificação: curso, fase, grupo, integrantes, RMs, Discord e tecnologias | dados de identificação preenchidos; PDF externo ainda precisa ser atualizado | N/A — evidência externa | PDF externo | PARCIAL |
+| Links completos dos repositórios | URL não confirmada | N/A — evidência externa | PDF externo | PENDENTE |
+| Branch e hash final no PDF | disponível somente no fechamento | N/A — evidência externa | PDF externo | PENDENTE |
+| Vídeo público no YouTube, até 15 minutos | gravação/publicação depende do grupo | N/A — evidência externa | PDF externo | PENDENTE |
+| Vídeo com áudio, funcionamento, documentação, arquitetura e integrantes | roteiro preparado; gravação depende do grupo | N/A — evidência externa | `docs/entrega/roteiro-video.md` | PENDENTE |
+| Vídeo demonstra proposta, camadas, banco, DDD/Event Storming, fluxos, JWT, execução, Swagger, testes e vulnerabilidades | roteiro detalhado existe; alinhar ao commit final | N/A — evidência externa | `docs/entrega/roteiro-video.md` | PARCIAL |
 
 ## Responsabilidade pelas pendências
 
-- **Execução neste plano:** correção do Miro, exportações, documentação versionada, evidências, README e PDF final.
+- **Execução neste plano:** organização do board principal Tech Challenge, exportações, documentação versionada, evidências, README e material externo de entrega.
 - **Responsabilidade do grupo:** dados de identificação, URL definitiva do repositório, proteção da `main`, gravação/publicação do vídeo e validação anônima dos links.

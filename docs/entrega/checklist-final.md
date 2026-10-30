@@ -25,7 +25,8 @@ Use este documento no fechamento. Um item somente pode ser marcado após verific
 - [x] Criar arquitetura, requisitos, ADRs e DAS.
 - [x] Criar evidências de testes e checklist OWASP.
 - [x] Atualizar README sem placeholders internos.
-- [ ] Sincronizar os quadros 04, 15 e 16 após a renovação do limite diário do Miro.
+- [ ] Remover o contêiner vazio remanescente do antigo quadro 04 no board principal Tech Challenge.
+- [ ] Renumerar os quadros do board principal Tech Challenge e sincronizar as referências textuais e os PDFs exportados.
 
 ## Materiais externos
 
