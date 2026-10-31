@@ -10,44 +10,44 @@
 - Integrante: Rafael Abreu de Carvalho — RM378596 | Discord: Rafael Carvalho - rm378596
 - Estados permitidos: `FEITO`, `PARCIAL`, `PENDENTE` e `NÃO APLICÁVEL`
 - Observação: o hash acima identifica o início da preparação, não a versão final.
-- Organização do Miro: o board principal Tech Challenge está em reorganização; concluir a renumeração e reexportar os PDFs após a revisão visual dos fluxos.
+- Organização do Miro: o board principal Tech Challenge está organizado em 15 quadros numerados; os PDFs DDD foram reexportados em 31/10/2026.
 
 ## Funcionalidades e requisitos técnicos
 
 | Requisito | Evidência no código | Evidência no Miro | Arquivo exportado | Status |
 |---|---|---|---|---|
-| Identificar cliente por CPF/CNPJ | `abrir-ordem-servico.caso-uso.ts`, `cpf-cnpj.ts` | 05 e 10 | `docs/ddd/event-storming.pdf` | FEITO |
-| Cadastrar veículo com placa, marca, modelo e ano | `veiculo.controller.ts`, `criar-veiculo.caso-uso.ts`, `placa.ts` | 05 e 10 | `docs/ddd/diagramas.pdf` | FEITO |
-| Incluir serviços na OS | `definir-composicao-ordem-servico.caso-uso.ts` | 05 | `docs/ddd/event-storming.pdf` | FEITO |
-| Incluir peças e insumos na OS | `definir-composicao-ordem-servico.caso-uso.ts` | 05 e 07 | `docs/ddd/event-storming.pdf` | FEITO |
-| Gerar automaticamente o orçamento | `gerar-orcamento.caso-uso.ts` e `prisma-orcamento.repositorio.ts` | 05 | `docs/ddd/event-storming.pdf` | FEITO |
-| Disponibilizar orçamento para aprovação | `acompanhamento.controller.ts`, consulta pelo código | 05 e 06 | `docs/ddd/event-storming.pdf` | FEITO |
-| Registrar aprovação ou rejeição | `decidir-orcamento*.caso-uso.ts` | 05 e 06 | `docs/ddd/event-storming.pdf` | FEITO |
-| Status RECEBIDA, EM_DIAGNOSTICO, AGUARDANDO_APROVACAO, EM_EXECUCAO, FINALIZADA e ENTREGUE | `status-ordem-servico.ts`, `ordem-servico.ts` e enum Prisma | 06 e 11 | `docs/ddd/diagramas.pdf` | FEITO |
-| Controlar alterações e regras de transição | `ordem-servico.ts` e `executar-acao-ordem-servico.caso-uso.ts` | 06 e 11 | `docs/ddd/diagramas.pdf` | FEITO |
-| Consulta pública do andamento da OS | `consultar-acompanhamento.caso-uso.ts` e `acompanhamento.controller.ts` | 06 | `docs/ddd/event-storming.pdf` | FEITO |
-| CRUD de clientes | `cliente.controller.ts` e casos de uso de clientes | 02, 08 e 10 | `docs/ddd/diagramas.pdf` | FEITO |
-| CRUD de veículos | `veiculo.controller.ts` e casos de uso de veículos | 02, 08 e 10 | `docs/ddd/diagramas.pdf` | FEITO |
-| CRUD de serviços | `servico.controller.ts` e casos de uso de serviços | 02, 08 e 10 | `docs/ddd/diagramas.pdf` | FEITO |
-| CRUD de peças e insumos | `peca-insumo.controller.ts` e respectivos casos de uso | 02, 07, 08 e 10 | `docs/ddd/diagramas.pdf` | FEITO |
-| Controle de estoque | `movimentar-estoque.caso-uso.ts`, `peca-insumo.ts` e transação de aprovação | 07 | `docs/ddd/event-storming.pdf` | FEITO |
-| Listar e detalhar ordens de serviço | `listar-ordens-servico.caso-uso.ts`, `obter-ordem-servico.caso-uso.ts` | 02 e 06 | `docs/ddd/event-storming.pdf` | FEITO |
-| Calcular tempo médio de execução | `obter-tempo-medio-servicos.caso-uso.ts` e repositório Prisma | 06 e 14 | `docs/qualidade/evidencias-testes.md` | FEITO |
-| Back-end monolítico em camadas | `src/aplicacao.module.ts` e módulos NestJS separados em apresentação/aplicação/domínio/infraestrutura | 02 e 18 | `docs/arquitetura/c4.md` | FEITO |
-| Banco livre com decisão justificada | PostgreSQL em `prisma/schema.prisma` e `docker-compose.yml` | 14 | `docs/arquitetura/adr/0002-postgresql-e-prisma.md` | FEITO |
+| Identificar cliente por CPF/CNPJ | `abrir-ordem-servico.caso-uso.ts`, `cpf-cnpj.ts` | 04 e 09 | `docs/ddd/event-storming.pdf` | FEITO |
+| Cadastrar veículo com placa, marca, modelo e ano | `veiculo.controller.ts`, `criar-veiculo.caso-uso.ts`, `placa.ts` | 04 e 09 | `docs/ddd/diagramas.pdf` | FEITO |
+| Incluir serviços na OS | `definir-composicao-ordem-servico.caso-uso.ts` | 04 | `docs/ddd/event-storming.pdf` | FEITO |
+| Incluir peças e insumos na OS | `definir-composicao-ordem-servico.caso-uso.ts` | 04 e 06 | `docs/ddd/event-storming.pdf` | FEITO |
+| Gerar automaticamente o orçamento | `gerar-orcamento.caso-uso.ts` e `prisma-orcamento.repositorio.ts` | 04 | `docs/ddd/event-storming.pdf` | FEITO |
+| Disponibilizar orçamento para aprovação | `acompanhamento.controller.ts`, consulta pelo código | 04 e 05 | `docs/ddd/event-storming.pdf` | FEITO |
+| Registrar aprovação ou rejeição | `decidir-orcamento*.caso-uso.ts` | 04 e 05 | `docs/ddd/event-storming.pdf` | FEITO |
+| Status RECEBIDA, EM_DIAGNOSTICO, AGUARDANDO_APROVACAO, EM_EXECUCAO, FINALIZADA e ENTREGUE | `status-ordem-servico.ts`, `ordem-servico.ts` e enum Prisma | 05 e 10 | `docs/ddd/diagramas.pdf` | FEITO |
+| Controlar alterações e regras de transição | `ordem-servico.ts` e `executar-acao-ordem-servico.caso-uso.ts` | 05 e 10 | `docs/ddd/diagramas.pdf` | FEITO |
+| Consulta pública do andamento da OS | `consultar-acompanhamento.caso-uso.ts` e `acompanhamento.controller.ts` | 05 | `docs/ddd/event-storming.pdf` | FEITO |
+| CRUD de clientes | `cliente.controller.ts` e casos de uso de clientes | 02, 07 e 09 | `docs/ddd/diagramas.pdf` | FEITO |
+| CRUD de veículos | `veiculo.controller.ts` e casos de uso de veículos | 02, 07 e 09 | `docs/ddd/diagramas.pdf` | FEITO |
+| CRUD de serviços | `servico.controller.ts` e casos de uso de serviços | 02, 07 e 09 | `docs/ddd/diagramas.pdf` | FEITO |
+| CRUD de peças e insumos | `peca-insumo.controller.ts` e respectivos casos de uso | 02, 06, 07 e 09 | `docs/ddd/diagramas.pdf` | FEITO |
+| Controle de estoque | `movimentar-estoque.caso-uso.ts`, `peca-insumo.ts` e transação de aprovação | 06 | `docs/ddd/event-storming.pdf` | FEITO |
+| Listar e detalhar ordens de serviço | `listar-ordens-servico.caso-uso.ts`, `obter-ordem-servico.caso-uso.ts` | 02 e 05 | `docs/ddd/event-storming.pdf` | FEITO |
+| Calcular tempo médio de execução | `obter-tempo-medio-servicos.caso-uso.ts` e repositório Prisma | 05 e 13 | `docs/qualidade/evidencias-testes.md` | FEITO |
+| Back-end monolítico em camadas | `src/aplicacao.module.ts` e módulos NestJS separados em apresentação/aplicação/domínio/infraestrutura | 02 e 15 | `docs/arquitetura/c4.md` | FEITO |
+| Banco livre com decisão justificada | PostgreSQL em `prisma/schema.prisma` e `docker-compose.yml` | 13 | `docs/arquitetura/adr/0002-postgresql-e-prisma.md` | FEITO |
 | APIs RESTful | Controllers em `src/modulos/*/apresentacao` | 02 | `docs/arquitetura/c4.md` | FEITO |
-| Swagger/OpenAPI | configuração em `src/principal.ts`, acesso em `/docs` | 14 | README | FEITO |
-| Autenticação JWT administrativa | `autenticacao-jwt.guarda.ts`, `jwt.servico.ts`, `autenticacao.controller.ts` | 14 | `docs/security/owasp-top-10.md` | FEITO |
-| Validar CPF/CNPJ | `cpf-cnpj.ts` e testes | 10 e 13 | `docs/ddd/diagramas.pdf` | FEITO |
-| Validar placa | `placa.ts` e testes | 10 e 13 | `docs/ddd/diagramas.pdf` | FEITO |
-| Testes unitários | 33 suítes e 130 testes validados em 30/10/2026 | 14 | `docs/qualidade/evidencias-testes.md` | FEITO |
-| Testes de integração dos fluxos principais | 4 suítes e 26 testes E2E com PostgreSQL `oficina_teste` | 14 | `docs/qualidade/evidencias-testes.md` | FEITO |
-| Cobertura mínima de 80% nos domínios críticos | `package.json`: limiar 80%; execução validada com 100% no escopo configurado | 14 | `docs/qualidade/evidencias-testes.md` | FEITO |
-| Execução local simples | `README.md`, `Dockerfile`, `docker-compose.yml`, script `iniciar` | 14 | README | FEITO |
-| Dockerfile para build | `Dockerfile` | 14 | README | FEITO |
-| Docker Compose para ambiente completo | `docker-compose.yml` | 14 | README | FEITO |
-| Transações nos fluxos principais | repositórios Prisma de abertura, composição e orçamento | 07 e 14 | `docs/arquitetura/adr/0004-transacoes-e-controle-de-concorrencia.md` | FEITO |
-| Relatório de vulnerabilidades | `npm audit` e `npm audit --omit=dev` registrados | 14 | `docs/security/npm-audit-2026-10-30.md` | FEITO |
+| Swagger/OpenAPI | configuração em `src/principal.ts`, acesso em `/docs` | 13 | README | FEITO |
+| Autenticação JWT administrativa | `autenticacao-jwt.guarda.ts`, `jwt.servico.ts`, `autenticacao.controller.ts` | 13 | `docs/security/owasp-top-10.md` | FEITO |
+| Validar CPF/CNPJ | `cpf-cnpj.ts` e testes | 09 e 12 | `docs/ddd/diagramas.pdf` | FEITO |
+| Validar placa | `placa.ts` e testes | 09 e 12 | `docs/ddd/diagramas.pdf` | FEITO |
+| Testes unitários | 33 suítes e 130 testes validados em 30/10/2026 | 13 | `docs/qualidade/evidencias-testes.md` | FEITO |
+| Testes de integração dos fluxos principais | 4 suítes e 26 testes E2E com PostgreSQL `oficina_teste` | 13 | `docs/qualidade/evidencias-testes.md` | FEITO |
+| Cobertura mínima de 80% nos domínios críticos | `package.json`: limiar 80%; execução validada com 100% no escopo configurado | 13 | `docs/qualidade/evidencias-testes.md` | FEITO |
+| Execução local simples | `README.md`, `Dockerfile`, `docker-compose.yml`, script `iniciar` | 13 | README | FEITO |
+| Dockerfile para build | `Dockerfile` | 13 | README | FEITO |
+| Docker Compose para ambiente completo | `docker-compose.yml` | 13 | README | FEITO |
+| Transações nos fluxos principais | repositórios Prisma de abertura, composição e orçamento | 06 e 13 | `docs/arquitetura/adr/0004-transacoes-e-controle-de-concorrencia.md` | FEITO |
+| Relatório de vulnerabilidades | `npm audit` e `npm audit --omit=dev` registrados | 13 | `docs/security/npm-audit-2026-10-30.md` | FEITO |
 
 ## README, repositório e versão
 
@@ -56,18 +56,18 @@
 | Repositório público durante a avaliação | URL pública ainda não confirmada | N/A — evidência externa | PDF externo | PENDENTE |
 | Versão identificada por branch/tag/hash | branch registrada; hash final somente após conclusão | N/A — evidência externa | PDF externo | PARCIAL |
 | Código igual ao vídeo e à documentação | depende da gravação e do hash final | N/A — evidência externa | PDF externo | PENDENTE |
-| Ausência de credenciais, senhas, tokens e segredos | `.gitignore` e variáveis de ambiente; varredura final pendente | 14 | checklist final | PARCIAL |
+| Ausência de credenciais, senhas, tokens e segredos | `.gitignore` e variáveis de ambiente; varredura final pendente | 13 | checklist final | PARCIAL |
 | Branch `main` protegida e integração por PR | configuração externa ao repositório | N/A — configuração do repositório | PDF externo | PENDENTE |
 | README: objetivo | seção `Objetivo` | 01 | README | FEITO |
 | README: resumo da solução | seção `Solução` | 01 | README | FEITO |
 | README: arquitetura | seção `Arquitetura` | 02 | README | FEITO |
-| README: tecnologias | seção `Tecnologias` | 14 | README | FEITO |
-| README: pré-requisitos | seção `Pré-requisitos` | 14 | README | FEITO |
-| README: execução | seção `Execução` | 14 | README | FEITO |
-| README: testes | seção `Testes` | 14 | README | FEITO |
-| README: acesso ao Swagger | seção de documentação da API | 14 | README | FEITO |
-| README: decisão do banco | justificativa PostgreSQL/Prisma | 14 | README | FEITO |
-| README: autenticação/credenciais | procedimento de login e variáveis de demonstração | 14 | README | FEITO |
+| README: tecnologias | seção `Tecnologias` | 13 | README | FEITO |
+| README: pré-requisitos | seção `Pré-requisitos` | 13 | README | FEITO |
+| README: execução | seção `Execução` | 13 | README | FEITO |
+| README: testes | seção `Testes` | 13 | README | FEITO |
+| README: acesso ao Swagger | seção de documentação da API | 13 | README | FEITO |
+| README: decisão do banco | justificativa PostgreSQL/Prisma | 13 | README | FEITO |
+| README: autenticação/credenciais | procedimento de login e variáveis de demonstração | 13 | README | FEITO |
 | README: diretórios principais | seção de estrutura | 02 | README | FEITO |
 | README: link DDD | links para índice versionado e Miro | Board principal Tech Challenge | `docs/ddd/README.md` | FEITO |
 | README: link do vídeo | URL ainda não fornecida | N/A — evidência externa | PDF externo | PENDENTE |
@@ -77,16 +77,16 @@
 | Requisito | Evidência no código | Evidência no Miro | Arquivo exportado | Status |
 |---|---|---|---|---|
 | Link DDD direto e sem permissão manual | board `uXjVEXBA6FI`; acesso anônimo ainda deve ser validado | 01 | `docs/ddd/README.md` | PARCIAL |
-| Event Storming da criação da OS | casos de uso de abertura, composição e orçamento | 05 | `docs/ddd/event-storming.pdf` | FEITO |
-| Event Storming do acompanhamento | módulos de acompanhamento, OS e indicadores | 06 | `docs/ddd/event-storming.pdf` | FEITO |
-| Event Storming de peças e insumos | módulo `pecas-insumos` e aprovação transacional | 07 | `docs/ddd/event-storming.pdf` | FEITO |
-| Eventos, comandos, políticas/regras e atores | fluxos implementados nos casos de uso e entidades | 05, 06, 07 e 08 | `docs/ddd/event-storming.pdf` | FEITO |
-| Agregados, entidades e objetos de valor | classificação corrigida conforme classes/interfaces/enums reais | 08, 10 e 13 | `docs/ddd/diagramas.pdf` | FEITO |
-| Bounded Contexts | módulos lógicos, upstream/downstream e comunicação em processo | 09 | `docs/ddd/diagramas.pdf` | FEITO |
-| Diagramas solicitados em DDD | modelo, ciclo, Domain Storytelling e camadas DDD | 10, 11, 17 e 18 | `docs/ddd/diagramas.pdf` | FEITO |
-| Linguagem Ubíqua e glossário | nomes reais do domínio | 12 | `docs/ddd/linguagem-ubiqua.md` | FEITO |
-| Relação documentação x código | classes, casos de uso e persistência | 13 | `docs/ddd/README.md` | FEITO |
-| Exportações DDD no repositório | PDFs, glossário e índice versionados | 05–13, 17 e 18 | `docs/ddd/event-storming.pdf` e `docs/ddd/diagramas.pdf` | FEITO |
+| Event Storming da criação da OS | casos de uso de abertura, composição e orçamento | 04 | `docs/ddd/event-storming.pdf` | FEITO |
+| Event Storming do acompanhamento | módulos de acompanhamento, OS e indicadores | 05 | `docs/ddd/event-storming.pdf` | FEITO |
+| Event Storming de peças e insumos | módulo `pecas-insumos` e aprovação transacional | 06 | `docs/ddd/event-storming.pdf` | FEITO |
+| Eventos, comandos, políticas/regras e atores | fluxos implementados nos casos de uso e entidades | 04, 05, 06 e 07 | `docs/ddd/event-storming.pdf` | FEITO |
+| Agregados, entidades e objetos de valor | classificação corrigida conforme classes/interfaces/enums reais | 07, 09 e 12 | `docs/ddd/diagramas.pdf` | FEITO |
+| Bounded Contexts | módulos lógicos, upstream/downstream e comunicação em processo | 08 | `docs/ddd/diagramas.pdf` | FEITO |
+| Diagramas solicitados em DDD | modelo, ciclo, Domain Storytelling e camadas DDD | 09, 10, 14 e 15 | `docs/ddd/diagramas.pdf` | FEITO |
+| Linguagem Ubíqua e glossário | nomes reais do domínio | 11 | `docs/ddd/linguagem-ubiqua.md` | FEITO |
+| Relação documentação x código | classes, casos de uso e persistência | 12 | `docs/ddd/README.md` | FEITO |
+| Exportações DDD no repositório | PDFs, glossário e índice versionados | 04–12, 14 e 15 | `docs/ddd/event-storming.pdf` e `docs/ddd/diagramas.pdf` | FEITO |
 
 ## PDF e vídeo
 

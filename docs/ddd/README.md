@@ -18,20 +18,21 @@
 
 Os arquivos representam a branch `docs/completa-materiais-entrega-fase-1`. A versão-base da preparação foi `a19f537e52d3c1faa9070f71ed716944a038d649`; o hash final deve ser preenchido no fechamento da entrega.
 
-Os PDFs são reproduções versionadas e legíveis dos frames do board principal Tech Challenge no Miro, geradas em 30/10/2026. Após a renumeração final do board, atualize a tabela abaixo e reexporte os PDFs, em especial `event-storming.pdf`.
+Os PDFs são exportações do board principal Tech Challenge no Miro, atualizadas em 31/10/2026 após a organização e a renumeração final dos quadros.
 
 ## Rastreabilidade
 
 | Documento | Frames do Miro | Implementação principal |
 |---|---|---|
-| Criação e aprovação | 05 | `src/modulos/ordens-servico/` |
-| Acompanhamento | 06 | `src/modulos/acompanhamento/`, `src/modulos/indicadores/` |
-| Peças e insumos | 07 | `src/modulos/pecas-insumos/` e aprovação transacional |
-| Catálogo DDD | 08 | classes, interfaces e enums em `src/modulos/*/dominio/` |
-| Bounded Contexts | 09 | módulos importados em `src/aplicacao.module.ts` |
-| Modelo de domínio | 10 | domínio e `prisma/schema.prisma` |
-| Ciclo da OS | 11 | `ordem-servico.ts` |
-| Linguagem Ubíqua | 12 | nomes usados no código e na API |
-| Rastreabilidade | 13 | código, banco e testes |
-| Domain Storytelling | 17 | fluxo ponta a ponta implementado |
-| Arquitetura DDD | 18 | apresentação, aplicação, domínio e infraestrutura |
+| Criação e aprovação | 04 | `src/modulos/ordens-servico/` |
+| Acompanhamento | 05 | `src/modulos/acompanhamento/`, `src/modulos/indicadores/` |
+| Peças e insumos | 06 | `src/modulos/pecas-insumos/` e aprovação transacional |
+| Catálogo DDD | 07 | classes, interfaces e enums em `src/modulos/*/dominio/` |
+| Bounded Contexts | 08 | módulos importados em `src/aplicacao.module.ts` |
+| Modelo de domínio | 09 | domínio e `prisma/schema.prisma` |
+| Ciclo da OS | 10 | `ordem-servico.ts` |
+| Linguagem Ubíqua | 11 | nomes usados no código e na API |
+| Rastreabilidade | 12 | código, banco e testes |
+| Arquitetura, qualidade e segurança | 13 | arquitetura, API, testes e vulnerabilidades |
+| Domain Storytelling | 14 | fluxo ponta a ponta implementado |
+| Arquitetura DDD | 15 | apresentação, aplicação, domínio e infraestrutura |

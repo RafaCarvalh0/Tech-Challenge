@@ -15,8 +15,8 @@ Use este documento no fechamento. Um item somente pode ser marcado após verific
 
 ## Documentação
 
-- [x] Corrigir classificação DDD nos frames 08, 10 e 13.
-- [x] Transformar frames 05, 06 e 07 em fluxos causais completos.
+- [x] Corrigir classificação DDD nos quadros 07, 09 e 12.
+- [x] Transformar quadros 04, 05 e 06 em fluxos causais completos.
 - [x] Adicionar Domain Storytelling e arquitetura DDD em camadas.
 - [x] Revisar mapa de contextos e criar C4.
 - [x] Exportar `docs/ddd/event-storming.pdf`.
@@ -25,8 +25,8 @@ Use este documento no fechamento. Um item somente pode ser marcado após verific
 - [x] Criar arquitetura, requisitos, ADRs e DAS.
 - [x] Criar evidências de testes e checklist OWASP.
 - [x] Atualizar README sem placeholders internos.
-- [ ] Remover o contêiner vazio remanescente do antigo quadro 04 no board principal Tech Challenge.
-- [ ] Renumerar os quadros do board principal Tech Challenge e sincronizar as referências textuais e os PDFs exportados.
+- [x] Remover o contêiner vazio remanescente do antigo quadro 04 no board principal Tech Challenge.
+- [x] Renumerar os quadros do board principal Tech Challenge e sincronizar as referências textuais e os PDFs exportados.
 
 ## Materiais externos
 
