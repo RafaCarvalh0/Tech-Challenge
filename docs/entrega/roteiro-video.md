@@ -18,7 +18,7 @@ Antes de gravar, substitua os campos `PENDENTE` e confirme que a tela mostra a m
 | 11:30–12:15 | Finalizar serviço e entregar veículo |
 | 12:15–12:45 | Mostrar indicador de tempo médio |
 | 12:45–13:45 | Lint, build, 33 suítes/130 unitários, 100% no escopo e 4 suítes/26 E2E |
-| 13:45–14:30 | `npm audit`: 12 vulnerabilidades; produção: 3 altas; justificar não usar `--force` |
+| 13:45–14:30 | `npm audit`: 36 vulnerabilidades (4 baixas, 29 moderadas e 3 altas); produção: 3 altas; justificar não usar `--force` |
 | 14:30–15:00 | Repositório, Miro, PDF externo, branch/hash final e encerramento |
 
 ## Dados da entrega

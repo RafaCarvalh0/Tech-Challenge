@@ -16,9 +16,9 @@
 
 ## Escopo
 
-Os arquivos representam a branch `docs/completa-materiais-entrega-fase-1`. A versão-base da preparação foi `a19f537e52d3c1faa9070f71ed716944a038d649`; o hash final deve ser preenchido no fechamento da entrega.
+Os arquivos representam a branch `docs/completa-materiais-entrega-fase-1`. O último commit técnico validado foi `8a78971a96e4d37172328bdee0592957f6302add`; o hash final deve ser preenchido no fechamento da entrega.
 
-Os PDFs são exportações do board principal Tech Challenge no Miro, atualizadas em 31/10/2026 após a organização e a renumeração final dos quadros.
+O board principal Tech Challenge e as exportações `event-storming.pdf` e `diagramas.pdf` foram atualizados e revisados visualmente em 31/10/2026.
 
 ## Rastreabilidade
 

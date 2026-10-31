@@ -39,11 +39,11 @@ Lint e build; testes unitários de domínio/aplicação; testes de repositório;
 
 ## Segurança e riscos
 
-Riscos conhecidos: dependências transitivas reportadas pelo `npm audit`, ausência de rate limiting e logging/auditoria estruturados. Não aplicar `npm audit fix --force`; realizar atualizações principais em branch dedicada com regressão completa.
+Riscos conhecidos: 36 vulnerabilidades na auditoria completa e 3 altas na auditoria sem dependências de desenvolvimento, além da ausência de rate limiting e logging/auditoria estruturados. Não aplicar `npm audit fix --force`; realizar atualizações principais em branch dedicada com regressão completa.
 
 ## Aprovação acadêmica
 
 - Responsável do grupo: Rafael Abreu de Carvalho — RM378596
-- Data: `PENDENTE`
+- Data da revisão: 31/10/2026
 - Commit aprovado: `PENDENTE`
-- Resultado: apto após concluir itens externos do checklist final.
+- Resultado: documentação técnica apta; restam os itens externos e o fechamento da versão final indicados no checklist.

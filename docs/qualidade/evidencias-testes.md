@@ -1,8 +1,8 @@
 # Evidências de qualidade
 
-- Data: 30/10/2026
+- Data: 31/10/2026
 - Branch: `docs/completa-materiais-entrega-fase-1`
-- Hash de referência desta rodada: `dde405b2cae7aedcfc300a8d18b543e8323011f1`
+- Hash de referência desta rodada: `8a78971a96e4d37172328bdee0592957f6302add`
 - Banco E2E: `postgresql://postgres:postgres@localhost:5433/oficina_teste?schema=public`
 
 | Validação | Comando | Resultado |

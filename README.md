@@ -237,7 +237,9 @@ O limite configurado é de 80% para statements, branches, functions e lines nas 
 
 ## Segurança
 
-A API valida os dados recebidos e bloqueia campos não declarados nos DTOs. Consulte o [relatório de dependências](docs/security/npm-audit-2026-10-30.md) e o [checklist OWASP Top 10](docs/security/owasp-top-10.md).
+A API valida os dados recebidos e bloqueia campos não declarados nos DTOs. Consulte o [relatório de dependências](docs/security/npm-audit-2026-10-31.md) e o [checklist OWASP Top 10](docs/security/owasp-top-10.md).
+
+Na verificação de 31/10/2026, o `npm audit` registrou 36 vulnerabilidades (4 baixas, 29 moderadas e 3 altas). A auditoria sem dependências de desenvolvimento registrou 3 vulnerabilidades altas na cadeia Prisma/deepmerge-ts. As correções automáticas com `--force` não foram aplicadas porque exigem mudanças principais ou versões incompatíveis das ferramentas.
 
 A autenticação JWT protege todas as APIs administrativas. As credenciais e o segredo são obrigatoriamente configurados por variáveis de ambiente; a rota de saúde e o acompanhamento com código privado permanecem públicos.
 
@@ -265,6 +267,7 @@ testes/
 
 ## Materiais da entrega acadêmica
 
+- Repositório público: [github.com/RafaCarvalh0/Tech-Challenge](https://github.com/RafaCarvalh0/Tech-Challenge)
 - Documentação DDD no repositório: [docs/ddd/README.md](docs/ddd/README.md)
 - Quadro DDD no Miro: [documentação visual](https://miro.com/app/board/uXjVEXBA6FI=/?share_link_id=15194992988)
 - Estratégia e evidências de testes: [docs/qualidade/](docs/qualidade/)
@@ -275,5 +278,5 @@ testes/
 ## Versão da entrega
 
 - Branch em preparação: `docs/completa-materiais-entrega-fase-1`
-- Tag: `PENDENTE`
+- Tag: opcional; ainda não criada
 - Hash final: `PENDENTE — preencher após o último commit e antes da gravação`

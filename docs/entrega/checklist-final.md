@@ -11,7 +11,7 @@ Use este documento no fechamento. Um item somente pode ser marcado após verific
 - [x] Cobertura: 100% no escopo configurado, acima do mínimo de 80%.
 - [x] Testes E2E: 4 suítes e 26 testes aprovados em `oficina_teste`.
 - [ ] Reexecutar todas as validações no commit final.
-- [ ] Confirmar que nenhum segredo ou artefato local foi versionado.
+- [x] Confirmar que nenhum segredo ou artefato local foi versionado.
 
 ## Documentação
 
@@ -33,11 +33,13 @@ Use este documento no fechamento. Um item somente pode ser marcado após verific
 - [x] Informar número do grupo: 32.
 - [x] Informar nomes completos e RMs: Rafael Abreu de Carvalho — RM378596.
 - [x] Informar usernames do Discord: Rafael Carvalho - rm378596.
-- [ ] Confirmar URL pública do repositório.
-- [ ] Confirmar proteção da `main` e uso de Pull Request.
+- [x] Confirmar URL pública do repositório.
+- [x] Confirmar proteção da `main`.
+- [ ] Abrir, revisar e integrar o Pull Request final.
 - [ ] Gravar vídeo com no máximo 15 minutos.
 - [ ] Publicar vídeo como público no YouTube.
-- [ ] Abrir Miro, repositório e vídeo em janela anônima.
+- [x] Abrir Miro e repositório em navegador isolado, sem solicitação de permissão.
+- [ ] Abrir o vídeo publicado em janela anônima.
 
 ## Definition of Done da entrega
 
