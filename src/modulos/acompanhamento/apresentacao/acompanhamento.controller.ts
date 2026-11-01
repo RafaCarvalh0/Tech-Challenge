@@ -36,7 +36,7 @@ export class ControladorAcompanhamento {
   @RotaPublica()
   @Patch(":identificador/orcamento/decisao")
   @ApiHeader({
-    name: "X-Codigo-Acompanhamento",
+    name: "x-codigo-acompanhamento",
     description: "Código privado fornecido na abertura da ordem de serviço",
     required: true,
   })
