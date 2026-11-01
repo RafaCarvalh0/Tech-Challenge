@@ -1,6 +1,20 @@
 # Tech Challenge - Sistema de Oficina
 
-MVP de um sistema integrado para atendimento e execução de serviços de uma oficina mecânica.
+## Identificação da entrega
+
+- Curso: SOAT — Software Architecture
+- Fase: 1
+- Grupo: 32
+- Integrante: Rafael Abreu de Carvalho — RM378596
+- Discord: Rafael Carvalho - rm378596
+
+## Objetivo do projeto
+
+Desenvolver uma API para apoiar o atendimento, orçamento, execução e acompanhamento de serviços de uma oficina mecânica.
+
+## Descrição resumida da solução
+
+MVP de um sistema integrado que permite à oficina cadastrar clientes, veículos, serviços e peças/insumos; abrir e acompanhar ordens de serviço; gerar orçamentos; controlar estoque; e disponibilizar ao cliente um acompanhamento público protegido por código privado.
 
 ## Funcionalidades implementadas
 
@@ -27,6 +41,13 @@ O projeto é um monólito modular organizado em quatro camadas:
 - `apresentacao`: controllers REST, DTOs e documentação Swagger.
 
 Os módulos são `autenticacao`, `clientes`, `veiculos`, `servicos`, `pecas-insumos`, `ordens-servico`, `acompanhamento` e `indicadores`. O domínio não depende de NestJS ou Prisma.
+
+Documentos complementares:
+
+- [Modelo C4](docs/arquitetura/c4.md)
+- [Visão arquitetural](docs/arquitetura/visao-arquitetural.md)
+- [Requisitos e rastreabilidade](docs/arquitetura/requisitos.md)
+- [ADRs e DAS](docs/arquitetura/das.md)
 
 ## Tecnologias
 
@@ -57,7 +78,7 @@ Antes da primeira execução, copie `.env.example` para `.env` e substitua `SEGR
 docker compose up --build
 ```
 
-A API ficará disponível em `http://localhost:3000/api` e o Swagger em `http://localhost:3000/docs`.
+A API ficará disponível em `http://localhost:3000/api/saude` e o Swagger em `http://localhost:3000/docs`.
 
 Para encerrar o ambiente sem apagar os dados:
 
@@ -136,6 +157,7 @@ npm run start:dev
 | PATCH | `/api/ordens-servico/:identificador/orcamento/decisao` | Registra aprovação ou rejeição do orçamento |
 | PATCH | `/api/ordens-servico/:identificador/acoes/:acao` | Executa uma transição de status da OS |
 | GET | `/api/acompanhamento/ordens-servico/:identificador` | Consulta pública com `X-Codigo-Acompanhamento` |
+| PATCH | `/api/acompanhamento/ordens-servico/:identificador/orcamento/decisao` | Registra a decisão pública do cliente com `X-Codigo-Acompanhamento` |
 | GET | `/api/indicadores/tempo-medio-servicos` | Calcula o tempo médio de execução por serviço |
 
 As rotas administrativas exigem `Authorization: Bearer <token>`. As ações aceitas para a OS são `INICIAR_DIAGNOSTICO`, `SOLICITAR_APROVACAO`, `APROVAR`, `REJEITAR`, `FINALIZAR` e `ENTREGAR`. O contrato completo, incluindo corpos e respostas, está disponível no Swagger.
@@ -153,7 +175,7 @@ Envie as credenciais configuradas para `POST /api/autenticacao/login`:
 }
 ```
 
-Use o token retornado no cabeçalho `Authorization: Bearer <token>` das rotas administrativas. Apenas `/api/saude`, `/api/autenticacao/login` e o acompanhamento com código privado são públicos.
+Use o token retornado no cabeçalho `Authorization: Bearer <token>` das rotas administrativas. Apenas `/api/saude`, `/api/autenticacao/login` e as rotas de acompanhamento com código privado são públicas.
 
 ## Testes
 
@@ -167,6 +189,22 @@ Cobertura dos domínios críticos:
 
 ```bash
 npm run test:cov -- --runInBand
+```
+
+Resultado atual da suíte unitária e da cobertura:
+
+- 33 suítes passando.
+- 130 testes passando.
+- Statements: 100%.
+- Branches: 100%.
+- Functions: 100%.
+- Lines: 100%.
+
+As validações complementares de qualidade também foram executadas com sucesso:
+
+```bash
+npm run lint
+npm run build
 ```
 
 Testes E2E usam obrigatoriamente um banco temporário cujo nome termina em `_teste`. A proteção impede que a limpeza do teste seja executada no banco normal de desenvolvimento.
@@ -199,7 +237,9 @@ O limite configurado é de 80% para statements, branches, functions e lines nas 
 
 ## Segurança
 
-A API valida os dados recebidos e bloqueia campos não declarados nos DTOs. O relatório atualizado de dependências está em `docs/security/npm-audit-2026-10-28.md`.
+A API valida os dados recebidos e bloqueia campos não declarados nos DTOs. Consulte o [relatório de dependências](docs/security/npm-audit-2026-10-31.md) e o [checklist OWASP Top 10](docs/security/owasp-top-10.md).
+
+Na verificação de 31/10/2026, o `npm audit` registrou 36 vulnerabilidades (4 baixas, 29 moderadas e 3 altas). A auditoria sem dependências de desenvolvimento registrou 3 vulnerabilidades altas na cadeia Prisma/deepmerge-ts. As correções automáticas com `--force` não foram aplicadas porque exigem mudanças principais ou versões incompatíveis das ferramentas.
 
 A autenticação JWT protege todas as APIs administrativas. As credenciais e o segredo são obrigatoriamente configurados por variáveis de ambiente; a rota de saúde e o acompanhamento com código privado permanecem públicos.
 
@@ -225,6 +265,18 @@ prisma/
 testes/
 ```
 
-## Pendências da entrega acadêmica
+## Materiais da entrega acadêmica
 
-- Documentação DDD exportada e vídeo da entrega.
+- Repositório público: [github.com/RafaCarvalh0/Tech-Challenge](https://github.com/RafaCarvalh0/Tech-Challenge)
+- Documentação DDD no repositório: [docs/ddd/README.md](docs/ddd/README.md)
+- Quadro DDD no Miro: [documentação visual](https://miro.com/app/board/uXjVEXBA6FI=/?share_link_id=15194992988)
+- Estratégia e evidências de testes: [docs/qualidade/](docs/qualidade/)
+- Matriz de aderência: [docs/entrega/matriz-aderencia-fase-1.md](docs/entrega/matriz-aderencia-fase-1.md)
+- PDF final: entregue separadamente, fora do repositório.
+- Vídeo da entrega: `PENDENTE — inserir URL pública do YouTube`
+
+## Versão da entrega
+
+- Branch em preparação: `docs/completa-materiais-entrega-fase-1`
+- Tag: opcional; ainda não criada
+- Hash final: `PENDENTE — preencher após o último commit e antes da gravação`
