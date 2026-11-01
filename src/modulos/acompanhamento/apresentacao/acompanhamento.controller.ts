@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Headers, Param, Patch } from "@nestjs/common";
 import {
-  ApiHeader,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
@@ -21,11 +20,6 @@ export class ControladorAcompanhamento {
 
   @RotaPublica()
   @Get(":identificador")
-  @ApiHeader({
-    name: "X-Codigo-Acompanhamento",
-    description: "Código privado fornecido na abertura da ordem de serviço",
-    required: true,
-  })
   @ApiOkResponse({ description: "Progresso da ordem de serviço" })
   @ApiNotFoundResponse({ description: "Ordem de serviço não encontrada" })
   consultar(
@@ -40,11 +34,6 @@ export class ControladorAcompanhamento {
 
   @RotaPublica()
   @Patch(":identificador/orcamento/decisao")
-  @ApiHeader({
-    name: "X-Codigo-Acompanhamento",
-    description: "Código privado fornecido na abertura da ordem de serviço",
-    required: true,
-  })
   @ApiOkResponse({ description: "Decisão do orçamento registrada" })
   @ApiNotFoundResponse({ description: "Ordem de serviço não encontrada" })
   decidir(
