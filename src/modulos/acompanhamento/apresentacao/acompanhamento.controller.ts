@@ -21,11 +21,6 @@ export class ControladorAcompanhamento {
 
   @RotaPublica()
   @Get(":identificador")
-  @ApiHeader({
-    name: "X-Codigo-Acompanhamento",
-    description: "Código privado fornecido na abertura da ordem de serviço",
-    required: true,
-  })
   @ApiOkResponse({ description: "Progresso da ordem de serviço" })
   @ApiNotFoundResponse({ description: "Ordem de serviço não encontrada" })
   consultar(
