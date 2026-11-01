@@ -78,7 +78,7 @@ Antes da primeira execução, copie `.env.example` para `.env` e substitua `SEGR
 docker compose up --build
 ```
 
-A API ficará disponível em `http://localhost:3000/api` e o Swagger em `http://localhost:3000/docs`.
+A API ficará disponível em `http://localhost:3000/api/saude` e o Swagger em `http://localhost:3000/docs`.
 
 Para encerrar o ambiente sem apagar os dados:
 
