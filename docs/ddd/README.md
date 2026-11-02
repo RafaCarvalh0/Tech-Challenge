@@ -8,15 +8,16 @@
 - Integrante: Rafael Abreu de Carvalho — RM378596
 - Discord: Rafael Carvalho - rm378596
 
-- Miro público: [Documentação completa](https://miro.com/app/board/uXjVEXBA6FI=/?share_link_id=15194992988)
+- Miro público: [Documentação completa](https://miro.com/app/board/uXjVEXBA6FI=/?share_link_id=625881083702)
 - Event Storming offline: [event-storming.pdf](event-storming.pdf)
 - Demais diagramas: [diagramas.pdf](diagramas.pdf)
 - Linguagem Ubíqua: [linguagem-ubiqua.md](linguagem-ubiqua.md)
+- Catálogo DDD e rastreabilidade: [catalogo-e-rastreabilidade.md](catalogo-e-rastreabilidade.md)
 - C4 versionado: [../arquitetura/c4.md](../arquitetura/c4.md)
 
 ## Escopo
 
-Os arquivos representam a branch `docs/completa-materiais-entrega-fase-1`. O último commit técnico validado foi `8a78971a96e4d37172328bdee0592957f6302add`; o hash final deve ser preenchido no fechamento da entrega.
+Os arquivos representam a entrega na branch `main`. O hash final está registrado no PDF da entrega.
 
 O board principal Tech Challenge e as exportações `event-storming.pdf` e `diagramas.pdf` foram atualizados e revisados visualmente em 31/10/2026.
 

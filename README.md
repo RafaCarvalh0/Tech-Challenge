@@ -228,7 +228,7 @@ npm run build
 
 Testes E2E usam obrigatoriamente um banco temporário cujo nome termina em `_teste`. A proteção impede que a limpeza do teste seja executada no banco normal de desenvolvimento.
 
-Inicie o banco exclusivo:
+Inicie o banco exclusivo, com o arquivo `.env` já criado a partir do `.env.example`:
 
 ```bash
 docker compose --profile test up -d banco-dados-teste
@@ -266,14 +266,14 @@ A autenticação JWT protege todas as APIs administrativas. As credenciais e o s
 
 - Repositório público: [github.com/RafaCarvalh0/Tech-Challenge](https://github.com/RafaCarvalh0/Tech-Challenge)
 - Documentação DDD no repositório: [docs/ddd/README.md](docs/ddd/README.md)
-- Quadro DDD no Miro: [documentação visual](https://miro.com/app/board/uXjVEXBA6FI=/?share_link_id=15194992988)
+- Quadro DDD no Miro: [documentação visual](https://miro.com/app/board/uXjVEXBA6FI=/?share_link_id=625881083702)
 - Estratégia e evidências de testes: [docs/qualidade/](docs/qualidade/)
 - Matriz de aderência: [docs/entrega/matriz-aderencia-fase-1.md](docs/entrega/matriz-aderencia-fase-1.md)
 - PDF final: entregue separadamente, fora do repositório.
-- Vídeo da entrega: `PENDENTE — inserir URL pública do YouTube`
+- Vídeo da entrega: [youtube.com/watch?v=O61U_2Skc6M](https://www.youtube.com/watch?v=O61U_2Skc6M)
 
 ## Versão da entrega
 
-- Branch em preparação: `docs/completa-materiais-entrega-fase-1`
-- Tag: opcional; ainda não criada
-- Hash final: `PENDENTE — preencher após o último commit e antes da gravação`
+- Branch: `main`
+- Hash final: informado no PDF da entrega
+- Última validação técnica: `6eb499edef5dba4210998a169a97969e2b615a0e` (lint, build, testes unitários e E2E). Os commits posteriores não alteram o código da aplicação.

@@ -1,15 +1,15 @@
 # Matriz de aderência — Fase 1
 
-## Versão em preparação
+## Versão da entrega
 
-- Branch: `docs/completa-materiais-entrega-fase-1`
-- Último commit técnico validado: `8a78971a96e4d37172328bdee0592957f6302add`
+- Branch: `main`
+- Último commit técnico validado: `6eb499edef5dba4210998a169a97969e2b615a0e`
 - Enunciado: `Fase 1 - Tech Challenge.pdf`, páginas 4 a 11
 - Curso: SOAT — Software Architecture
 - Fase: 1 | Grupo: 32
 - Integrante: Rafael Abreu de Carvalho — RM378596 | Discord: Rafael Carvalho - rm378596
 - Estados permitidos: `FEITO`, `PARCIAL`, `PENDENTE` e `NÃO APLICÁVEL`
-- Observação: o hash acima identifica a rodada técnica validada, não a versão final da entrega.
+- Observação: o hash acima identifica a rodada técnica validada. O hash final está no PDF da entrega, e os commits posteriores não alteram o código da aplicação.
 - Organização do Miro: o board principal Tech Challenge está organizado em 15 quadros numerados. O quadro 04 foi alinhado à autenticação administrativa, o quadro 13 à auditoria de 31/10/2026 e as exportações DDD foram atualizadas e revisadas.
 
 ## Funcionalidades e requisitos técnicos
@@ -54,10 +54,10 @@
 | Requisito | Evidência no código | Evidência no Miro | Arquivo exportado | Status |
 |---|---|---|---|---|
 | Repositório público durante a avaliação | `https://github.com/RafaCarvalh0/Tech-Challenge` validado como público | N/A — evidência externa | PDF externo | FEITO |
-| Versão identificada por branch/tag/hash | branch registrada; hash final somente após conclusão | N/A — evidência externa | PDF externo | PARCIAL |
-| Código igual ao vídeo e à documentação | depende da gravação e do hash final | N/A — evidência externa | PDF externo | PENDENTE |
-| Ausência de credenciais, senhas, tokens e segredos | `.env` ignorado e não versionado; varredura de padrões comuns concluída | 13 | checklist final | FEITO |
-| Branch `main` protegida e integração por PR | proteção confirmada; Pull Request final ainda não aberto | N/A — configuração do repositório | PDF externo | PARCIAL |
+| Versão identificada por branch/tag/hash | branch `main`; hash final registrado no PDF | N/A — evidência externa | PDF externo | FEITO |
+| Código igual ao vídeo e à documentação | vídeo gravado com o código de `6eb499e`; commits posteriores não alteram o código da aplicação | N/A — evidência externa | PDF externo | FEITO |
+| Ausência de credenciais, senhas, tokens e segredos | `.env` ignorado e não versionado; varredura de padrões comuns concluída | 13 | `.gitignore` | FEITO |
+| Branch `main` protegida e integração por PR | proteção confirmada; integrações realizadas por Pull Request | N/A — configuração do repositório | PDF externo | FEITO |
 | README: objetivo | seção `Objetivo` | 01 | README | FEITO |
 | README: resumo da solução | seção `Solução` | 01 | README | FEITO |
 | README: arquitetura | seção `Arquitetura` | 02 | README | FEITO |
@@ -70,7 +70,7 @@
 | README: autenticação/credenciais | procedimento de login e variáveis de demonstração | 13 | README | FEITO |
 | README: diretórios principais | seção de estrutura | 02 | README | FEITO |
 | README: link DDD | links para índice versionado e Miro | Board principal Tech Challenge | `docs/ddd/README.md` | FEITO |
-| README: link do vídeo | URL ainda não fornecida | N/A — evidência externa | PDF externo | PENDENTE |
+| README: link do vídeo | seção `Materiais da entrega acadêmica` | N/A — evidência externa | README | FEITO |
 
 ## Documentação DDD
 
@@ -86,21 +86,17 @@
 | Diagramas solicitados em DDD | modelo, ciclo, Domain Storytelling e camadas DDD | 09, 10, 14 e 15 | `docs/ddd/diagramas.pdf` | FEITO |
 | Linguagem Ubíqua e glossário | nomes reais do domínio | 11 | `docs/ddd/linguagem-ubiqua.md` | FEITO |
 | Relação documentação x código | classes, casos de uso e persistência | 12 | `docs/ddd/README.md` | FEITO |
-| Exportações DDD no repositório | `event-storming.pdf` e `diagramas.pdf` atualizados e revisados página a página em 31/10/2026 | 04–12, 14 e 15 | `docs/ddd/event-storming.pdf` e `docs/ddd/diagramas.pdf` | FEITO |
+| Exportações DDD no repositório | `event-storming.pdf` (quadros 04–06), `diagramas.pdf` (08, 09, 10, 14 e 15), `linguagem-ubiqua.md` (11) e `catalogo-e-rastreabilidade.md` (07 e 12) | 04–12, 14 e 15 | `docs/ddd/` | FEITO |
 
 ## PDF e vídeo
 
 | Requisito | Evidência no código | Evidência no Miro | Arquivo exportado | Status |
 |---|---|---|---|---|
-| PDF único com informações e links | material de entrega externo ao repositório | N/A — evidência externa | PDF externo | PENDENTE |
-| Identificação: curso, fase, grupo, integrantes, RMs, Discord e tecnologias | dados de identificação preenchidos; PDF externo ainda precisa ser atualizado | N/A — evidência externa | PDF externo | PARCIAL |
-| Links completos dos repositórios | URL pública confirmada; inclusão no PDF externo ainda pendente | N/A — evidência externa | PDF externo | PARCIAL |
-| Branch e hash final no PDF | disponível somente no fechamento | N/A — evidência externa | PDF externo | PENDENTE |
-| Vídeo público no YouTube, até 15 minutos | gravação/publicação depende do grupo | N/A — evidência externa | PDF externo | PENDENTE |
-| Vídeo com áudio, funcionamento, documentação, arquitetura e integrantes | roteiro preparado; gravação depende do grupo | N/A — evidência externa | `docs/entrega/roteiro-video.md` | PENDENTE |
-| Vídeo demonstra proposta, camadas, banco, DDD/Event Storming, fluxos, JWT, execução, Swagger, testes e vulnerabilidades | roteiro detalhado existe; alinhar ao commit final | N/A — evidência externa | `docs/entrega/roteiro-video.md` | PARCIAL |
-
-## Responsabilidade pelas pendências
-
-- **Concluído no repositório e no Miro:** código, testes, documentação textual, organização do board, acesso público, proteção da `main` e relatório de vulnerabilidades.
-- **Responsabilidade do grupo:** abrir o Pull Request final, registrar o hash definitivo, gravar/publicar o vídeo e montar/revisar o PDF único da entrega.
+| PDF único com informações e links | material de entrega externo ao repositório | N/A — evidência externa | PDF externo | FEITO |
+| Identificação: curso, fase, grupo, integrantes, RMs, Discord e tecnologias | dados informados na primeira página do PDF | N/A — evidência externa | PDF externo | FEITO |
+| Links completos dos repositórios | URL pública informada no PDF | N/A — evidência externa | PDF externo | FEITO |
+| Branch e hash final no PDF | informados no fechamento | N/A — evidência externa | PDF externo | FEITO |
+| Vídeo público no YouTube | [publicado como público](https://www.youtube.com/watch?v=O61U_2Skc6M) | N/A — evidência externa | README e PDF externo | FEITO |
+| Duração do vídeo | 15:19 no YouTube; versão mantida para a entrega | N/A — evidência externa | PDF externo | PARCIAL |
+| Vídeo com áudio, funcionamento, documentação, arquitetura e integrantes | apresentação gravada com demonstração no Swagger | N/A — evidência externa | README e PDF externo | FEITO |
+| Vídeo demonstra proposta, camadas, banco, DDD/Event Storming, fluxos, JWT, execução, Swagger, testes e vulnerabilidades | itens abordados na apresentação | N/A — evidência externa | README e PDF externo | FEITO |
