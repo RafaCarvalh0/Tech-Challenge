@@ -167,7 +167,7 @@ Backup automatizado, retenção, restauração testada, recuperação de desastr
 | Requisitos obrigatórios implementados e rastreados | Aprovado |
 | Arquitetura C4 e documentação DDD coerentes com o código | Aprovado |
 | ADRs aceitas e centralizadas | Aprovado |
-| Lint, build, testes e cobertura validados | Aprovado na rodada técnica registrada; reexecutar no commit final |
+| Lint, build, testes e cobertura validados | Aprovado em `6eb499e`; os commits posteriores alteram somente a documentação |
 | Swagger e execução Docker documentados | Aprovado |
 | Riscos de segurança registrados | Aprovado com riscos conhecidos |
 | Commit final, vídeo e PDF externo | Registrados no PDF da entrega; situação na [matriz de aderência](../entrega/matriz-aderencia-fase-1.md) |
@@ -175,9 +175,9 @@ Backup automatizado, retenção, restauração testada, recuperação de desastr
 ## 14. Aprovação acadêmica
 
 - Responsável: Rafael Abreu de Carvalho — RM378596.
-- Data da revisão: 31/10/2026.
-- Resultado: solução e documentação técnica aptas; a aprovação final depende do commit definitivo e dos materiais externos indicados no checklist.
-- Commit aprovado: `PENDENTE — preencher após o último commit`.
+- Data da revisão: 02/11/2026.
+- Resultado: solução e documentação técnica aptas; o commit definitivo e os materiais externos estão indicados no PDF da entrega.
+- Commit aprovado: informado no PDF da entrega; última validação técnica em `6eb499edef5dba4210998a169a97969e2b615a0e`.
 
 ## 15. Histórico do documento
 
@@ -185,3 +185,4 @@ Backup automatizado, retenção, restauração testada, recuperação de desastr
 |---|---|---|
 | 0.1.0 | 30/10/2026 | Consolidação inicial da solução, ADRs, testes e riscos |
 | 0.2.0 | 31/10/2026 | Alinhamento ao template DAS: C4, dados, API, instalação, monitoramento, segurança, continuidade e aprovação |
+| 0.3.0 | 02/11/2026 | Atualização das referências de versão da entrega |
