@@ -9,7 +9,7 @@
 | Versão do documento | `0.2.0` |
 | Estado | Em revisão final |
 | Data de criação | 30/10/2026 |
-| Última revisão | 31/10/2026 |
+| Última revisão | 02/11/2026 |
 | Curso | SOAT — Software Architecture |
 | Fase | 1 |
 | Grupo | 32 |
@@ -167,7 +167,7 @@ Backup automatizado, retenção, restauração testada, recuperação de desastr
 | Requisitos obrigatórios implementados e rastreados | Aprovado |
 | Arquitetura C4 e documentação DDD coerentes com o código | Aprovado |
 | ADRs aceitas e centralizadas | Aprovado |
-| Lint, build, testes e cobertura validados | Aprovado em `6eb499e`; os commits posteriores alteram somente a documentação |
+| Lint, build, testes e cobertura validados | Aprovado em `6eb499e`; os commits posteriores não alteram o código da aplicação |
 | Swagger e execução Docker documentados | Aprovado |
 | Riscos de segurança registrados | Aprovado com riscos conhecidos |
 | Commit final, vídeo e PDF externo | Registrados no PDF da entrega; situação na [matriz de aderência](../entrega/matriz-aderencia-fase-1.md) |

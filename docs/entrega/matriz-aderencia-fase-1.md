@@ -9,7 +9,7 @@
 - Fase: 1 | Grupo: 32
 - Integrante: Rafael Abreu de Carvalho — RM378596 | Discord: Rafael Carvalho - rm378596
 - Estados permitidos: `FEITO`, `PARCIAL`, `PENDENTE` e `NÃO APLICÁVEL`
-- Observação: o hash acima identifica a rodada técnica validada. O hash final está no PDF da entrega, e os commits posteriores alteram somente a documentação.
+- Observação: o hash acima identifica a rodada técnica validada. O hash final está no PDF da entrega, e os commits posteriores não alteram o código da aplicação.
 - Organização do Miro: o board principal Tech Challenge está organizado em 15 quadros numerados. O quadro 04 foi alinhado à autenticação administrativa, o quadro 13 à auditoria de 31/10/2026 e as exportações DDD foram atualizadas e revisadas.
 
 ## Funcionalidades e requisitos técnicos
@@ -55,8 +55,8 @@
 |---|---|---|---|---|
 | Repositório público durante a avaliação | `https://github.com/RafaCarvalh0/Tech-Challenge` validado como público | N/A — evidência externa | PDF externo | FEITO |
 | Versão identificada por branch/tag/hash | branch `main`; hash final registrado no PDF | N/A — evidência externa | PDF externo | FEITO |
-| Código igual ao vídeo e à documentação | vídeo gravado com o código de `6eb499e`; commits posteriores somente em documentação | N/A — evidência externa | PDF externo | FEITO |
-| Ausência de credenciais, senhas, tokens e segredos | `.env` ignorado e não versionado; varredura de padrões comuns concluída | 13 | checklist final | FEITO |
+| Código igual ao vídeo e à documentação | vídeo gravado com o código de `6eb499e`; commits posteriores não alteram o código da aplicação | N/A — evidência externa | PDF externo | FEITO |
+| Ausência de credenciais, senhas, tokens e segredos | `.env` ignorado e não versionado; varredura de padrões comuns concluída | 13 | `.gitignore` | FEITO |
 | Branch `main` protegida e integração por PR | proteção confirmada; integrações realizadas por Pull Request | N/A — configuração do repositório | PDF externo | FEITO |
 | README: objetivo | seção `Objetivo` | 01 | README | FEITO |
 | README: resumo da solução | seção `Solução` | 01 | README | FEITO |

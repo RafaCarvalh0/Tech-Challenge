@@ -276,4 +276,4 @@ A autenticação JWT protege todas as APIs administrativas. As credenciais e o s
 
 - Branch: `main`
 - Hash final: informado no PDF da entrega
-- Última validação técnica: `6eb499edef5dba4210998a169a97969e2b615a0e` (lint, build, testes unitários e E2E). Os commits posteriores alteram somente a documentação.
+- Última validação técnica: `6eb499edef5dba4210998a169a97969e2b615a0e` (lint, build, testes unitários e E2E). Os commits posteriores não alteram o código da aplicação.
