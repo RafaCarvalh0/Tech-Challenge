@@ -97,6 +97,6 @@
 | Links completos dos repositórios | URL pública informada no PDF | N/A — evidência externa | PDF externo | FEITO |
 | Branch e hash final no PDF | informados no fechamento | N/A — evidência externa | PDF externo | FEITO |
 | Vídeo público no YouTube | [publicado como público](https://www.youtube.com/watch?v=O61U_2Skc6M) | N/A — evidência externa | README e PDF externo | FEITO |
-| Duração do vídeo de até 15 minutos | duração atual de 15:19; ajustar no YouTube Studio | N/A — evidência externa | PDF externo | PENDENTE |
+| Duração do vídeo | 15:19 no YouTube; versão mantida para a entrega | N/A — evidência externa | PDF externo | PARCIAL |
 | Vídeo com áudio, funcionamento, documentação, arquitetura e integrantes | apresentação gravada com demonstração no Swagger | N/A — evidência externa | README e PDF externo | FEITO |
 | Vídeo demonstra proposta, camadas, banco, DDD/Event Storming, fluxos, JWT, execução, Swagger, testes e vulnerabilidades | itens abordados na apresentação | N/A — evidência externa | README e PDF externo | FEITO |
