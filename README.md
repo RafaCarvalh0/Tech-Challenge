@@ -31,24 +31,6 @@ MVP de um sistema integrado que permite à oficina cadastrar clientes, veículos
 - Swagger/OpenAPI.
 - Testes unitários, cobertura e fluxo E2E com PostgreSQL real.
 
-## Arquitetura
-
-O projeto é um monólito modular organizado em quatro camadas:
-
-- `dominio`: entidades, objetos de valor e regras de negócio.
-- `aplicacao`: casos de uso e contratos de repositório.
-- `infraestrutura`: persistência PostgreSQL com Prisma.
-- `apresentacao`: controllers REST, DTOs e documentação Swagger.
-
-Os módulos são `autenticacao`, `clientes`, `veiculos`, `servicos`, `pecas-insumos`, `ordens-servico`, `acompanhamento` e `indicadores`. O domínio não depende de NestJS ou Prisma.
-
-Documentos complementares:
-
-- [Modelo C4](docs/arquitetura/c4.md)
-- [Visão arquitetural](docs/arquitetura/visao-arquitetural.md)
-- [Requisitos e rastreabilidade](docs/arquitetura/requisitos.md)
-- [ADRs e DAS](docs/arquitetura/das.md)
-
 ## Tecnologias
 
 - Node.js 24
@@ -63,6 +45,43 @@ Documentos complementares:
 ## Por que PostgreSQL
 
 Clientes, veículos e ordens de serviço possuem relações claras e precisam de integridade referencial. O PostgreSQL oferece transações ACID, constraints, índices e bom suporte para consultas relacionais, sendo adequado para controle de estoque, orçamento e histórico nas próximas etapas.
+
+## Arquitetura
+
+O projeto é um monólito modular organizado em quatro camadas:
+
+- `dominio`: entidades, objetos de valor e regras de negócio.
+- `aplicacao`: casos de uso e contratos de repositório.
+- `infraestrutura`: persistência PostgreSQL com Prisma.
+- `apresentacao`: controllers REST, DTOs e documentação Swagger.
+
+Os módulos são `autenticacao`, `clientes`, `veiculos`, `servicos`, `pecas-insumos`, `ordens-servico`, `acompanhamento` e `indicadores`. O domínio não depende de NestJS ou Prisma.
+
+```text
+src/
+  banco-dados/
+  saude/
+  modulos/
+    clientes/
+    veiculos/
+    servicos/
+    pecas-insumos/
+    ordens-servico/
+    autenticacao/
+    acompanhamento/
+    indicadores/
+  compartilhado/
+prisma/
+  migrations/
+  schema.prisma
+testes/
+```
+Documentos complementares:
+
+- [Modelo C4](docs/arquitetura/c4.md)
+- [Visão arquitetural](docs/arquitetura/visao-arquitetural.md)
+- [Requisitos e rastreabilidade](docs/arquitetura/requisitos.md)
+- [ADRs e DAS](docs/arquitetura/das.md)
 
 ## Pré-requisitos
 
@@ -242,28 +261,6 @@ A API valida os dados recebidos e bloqueia campos não declarados nos DTOs. Cons
 Na verificação de 31/10/2026, o `npm audit` registrou 36 vulnerabilidades (4 baixas, 29 moderadas e 3 altas). A auditoria sem dependências de desenvolvimento registrou 3 vulnerabilidades altas na cadeia Prisma/deepmerge-ts. As correções automáticas com `--force` não foram aplicadas porque exigem mudanças principais ou versões incompatíveis das ferramentas.
 
 A autenticação JWT protege todas as APIs administrativas. As credenciais e o segredo são obrigatoriamente configurados por variáveis de ambiente; a rota de saúde e o acompanhamento com código privado permanecem públicos.
-
-## Estrutura principal
-
-```text
-src/
-  banco-dados/
-  saude/
-  modulos/
-    clientes/
-    veiculos/
-    servicos/
-    pecas-insumos/
-    ordens-servico/
-    autenticacao/
-    acompanhamento/
-    indicadores/
-  compartilhado/
-prisma/
-  migrations/
-  schema.prisma
-testes/
-```
 
 ## Materiais da entrega acadêmica
 
