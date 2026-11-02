@@ -170,7 +170,7 @@ Backup automatizado, retenção, restauração testada, recuperação de desastr
 | Lint, build, testes e cobertura validados | Aprovado na rodada técnica registrada; reexecutar no commit final |
 | Swagger e execução Docker documentados | Aprovado |
 | Riscos de segurança registrados | Aprovado com riscos conhecidos |
-| Commit final, vídeo, PDF externo e Pull Request | Pendente — consultar [checklist final](../entrega/checklist-final.md) |
+| Commit final, vídeo e PDF externo | Registrados no PDF da entrega; situação na [matriz de aderência](../entrega/matriz-aderencia-fase-1.md) |
 
 ## 14. Aprovação acadêmica
 
